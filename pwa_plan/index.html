@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="План 2026">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Моят план 2026</title>
+<style>
+:root {
+  --bg:#0a0a0a; --bg2:#111; --bg3:#1a1a1a; --bg4:#222;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#f0f0f0; --text2:#888; --text3:#555;
+  --purple:#8b5cf6; --purple-dim:rgba(139,92,246,0.15);
+  --green:#22c55e; --green-dim:rgba(34,197,94,0.12);
+  --amber:#f59e0b; --amber-dim:rgba(245,158,11,0.12);
+  --blue:#3b82f6; --blue-dim:rgba(59,130,246,0.12);
+  --coral:#f97316; --coral-dim:rgba(249,115,22,0.12);
+  --red:#ef4444; --red-dim:rgba(239,68,68,0.1);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:flex;flex-direction:column}
+
+/* STATUS BAR SPACE */
+.status-bar{height:calc(var(--safe-top) + 44px);background:var(--bg);display:flex;align-items:flex-end;padding:0 16px 8px;flex-shrink:0}
+.app-title{font-size:17px;font-weight:600;flex:1}
+.today-badge{font-size:12px;color:var(--text3);background:var(--bg3);border:0.5px solid var(--border);padding:3px 10px;border-radius:20px}
+
+/* SCROLL AREA */
+.scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px}
+
+/* BOTTOM NAV */
+.bottom-nav{background:var(--bg2);border-top:0.5px solid var(--border);display:flex;padding-bottom:calc(var(--safe-bot) + 4px);flex-shrink:0}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 6px;cursor:pointer;color:var(--text3);transition:color .2s;border:none;background:none}
+.nav-item.active{color:var(--purple)}
+.nav-icon{font-size:22px;margin-bottom:3px;line-height:1}
+.nav-label{font-size:10px;font-weight:500}
+
+/* VIEWS */
+.view{display:none}.view.active{display:block}
+
+/* WEEK STRIP */
+.week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin:14px 0}
+.week-day{background:var(--bg3);border:0.5px solid var(--border);border-radius:10px;padding:7px 3px;text-align:center;cursor:pointer;transition:all .2s}
+.week-day.today{border-color:var(--purple);background:var(--purple-dim)}
+.week-day.selected{border-color:var(--amber);background:var(--amber-dim)}
+.wd-name{font-size:9px;color:var(--text3);margin-bottom:3px}
+.wd-num{font-size:14px;font-weight:600}
+.wd-dot{width:5px;height:5px;border-radius:50%;margin:3px auto 0}
+
+/* DAY CARD */
+.day-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px}
+.day-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.day-title{font-size:20px;font-weight:700}
+.day-sub{font-size:13px;color:var(--text2);margin-top:2px}
+.type-badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;white-space:nowrap}
+.badge-work{background:var(--blue-dim);color:var(--blue)}
+.badge-off{background:var(--green-dim);color:var(--green)}
+
+/* NAVIGATION ARROWS */
+.day-nav{display:flex;gap:8px;margin-bottom:14px}
+.nav-arrow{flex:1;background:var(--bg3);border:0.5px solid var(--border2);color:var(--text);padding:10px;border-radius:10px;cursor:pointer;font-size:16px;text-align:center}
+
+/* TIMELINE */
+.timeline{padding-left:12px;border-left:1px solid var(--border2)}
+.tl-item{display:flex;gap:10px;margin-bottom:8px;position:relative}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:7px;position:absolute;left:-16px}
+.tl-time{font-size:11px;color:var(--text3);min-width:38px;padding-top:4px;flex-shrink:0}
+.tl-block{flex:1;padding:8px 10px;border-radius:8px;border-left:2px solid transparent}
+.tl-title{font-size:13px;font-weight:500;line-height:1.3}
+.tl-sub{font-size:11px;margin-top:2px;opacity:.65;line-height:1.3}
+
+.cat-wake{background:rgba(139,92,246,0.08);border-left-color:var(--purple)}
+.cat-train{background:rgba(34,197,94,0.08);border-left-color:var(--green)}
+.cat-work{background:rgba(59,130,246,0.08);border-left-color:var(--blue)}
+.cat-family{background:rgba(249,115,22,0.08);border-left-color:var(--coral)}
+.cat-project{background:rgba(245,158,11,0.08);border-left-color:var(--amber)}
+.cat-food{background:rgba(255,255,255,0.04);border-left-color:var(--text3)}
+.cat-sleep{background:rgba(139,92,246,0.05);border-left-color:rgba(139,92,246,0.3)}
+.cat-review{background:rgba(239,68,68,0.06);border-left-color:var(--red)}
+
+/* LEGEND */
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.leg{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)}
+.leg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* MONTHLY */
+.month-scroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin:14px 0;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.month-scroll::-webkit-scrollbar{display:none}
+.month-chip{padding:7px 16px;font-size:13px;background:var(--bg3);border:0.5px solid var(--border);border-radius:20px;cursor:pointer;color:var(--text2);white-space:nowrap;flex-shrink:0}
+.month-chip.active{background:var(--purple-dim);border-color:var(--purple);color:var(--purple)}
+
+.section-title{font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin:16px 0 8px}
+.card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px}
+
+.goal-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border)}
+.goal-item:last-child{border-bottom:none}
+.goal-check{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border2);flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.goal-check.done{background:var(--green);border-color:var(--green)}
+.goal-check.done::after{content:'✓';font-size:12px;color:#000;font-weight:700}
+.goal-text{font-size:14px;line-height:1.4}
+.goal-text.done{text-decoration:line-through;color:var(--text3)}
+.goal-cat{font-size:10px;margin-top:2px;font-weight:500}
+
+/* ANNUAL */
+.phase-card{border-radius:12px;padding:14px;border:0.5px solid var(--border);margin-bottom:10px}
+.phase-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.phase-title{font-size:16px;font-weight:600;margin-bottom:4px}
+.phase-desc{font-size:12px;line-height:1.5;opacity:.7}
+
+.rule{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:0.5px solid var(--border);font-size:13px;line-height:1.4}
+.rule:last-child{border-bottom:none}
+.rule-num{font-size:11px;color:var(--purple);font-weight:700;min-width:20px;padding-top:1px}
+
+/* HABITS */
+.habit-card{border-radius:12px;padding:14px;border:0.5px solid var(--border);margin-bottom:8px}
+.habit-icon{font-size:20px;margin-bottom:6px}
+.habit-title{font-size:14px;font-weight:600;margin-bottom:3px}
+.habit-desc{font-size:12px;color:var(--text2);line-height:1.4}
+.stop{background:var(--red-dim);border-color:rgba(239,68,68,0.2)}
+.start{background:var(--green-dim);border-color:rgba(34,197,94,0.2)}
+
+.progress-bar{height:4px;background:var(--bg4);border-radius:2px;margin-top:10px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;background:var(--green);transition:width .3s}
+</style>
+</head>
+<body>
+
+<div class="status-bar">
+  <div class="app-title">Моят план 2026</div>
+  <div class="today-badge" id="todayBadge"></div>
+</div>
+
+<div class="scroll-area">
+
+  <!-- DAY VIEW -->
+  <div id="view-day" class="view active">
+    <div class="week-strip" id="weekStrip"></div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:var(--purple)"></div>Събуждане</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>Тренировка</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--blue)"></div>Работа</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--amber)"></div>Проекти</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--coral)"></div>Семейство</div>
+    </div>
+    <div class="day-nav">
+      <button class="nav-arrow" onclick="prevDay()">← Предишен</button>
+      <button class="nav-arrow" onclick="goToday()">Днес</button>
+      <button class="nav-arrow" onclick="nextDay()">Следващ →</button>
+    </div>
+    <div class="day-card">
+      <div class="day-header">
+        <div>
+          <div class="day-title" id="dayTitle"></div>
+          <div class="day-sub" id="daySub"></div>
+        </div>
+        <div class="type-badge" id="dayBadge"></div>
+      </div>
+      <div class="timeline" id="timeline"></div>
+    </div>
+  </div>
+
+  <!-- MONTHLY VIEW -->
+  <div id="view-month" class="view">
+    <div class="month-scroll" id="monthScroll"></div>
+    <div id="monthContent"></div>
+  </div>
+
+  <!-- ANNUAL VIEW -->
+  <div id="view-annual" class="view">
+    <div class="section-title">Четири фази</div>
+    <div class="phase-card" style="background:var(--purple-dim);border-color:rgba(139,92,246,0.25)">
+      <div class="phase-label" style="color:var(--purple)">Юли – Август</div>
+      <div class="phase-title">Основи</div>
+      <div class="phase-desc">Спираш виното. Изграждаш сутрешната рутина. Първи видеа за трите проекта. Ставаш постепенно по-рано.</div>
+    </div>
+    <div class="phase-card" style="background:var(--amber-dim);border-color:rgba(245,158,11,0.25)">
+      <div class="phase-label" style="color:var(--amber)">Септември</div>
+      <div class="phase-title">Изграждане</div>
+      <div class="phase-desc">Подготвяш системата. Първи резултати от контента. Навиците вече са стабилни.</div>
+    </div>
+    <div class="phase-card" style="background:var(--green-dim);border-color:rgba(34,197,94,0.25)">
+      <div class="phase-label" style="color:var(--green)">Октомври – Ноември</div>
+      <div class="phase-title">Ускоряване</div>
+      <div class="phase-desc">Детето тръгва на ясла. Понеделник — пълен работен ден. Ставаш в 05:45. Първи клиенти.</div>
+    </div>
+    <div class="phase-card" style="background:var(--blue-dim);border-color:rgba(59,130,246,0.25)">
+      <div class="phase-label" style="color:var(--blue)">Декември</div>
+      <div class="phase-title">Консолидация</div>
+      <div class="phase-desc">Преглед на годината. Крипто оценка. Планиране на 2027. Отпразнуваш с семейството.</div>
+    </div>
+
+    <div class="section-title">Правила</div>
+    <div class="card">
+      <div class="rule"><div class="rule-num">01</div><div>Вечерта е за семейството — без изключения.</div></div>
+      <div class="rule"><div class="rule-num">02</div><div>Ако пропуснеш ден — не компенсираш. Просто продължаваш.</div></div>
+      <div class="rule"><div class="rule-num">03</div><div>Телефонът не влиза в леглото.</div></div>
+      <div class="rule"><div class="rule-num">04</div><div>Не оценяваш резултатите всяка седмица. Оценяваш дали си следвал системата.</div></div>
+      <div class="rule"><div class="rule-num">05</div><div>Виното е спряно. Не "намалено" — спряно.</div></div>
+    </div>
+  </div>
+
+  <!-- HABITS VIEW -->
+  <div id="view-habits" class="view">
+    <div class="section-title">Спираш</div>
+    <div class="habit-card stop"><div class="habit-icon">🍷</div><div class="habit-title">Вино всяка вечер</div><div class="habit-desc">Унищожава REM съня, краде енергията за следващия ден. Спира от днес.</div></div>
+    <div class="habit-card stop"><div class="habit-icon">📱</div><div class="habit-title">Телефон преди сън</div><div class="habit-desc">Блокира мелатонина. Телефонът от другата страна на стаята след 21:30.</div></div>
+    <div class="habit-card stop"><div class="habit-icon">🍔</div><div class="habit-title">Бърза храна всеки ден</div><div class="habit-desc">Енергийни сривове и липса на фокус. Храна от вкъщи за работа.</div></div>
+    <div class="habit-card stop"><div class="habit-icon">😴</div><div class="habit-title">Ставане в 08:30</div><div class="habit-desc">Нулево лично време. Преход: 07:15 → 06:30 → 05:45.</div></div>
+
+    <div class="section-title">Изграждаш</div>
+    <div class="habit-card start"><div class="habit-icon">⏰</div><div class="habit-title">Ранно ставане</div><div class="habit-desc">07:15 сега → 06:30 след месец → 05:45 от октомври.</div></div>
+    <div class="habit-card start"><div class="habit-icon">💪</div><div class="habit-title">3 тренировки седмично</div><div class="habit-desc">Вкъщи, 30-40 мин. Понеделник, сряда, петък.</div></div>
+    <div class="habit-card start"><div class="habit-icon">🥗</div><div class="habit-title">Закуска всяка сутрин</div><div class="habit-desc">Дори малка. Плюс храна от вкъщи за обяд на работа.</div></div>
+    <div class="habit-card start"><div class="habit-icon">🌙</div><div class="habit-title">Лягане в 22:00-22:30</div><div class="habit-desc">Тримата заедно. Телефонът — от другата страна.</div></div>
+    <div class="habit-card start"><div class="habit-icon">📋</div><div class="habit-title">Вечерен преглед 5 мин</div><div class="habit-desc">Какво направих днес? Какво е важно утре?</div></div>
+    <div class="habit-card start"><div class="habit-icon">💧</div><div class="habit-title">Вода преди кафето</div><div class="habit-desc">Чаша вода веднага след ставане. После кафе.</div></div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-item active" onclick="switchView('day', this)">
+    <div class="nav-icon">📅</div>
+    <div class="nav-label">Ден</div>
+  </button>
+  <button class="nav-item" onclick="switchView('month', this)">
+    <div class="nav-icon">🗓</div>
+    <div class="nav-label">Месец</div>
+  </button>
+  <button class="nav-item" onclick="switchView('annual', this)">
+    <div class="nav-icon">🎯</div>
+    <div class="nav-label">Година</div>
+  </button>
+  <button class="nav-item" onclick="switchView('habits', this)">
+    <div class="nav-icon">⚡</div>
+    <div class="nav-label">Навици</div>
+  </button>
+</div>
+
+<script>
+const BG_DAYS=['Неделя','Понеделник','Вторник','Сряда','Четвъртък','Петък','Събота'];
+const BG_MONTHS=['януари','февруари','март','април','май','юни','юли','август','септември','октомври','ноември','декември'];
+const today=new Date();
+let currentDate=new Date(today);
+
+function isOffDay(d){const w=d.getDay();return w===0||w===1}
+function isTrainDay(d){const w=d.getDay();return w===1||w===3||w===5}
+
+function getSchedule(d){
+  const dow=d.getDay();
+  if(dow===1){return[
+    {time:'05:45',title:'Събуждане',sub:'Чаша вода, без телефон',cat:'wake'},
+    {time:'06:00',title:'Работа по проекти',sub:'aia.creative / часовници / Техномаркет',cat:'project'},
+    {time:'07:45',title:'Тренировка вкъщи',sub:'30-40 мин телесно тегло',cat:'train'},
+    {time:'08:30',title:'Душ + закуска',sub:'Заедно с жена ти и детето',cat:'family'},
+    {time:'10:00',title:'Разходка с детето',sub:'Игра, свеж въздух',cat:'family'},
+    {time:'13:00',title:'Обяд заедно',sub:'',cat:'food'},
+    {time:'14:00',title:'Работа по проекти',sub:'Детето спи — дълбока работа',cat:'project'},
+    {time:'16:00',title:'Семейство',sub:'Детето се е събудило',cat:'family'},
+    {time:'19:30',title:'Вечеря',sub:'Готвите и хапвате заедно',cat:'food'},
+    {time:'21:30',title:'Телефон на зарядно',sub:'От другата страна на стаята',cat:'review'},
+    {time:'22:00',title:'Лягане',sub:'Тримата заедно',cat:'sleep'},
+  ]}
+  if(dow===0){return[
+    {time:'07:00',title:'Бавна сутрин',sub:'Семейна закуска',cat:'family'},
+    {time:'10:00',title:'Семейство',sub:'Разходка, игра с детето',cat:'family'},
+    {time:'13:00',title:'Обяд',sub:'',cat:'food'},
+    {time:'14:30',title:'Седмичен преглед',sub:'Планиране на идващата седмица',cat:'review'},
+    {time:'16:30',title:'Семейство',sub:'Следобед с жена ти и детето',cat:'family'},
+    {time:'19:30',title:'Вечеря',sub:'',cat:'food'},
+    {time:'21:30',title:'Телефон на зарядно',sub:'',cat:'review'},
+    {time:'22:00',title:'Лягане',sub:'',cat:'sleep'},
+  ]}
+  const train=isTrainDay(d);
+  const items=[
+    {time:'07:15',title:'Събуждане',sub:'Чаша вода, без телефон',cat:'wake'},
+  ];
+  if(train) items.push({time:'07:30',title:'Тренировка вкъщи',sub:'30-40 мин телесно тегло',cat:'train'});
+  items.push({time:train?'08:10':'07:30',title:'Душ + закуска',sub:'Задължително — дори малка',cat:'food'});
+  items.push({time:'09:10',title:'Тръгване за работа',sub:'',cat:'work'});
+  items.push({time:'09:30',title:'Работа',sub:'Свободен момент → снимай контент за Техномаркет',cat:'work'});
+  items.push({time:'13:00',title:'Обяд',sub:'Храна от вкъщи',cat:'food'});
+  items.push({time:'19:30',title:'Прибиране',sub:'',cat:'family'});
+  items.push({time:'19:45',title:'Вечеря + семейство',sub:'Вечерта е тяхна — без изключения',cat:'family'});
+  items.push({time:'21:30',title:'Телефон на зарядно',sub:'От другата страна на стаята',cat:'review'});
+  items.push({time:'21:35',title:'Вечерен преглед 5 мин',sub:'Какво направих? Какво е важно утре?',cat:'review'});
+  items.push({time:'22:00',title:'Лягане',sub:'',cat:'sleep'});
+  return items;
+}
+
+function catCol(c){return{wake:'#8b5cf6',train:'#22c55e',work:'#3b82f6',project:'#f59e0b',family:'#f97316',food:'#555',review:'#ef4444',sleep:'rgba(139,92,246,0.3)'}[c]||'#555'}
+
+function renderDay(d){
+  const dow=d.getDay();
+  const off=isOffDay(d);
+  const isT=d.toDateString()===today.toDateString();
+  document.getElementById('dayTitle').textContent=(isT?'Днес — ':'')+BG_DAYS[dow];
+  document.getElementById('daySub').textContent=d.getDate()+' '+BG_MONTHS[d.getMonth()]+' '+d.getFullYear();
+  const b=document.getElementById('dayBadge');
+  b.textContent=off?'Почивен ден':'Работен ден';
+  b.className='type-badge '+(off?'badge-off':'badge-work');
+  const tl=document.getElementById('timeline');
+  tl.innerHTML=getSchedule(d).map(s=>`
+    <div class="tl-item">
+      <div class="tl-dot" style="background:${catCol(s.cat)}"></div>
+      <div class="tl-time">${s.time}</div>
+      <div class="tl-block cat-${s.cat}">
+        <div class="tl-title">${s.title}</div>
+        ${s.sub?`<div class="tl-sub">${s.sub}</div>`:''}
+      </div>
+    </div>`).join('');
+  renderWeekStrip(d);
+}
+
+function renderWeekStrip(sel){
+  const strip=document.getElementById('weekStrip');
+  const start=new Date(sel);
+  const dow=start.getDay();
+  start.setDate(start.getDate()+(dow===0?-6:1-dow));
+  strip.innerHTML=['Пон','Вт','Ср','Чет','Пет','Съб','Нед'].map((n,i)=>{
+    const dd=new Date(start);dd.setDate(dd.getDate()+i);
+    const isT=dd.toDateString()===today.toDateString();
+    const isSel=dd.toDateString()===sel.toDateString();
+    const off=isOffDay(dd);
+    return`<div class="week-day${isT?' today':''}${isSel&&!isT?' selected':''}" onclick="selectDay(${dd.getTime()})">
+      <div class="wd-name">${n}</div>
+      <div class="wd-num">${dd.getDate()}</div>
+      <div class="wd-dot" style="background:${off?'var(--green)':'var(--blue)'}"></div>
+    </div>`;
+  }).join('');
+}
+
+function selectDay(ts){currentDate=new Date(ts);renderDay(currentDate);}
+function prevDay(){currentDate.setDate(currentDate.getDate()-1);renderDay(currentDate);}
+function nextDay(){currentDate.setDate(currentDate.getDate()+1);renderDay(currentDate);}
+function goToday(){currentDate=new Date(today);renderDay(currentDate);}
+
+// MONTHLY
+const months=[
+  {name:'Юли',goals:[
+    {text:'Спри виното — от днес',cat:'purple'},
+    {text:'Телефонът не влиза в леглото',cat:'purple'},
+    {text:'Ставане 07:15 всеки ден',cat:'purple'},
+    {text:'Закуска всяка сутрин',cat:'green'},
+    {text:'3 тренировки седмично вкъщи',cat:'green'},
+    {text:'Първи 4 видеа за aia.creative',cat:'amber'},
+    {text:'Създай профили Техномаркет (IG + TikTok)',cat:'blue'},
+    {text:'Поръчай първа пратка часовници',cat:'coral'},
+    {text:'Настрой автоматично DCA за крипто',cat:'text2'},
+  ]},
+  {name:'Август',goals:[
+    {text:'Ставане 06:30 (преход от 07:15)',cat:'purple'},
+    {text:'Изпрати 20 DM-а за aia.creative',cat:'amber'},
+    {text:'2 видеа/седмица за Техномаркет',cat:'blue'},
+    {text:'Първи 2-3 часовника продадени',cat:'coral'},
+    {text:'Прочети 1 книга (Atomic Habits)',cat:'purple'},
+    {text:'Месечен финансов преглед',cat:'text2'},
+    {text:'Meal prep в неделя за цялата седмица',cat:'green'},
+  ]},
+  {name:'Септември',goals:[
+    {text:'aia.creative — 500 последователи',cat:'amber'},
+    {text:'Техномаркет — ръст в ангажираността',cat:'blue'},
+    {text:'Часовници — 5-10 продажби',cat:'coral'},
+    {text:'Подготви се за ясла от октомври',cat:'green'},
+    {text:'Крипто преглед — ребалансирай',cat:'text2'},
+    {text:'Ставане 06:00',cat:'purple'},
+  ]},
+  {name:'Октомври',goals:[
+    {text:'Детето тръгва на ясла',cat:'green'},
+    {text:'Ставане 05:45 — финална цел',cat:'purple'},
+    {text:'aia.creative — първи платен клиент',cat:'amber'},
+    {text:'Техномаркет — измерим ръст на оборота',cat:'blue'},
+    {text:'Часовници — систематизирай процеса',cat:'coral'},
+  ]},
+  {name:'Ноември',goals:[
+    {text:'aia.creative — recurring клиент',cat:'amber'},
+    {text:'Техномаркет — анализ кое работи',cat:'blue'},
+    {text:'Часовници — 5-10 продажби стабилно',cat:'coral'},
+    {text:'30-дневен дисциплинарен challenge',cat:'purple'},
+    {text:'Крипто — следи CLARITY Act',cat:'text2'},
+  ]},
+  {name:'Декември',goals:[
+    {text:'Годишен преглед на aia.creative',cat:'amber'},
+    {text:'Планирай Q1 2027 content calendar',cat:'amber'},
+    {text:'Крипто — оцени портфолиото',cat:'text2'},
+    {text:'Напиши 3 урока от 2026 и 3 цели за 2027',cat:'purple'},
+    {text:'Отпразнувай с семейството',cat:'coral'},
+  ]},
+];
+
+const catColorMap={purple:'var(--purple)',green:'var(--green)',amber:'var(--amber)',blue:'var(--blue)',coral:'var(--coral)',text2:'var(--text2)'};
+const catNameMap={purple:'Навици / Mindset',green:'Здраве',amber:'aia.creative',blue:'Техномаркет',coral:'Часовници',text2:'Финанси'};
+let selMonth=0;
+
+function renderMonthly(){
+  const scroll=document.getElementById('monthScroll');
+  scroll.innerHTML=months.map((m,i)=>`<div class="month-chip ${i===selMonth?'active':''}" onclick="selM(${i})">${m.name}</div>`).join('');
+  const m=months[selMonth];
+  let stored={};
+  try{stored=JSON.parse(localStorage.getItem('g_'+selMonth)||'{}')}catch(e){}
+  const done=Object.values(stored).filter(Boolean).length;
+  const total=m.goals.length;
+  document.getElementById('monthContent').innerHTML=`
+    <div class="card">
+      <div style="margin-bottom:12px">
+        <div style="font-size:18px;font-weight:700">${m.name} 2026</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px">${done} от ${total} цели изпълнени</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${total?Math.round(done/total*100):0}%"></div></div>
+      </div>
+      ${m.goals.map((g,i)=>`
+        <div class="goal-item">
+          <div class="goal-check ${stored[i]?'done':''}" onclick="toggleG(${i})"></div>
+          <div>
+            <div class="goal-text ${stored[i]?'done':''}">${g.text}</div>
+            <div class="goal-cat" style="color:${catColorMap[g.cat]}">${catNameMap[g.cat]}</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function selM(i){selMonth=i;renderMonthly();}
+function toggleG(i){
+  let stored={};
+  try{stored=JSON.parse(localStorage.getItem('g_'+selMonth)||'{}')}catch(e){}
+  stored[i]=!stored[i];
+  localStorage.setItem('g_'+selMonth,JSON.stringify(stored));
+  renderMonthly();
+}
+
+function switchView(name,el){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  el.classList.add('active');
+  document.querySelector('.scroll-area').scrollTop=0;
+  if(name==='month') renderMonthly();
+}
+
+// Today badge
+document.getElementById('todayBadge').textContent=BG_DAYS[today.getDay()]+', '+today.getDate()+' '+BG_MONTHS[today.getMonth()];
+
+// Init
+renderDay(currentDate);
+
+// Service Worker
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
