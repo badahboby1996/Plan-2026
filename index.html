@@ -729,8 +729,8 @@ let foodDay = today.getDay() === 0 ? 0 : today.getDay() === 1 ? 1 : today.getDay
 // Actually plan[0]=Нед(0), plan[1]=Пон(1), plan[2]=Вт(2), plan[3]=Ср(3), plan[4]=Чет(4), plan[5]=Пет(5), plan[6]=Съб(6)
 // today.getDay(): 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
 // plan index: Sun→0, Mon→1, Tue→2, Wed→3, Thu→4, Fri→5, Sat→6
-const dayOfWeekToPlان = [0,1,2,3,4,5,6];
-foodDay = dayOfWeekToPlان[today.getDay()];
+const dayOfWeekToPlan = [0,1,2,3,4,5,6];
+foodDay = dayOfWeekToPlan[today.getDay()];
 
 const openRecipes = {};
 const portionState = {};
