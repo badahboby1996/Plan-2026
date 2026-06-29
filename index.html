@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Моят план 2026</title>
+<style>
+  :root {
+    --bg: #0a0a0a; --bg2: #111111; --bg3: #1a1a1a; --bg4: #222222;
+    --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.15);
+    --text: #f0f0f0; --text2: #888; --text3: #555;
+    --purple: #8b5cf6; --purple-dim: rgba(139,92,246,0.15);
+    --green: #22c55e; --green-dim: rgba(34,197,94,0.12);
+    --amber: #f59e0b; --amber-dim: rgba(245,158,11,0.12);
+    --blue: #3b82f6; --blue-dim: rgba(59,130,246,0.12);
+    --coral: #f97316; --coral-dim: rgba(249,115,22,0.12);
+    --red: #ef4444; --red-dim: rgba(239,68,68,0.1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+  .header { padding: 24px 20px 0; max-width: 960px; margin: 0 auto; }
+  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .logo { font-size: 13px; font-weight: 600; letter-spacing: .15em; color: var(--text2); text-transform: uppercase; }
+  .date-badge { font-size: 12px; color: var(--text3); background: var(--bg3); border: 0.5px solid var(--border); padding: 4px 10px; border-radius: 20px; }
+  .tabs { display: flex; gap: 2px; background: var(--bg3); border: 0.5px solid var(--border); border-radius: 10px; padding: 3px; margin-bottom: 24px; max-width: 960px; margin-left: auto; margin-right: auto; }
+  .tab { flex: 1; padding: 8px 4px; font-size: 11px; font-weight: 500; cursor: pointer; border: none; background: none; color: var(--text2); border-radius: 8px; transition: all .2s; text-align: center; }
+  .tab.active { background: var(--bg4); color: var(--text); border: 0.5px solid var(--border2); }
+  .view { display: none; max-width: 960px; margin: 0 auto; padding: 0 20px 40px; }
+  .view.active { display: block; }
+  .card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+  .section-title { font-size: 11px; font-weight: 600; letter-spacing: .1em; color: var(--text3); text-transform: uppercase; margin: 20px 0 10px; }
+  /* DAILY */
+  .day-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .nav-btn { background: var(--bg3); border: 0.5px solid var(--border2); color: var(--text); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+  .nav-btn:hover { background: var(--bg4); }
+  .day-title { font-size: 20px; font-weight: 600; }
+  .day-subtitle { font-size: 13px; color: var(--text2); margin-top: 2px; }
+  .day-type-badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+  .badge-work { background: var(--blue-dim); color: var(--blue); }
+  .badge-off { background: var(--green-dim); color: var(--green); }
+  .timeline { position: relative; padding-left: 16px; }
+  .timeline::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 1px; background: var(--border2); }
+  .timeline-item { position: relative; margin-bottom: 8px; display: flex; gap: 12px; align-items: flex-start; }
+  .timeline-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; position: absolute; left: -20px; }
+  .timeline-time { font-size: 12px; color: var(--text3); min-width: 42px; padding-top: 3px; flex-shrink: 0; }
+  .timeline-block { flex: 1; padding: 8px 12px; border-radius: 8px; border-left: 2px solid transparent; }
+  .timeline-block-title { font-size: 13px; font-weight: 500; }
+  .timeline-block-sub { font-size: 11px; margin-top: 2px; opacity: .7; }
+  .cat-wake { background: rgba(139,92,246,0.08); border-left-color: var(--purple); }
+  .cat-train { background: rgba(34,197,94,0.08); border-left-color: var(--green); }
+  .cat-work { background: rgba(59,130,246,0.08); border-left-color: var(--blue); }
+  .cat-family { background: rgba(249,115,22,0.08); border-left-color: var(--coral); }
+  .cat-project { background: rgba(245,158,11,0.08); border-left-color: var(--amber); }
+  .cat-food { background: rgba(255,255,255,0.04); border-left-color: var(--text3); }
+  .cat-sleep { background: rgba(139,92,246,0.05); border-left-color: rgba(139,92,246,0.4); }
+  .cat-review { background: rgba(239,68,68,0.06); border-left-color: var(--red); }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text2); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+  /* WEEK STRIP */
+  .week-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 20px; }
+  .week-day { background: var(--bg3); border: 0.5px solid var(--border); border-radius: 8px; padding: 8px 4px; text-align: center; cursor: pointer; transition: all .2s; }
+  .week-day:hover { border-color: var(--border2); }
+  .week-day.today { border-color: var(--purple); background: var(--purple-dim); }
+  .week-day.selected { border-color: var(--amber); background: var(--amber-dim); }
+  .week-day-name { font-size: 10px; color: var(--text3); margin-bottom: 4px; }
+  .week-day-num { font-size: 15px; font-weight: 600; }
+  .week-day-type { width: 6px; height: 6px; border-radius: 50%; margin: 4px auto 0; }
+  /* MONTHLY */
+  .month-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .month-tab { padding: 6px 14px; font-size: 12px; background: var(--bg3); border: 0.5px solid var(--border); border-radius: 20px; cursor: pointer; color: var(--text2); transition: all .2s; }
+  .month-tab.active { background: var(--purple-dim); border-color: var(--purple); color: var(--purple); }
+  .goal-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--border); }
+  .goal-item:last-child { border-bottom: none; }
+  .goal-check { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--border2); flex-shrink: 0; margin-top: 1px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; }
+  .goal-check.done { background: var(--green); border-color: var(--green); }
+  .goal-check.done::after { content: '✓'; font-size: 11px; color: #000; font-weight: 700; }
+  .goal-text { font-size: 14px; line-height: 1.4; }
+  .goal-text.done { text-decoration: line-through; color: var(--text3); }
+  .goal-cat { font-size: 10px; margin-top: 2px; font-weight: 500; }
+  /* ANNUAL */
+  .phase-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+  .phase-card { border-radius: 10px; padding: 14px; border: 0.5px solid var(--border); }
+  .phase-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 6px; }
+  .phase-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .phase-desc { font-size: 12px; line-height: 1.5; opacity: .7; }
+  /* HABITS */
+  .habit-tracker-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .habit-row { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
+  .habit-icon-sm { font-size: 20px; flex-shrink: 0; width: 28px; text-align: center; }
+  .habit-info { flex: 1; min-width: 0; }
+  .habit-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .habit-streak { font-size: 11px; color: var(--text3); }
+  .habit-streak span { color: var(--amber); font-weight: 600; }
+  .habit-days { display: flex; gap: 4px; flex-shrink: 0; }
+  .habit-day-dot { width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--text3); cursor: pointer; transition: all .15s; flex-shrink: 0; }
+  .habit-day-dot.done { background: var(--green); border-color: var(--green); color: #000; font-weight: 700; }
+  .habit-day-dot.today-dot { border-color: var(--purple); }
+  .habit-day-dot.past { cursor: default; }
+  .habit-check-today { width: 32px; height: 32px; border-radius: 8px; border: 1.5px solid var(--border2); background: var(--bg3); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all .2s; flex-shrink: 0; }
+  .habit-check-today.done { background: var(--green-dim); border-color: var(--green); }
+  .stop-habits-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
+  .habit-card { border-radius: 8px; padding: 12px; border: 0.5px solid var(--border); }
+  .habit-icon { font-size: 18px; margin-bottom: 6px; }
+  .habit-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .habit-desc { font-size: 11px; color: var(--text2); line-height: 1.4; }
+  .stop { background: var(--red-dim); border-color: rgba(239,68,68,0.2); }
+  /* RULES */
+  .rule { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; line-height: 1.4; }
+  .rule:last-child { border-bottom: none; }
+  .rule-num { font-size: 11px; color: var(--purple); font-weight: 700; min-width: 20px; padding-top: 1px; }
+  /* DASHBOARD */
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+  .stat-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 12px; text-align: center; }
+  .stat-num { font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+  .stat-label { font-size: 10px; color: var(--text3); letter-spacing: .05em; text-transform: uppercase; }
+  .streak-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .streak-item { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 8px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; }
+  .streak-icon { font-size: 16px; }
+  .streak-val { font-size: 18px; font-weight: 700; color: var(--amber); margin-left: auto; }
+  .streak-val.zero { color: var(--text3); }
+  .progress-bar-wrap { background: var(--bg3); border-radius: 4px; height: 6px; overflow: hidden; margin-top: 6px; }
+  .progress-bar { height: 100%; border-radius: 4px; transition: width .4s; }
+  .month-goal-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 8px; }
+  .mgc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .mgc-title { font-size: 14px; font-weight: 600; }
+  .mgc-pct { font-size: 13px; color: var(--green); font-weight: 600; }
+  /* TODAY QUICK CHECK */
+  .today-check-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 16px; }
+  .tqc-item { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 10px 8px; text-align: center; cursor: pointer; transition: all .2s; user-select: none; }
+  .tqc-item.done { background: var(--green-dim); border-color: var(--green); }
+  .tqc-icon { font-size: 20px; margin-bottom: 4px; }
+  .tqc-label { font-size: 10px; color: var(--text2); line-height: 1.3; }
+  .tqc-item.done .tqc-label { color: var(--green); }
+
+  /* ═══ FOOD TAB ═══ */
+  .food-day-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 20px; }
+  .food-day-btn { background: var(--bg3); border: 0.5px solid var(--border); border-radius: 8px; padding: 8px 4px; text-align: center; cursor: pointer; transition: all .2s; }
+  .food-day-btn:hover { border-color: var(--border2); }
+  .food-day-btn.active { border-color: var(--coral); background: var(--coral-dim); color: var(--coral); }
+  .food-day-name { font-size: 11px; font-weight: 500; }
+  .food-day-off { font-size: 9px; color: var(--text3); margin-top: 2px; }
+  .meal-card-dark { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; margin-bottom: 8px; overflow: hidden; cursor: pointer; transition: border-color .2s; }
+  .meal-card-dark:hover { border-color: var(--border2); }
+  .meal-card-dark.snack { background: rgba(245,158,11,0.04); }
+  .meal-card-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; }
+  .meal-icon-lg { font-size: 20px; flex-shrink: 0; }
+  .meal-type-label { font-size: 10px; color: var(--text3); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 2px; }
+  .meal-name-dark { font-size: 14px; font-weight: 600; }
+  .meal-desc-dark { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .meal-tag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin-top: 5px; display: inline-block; }
+  .tag-butcher { background: var(--coral-dim); color: var(--coral); }
+  .tag-quick { background: var(--green-dim); color: var(--green); }
+  .tag-work { background: var(--blue-dim); color: var(--blue); }
+  .tag-season { background: rgba(34,197,94,0.08); color: #6ee7b7; }
+  .meal-expand-icon { margin-left: auto; font-size: 12px; color: var(--text3); flex-shrink: 0; transition: transform .2s; }
+  .meal-card-dark.open .meal-expand-icon { transform: rotate(180deg); }
+  .meal-recipe { display: none; padding: 0 14px 14px; border-top: 0.5px solid var(--border); }
+  .meal-card-dark.open .meal-recipe { display: block; }
+  .recipe-section { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text3); margin: 12px 0 8px; }
+  .appliance-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .appliance-badge { font-size: 11px; padding: 3px 8px; background: var(--bg3); border: 0.5px solid var(--border2); border-radius: 20px; color: var(--text2); }
+  .appliance-badge.rec { background: var(--purple-dim); border-color: var(--purple); color: var(--purple); }
+  .portions-toggle { display: flex; align-items: center; gap: 0; margin-bottom: 12px; }
+  .portions-toggle span { font-size: 11px; color: var(--text3); margin-right: 8px; text-transform: uppercase; letter-spacing: .06em; }
+  .ptbtn { padding: 4px 12px; font-size: 11px; font-weight: 600; background: var(--bg3); border: 0.5px solid var(--border2); color: var(--text2); cursor: pointer; transition: all .15s; }
+  .ptbtn:first-of-type { border-radius: 6px 0 0 6px; }
+  .ptbtn:last-of-type { border-radius: 0 6px 6px 0; margin-left: -1px; }
+  .ptbtn.active { background: var(--purple-dim); color: var(--purple); border-color: var(--purple); }
+  .ingredient-row { display: flex; justify-content: space-between; align-items: baseline; padding: 5px 0; border-bottom: 0.5px solid var(--border); font-size: 12px; }
+  .ingredient-row:last-child { border-bottom: none; }
+  .ing-amount-dark { font-weight: 600; color: var(--coral); }
+  .step-row { display: flex; gap: 10px; padding: 6px 0; border-bottom: 0.5px solid var(--border); font-size: 12px; line-height: 1.5; }
+  .step-row:last-child { border-bottom: none; }
+  .step-num-dark { width: 18px; height: 18px; background: var(--bg4); border: 0.5px solid var(--border2); color: var(--text2); border-radius: 50%; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .prep-note-dark { margin-top: 10px; padding: 10px 12px; background: var(--green-dim); border-radius: 8px; border-left: 2px solid var(--green); font-size: 12px; line-height: 1.5; color: #6ee7b7; }
+  /* SHOPPING LIST */
+  .shop-toggle-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: var(--bg2); border: 0.5px solid var(--border2); border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text); margin-top: 4px; transition: all .2s; }
+  .shop-toggle-btn:hover { border-color: var(--coral); color: var(--coral); }
+  .shop-list { display: none; margin-top: 12px; }
+  .shop-list.open { display: block; }
+  .shop-trip-header { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--amber); padding: 8px 0 6px; margin-top: 16px; border-bottom: 0.5px solid var(--border); }
+  .shop-trip-header:first-child { margin-top: 0; }
+  .shop-category { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: .08em; text-transform: uppercase; margin: 10px 0 6px; }
+  .shop-item { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 0.5px solid var(--border); cursor: pointer; user-select: none; }
+  .shop-item:last-child { border-bottom: none; }
+  .shop-checkbox { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--border2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+  .shop-checkbox.checked { background: var(--green); border-color: var(--green); }
+  .shop-checkbox.checked::after { content: '✓'; font-size: 10px; color: #000; font-weight: 700; }
+  .shop-item-text { font-size: 13px; line-height: 1.4; }
+  .shop-item.checked-item .shop-item-text { text-decoration: line-through; color: var(--text3); }
+  .shop-clear-btn { font-size: 11px; color: var(--text3); background: none; border: none; cursor: pointer; margin-top: 16px; display: block; }
+  .shop-clear-btn:hover { color: var(--red); }
+
+  @media (max-width: 600px) {
+    .phase-grid { grid-template-columns: 1fr; }
+    .stat-grid { grid-template-columns: repeat(3, 1fr); }
+    .streak-list { grid-template-columns: 1fr; }
+    .today-check-grid { grid-template-columns: repeat(4, 1fr); }
+    .stop-habits-grid { grid-template-columns: 1fr; }
+    .habit-days { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-top">
+    <div class="logo">Моят план 2026</div>
+    <div class="date-badge" id="todayBadge"></div>
+  </div>
+</div>
+<div style="max-width:960px;margin:0 auto;padding:0 20px 12px;">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('dashboard',this)">Дашборд</button>
+    <button class="tab" onclick="switchTab('daily',this)">Ден</button>
+    <button class="tab" onclick="switchTab('monthly',this)">Месец</button>
+    <button class="tab" onclick="switchTab('habits',this)">Навици</button>
+    <button class="tab" onclick="switchTab('food',this)">Храна</button>
+    <button class="tab" onclick="switchTab('annual',this)">Година</button>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="dashboard" class="view active">
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-num" id="ds-days" style="color:var(--purple)">0</div>
+      <div class="stat-label">Дни в програмата</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="ds-habits-today" style="color:var(--green)">0/8</div>
+      <div class="stat-label">Навици днес</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="ds-goals-pct" style="color:var(--amber)">0%</div>
+      <div class="stat-label">Цели този месец</div>
+    </div>
+  </div>
+  <div class="section-title">Днешен чекин</div>
+  <div class="today-check-grid" id="dashTodayCheck"></div>
+  <div class="section-title">Серии</div>
+  <div class="streak-list" id="dashStreaks"></div>
+  <div class="section-title">Цели — <span id="dashMonthName"></span></div>
+  <div class="month-goal-card">
+    <div class="mgc-header">
+      <div class="mgc-title" id="dashGoalTitle"></div>
+      <div class="mgc-pct" id="dashGoalPct"></div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="dashGoalBar" style="background:var(--green);width:0%"></div>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-top:8px" id="dashGoalSub"></div>
+  </div>
+</div>
+
+<!-- ===== DAILY ===== -->
+<div id="daily" class="view">
+  <div class="week-strip" id="weekStrip"></div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>Събуждане</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Тренировка</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Работа</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Проекти</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--coral)"></div>Семейство</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Преглед</div>
+  </div>
+  <div class="card">
+    <div class="day-header">
+      <div>
+        <div class="day-title" id="dayTitle"></div>
+        <div class="day-subtitle" id="daySubtitle"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <div class="day-type-badge" id="dayBadge"></div>
+        <div style="display:flex;gap:6px">
+          <button class="nav-btn" onclick="prevDay()">←</button>
+          <button class="nav-btn" onclick="nextDay()">→</button>
+        </div>
+      </div>
+    </div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+</div>
+
+<!-- ===== MONTHLY ===== -->
+<div id="monthly" class="view">
+  <div class="month-tabs" id="monthTabs"></div>
+  <div id="monthContent"></div>
+</div>
+
+<!-- ===== HABITS ===== -->
+<div id="habits" class="view">
+  <div class="section-title">Чекин за днес — <span id="habitsDateLabel"></span></div>
+  <div class="habit-tracker-grid" id="habitTrackerGrid"></div>
+  <div class="section-title">Спираш</div>
+  <div class="stop-habits-grid">
+    <div class="habit-card stop"><div class="habit-icon">🍷</div><div class="habit-title">Вино всяка вечер</div><div class="habit-desc">Унищожава REM съня, краде енергията за следващия ден</div></div>
+    <div class="habit-card stop"><div class="habit-icon">📱</div><div class="habit-title">Телефон преди сън</div><div class="habit-desc">Блокира мелатонина, мозъкът не може да се изключи</div></div>
+    <div class="habit-card stop"><div class="habit-icon">🍔</div><div class="habit-title">Бърза храна всеки ден</div><div class="habit-desc">Енергийни сривове, умора, липса на фокус</div></div>
+    <div class="habit-card stop"><div class="habit-icon">😴</div><div class="habit-title">Ставане в 08:30</div><div class="habit-desc">Нулево лично време преди работа, реактивен живот</div></div>
+  </div>
+</div>
+
+<!-- ===== FOOD ===== -->
+<div id="food" class="view">
+  <div style="font-size:12px;color:var(--text2);margin-bottom:14px">Седмично меню — повтаряй всяка седмица 🌿 Сезонно Юни/Юли</div>
+  <div class="food-day-strip" id="foodDayStrip"></div>
+  <div id="foodMeals"></div>
+  <button class="shop-toggle-btn" onclick="toggleShopList()">🛒 Списък за пазаруване <span id="shopToggleIcon">▾</span></button>
+  <div class="shop-list card" id="shopList"></div>
+</div>
+
+<!-- ===== ANNUAL ===== -->
+<div id="annual" class="view">
+  <div class="section-title">Четири фази до декември</div>
+  <div class="phase-grid">
+    <div class="phase-card" style="background:var(--purple-dim);border-color:rgba(139,92,246,0.25)">
+      <div class="phase-label" style="color:var(--purple)">Юли – Август</div>
+      <div class="phase-title">Основи</div>
+      <div class="phase-desc">Спираш виното. Изграждаш сутрешната рутина. Първи видеа за трите проекта. Ставаш постепенно по-рано.</div>
+    </div>
+    <div class="phase-card" style="background:var(--amber-dim);border-color:rgba(245,158,11,0.25)">
+      <div class="phase-label" style="color:var(--amber)">Септември</div>
+      <div class="phase-title">Изграждане</div>
+      <div class="phase-desc">Детето тръгва на ясла от октомври — подготвяш системата. Първи резултати от контента. Навиците вече са стабилни.</div>
+    </div>
+    <div class="phase-card" style="background:var(--green-dim);border-color:rgba(34,197,94,0.25)">
+      <div class="phase-label" style="color:var(--green)">Октомври – Ноември</div>
+      <div class="phase-title">Ускоряване</div>
+      <div class="phase-desc">Понеделник става пълен работен ден. Ставаш в 05:45. Първи клиенти за aia.creative. Часовниците — първи продажби.</div>
+    </div>
+    <div class="phase-card" style="background:var(--blue-dim);border-color:rgba(59,130,246,0.25)">
+      <div class="phase-label" style="color:var(--blue)">Декември</div>
+      <div class="phase-title">Консолидация</div>
+      <div class="phase-desc">Преглед на годината. Крипто портфолио оценка. Планиране на 2027. Отпразнуваш с семейството.</div>
+    </div>
+  </div>
+  <div class="section-title">Цели до края на 2026</div>
+  <div class="card">
+    <div class="goal-item"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:6px"></div><div><div class="goal-text">aia.creative — 5 000 последователи и първи платени клиенти</div></div></div>
+    <div class="goal-item"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:6px"></div><div><div class="goal-text">Техномаркет — активен Instagram и TikTok, повишен оборот</div></div></div>
+    <div class="goal-item"><div style="width:8px;height:8px;border-radius:50%;background:var(--coral);flex-shrink:0;margin-top:6px"></div><div><div class="goal-text">Часовници — 5-10 продажби на месец до края на годината</div></div></div>
+    <div class="goal-item"><div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:6px"></div><div><div class="goal-text">Тяло — 3 тренировки седмично без прекъсване</div></div></div>
+    <div class="goal-item"><div style="width:8px;height:8px;border-radius:50%;background:var(--purple);flex-shrink:0;margin-top:6px"></div><div><div class="goal-text">Рутина — ставане 05:45, без вино, без телефон преди сън</div></div></div>
+    <div class="goal-item"><div style="width:8px;height:8px;border-radius:50%;background:var(--text2);flex-shrink:0;margin-top:6px"></div><div><div class="goal-text">Крипто — месечен DCA, портфолио преглед всеки месец</div></div></div>
+  </div>
+  <div class="section-title">Правила</div>
+  <div class="card">
+    <div class="rule"><div class="rule-num">01</div><div>Вечерта е за семейството — без изключения. Проектите чакат до сутринта.</div></div>
+    <div class="rule"><div class="rule-num">02</div><div>Ако пропуснеш ден — не компенсираш. Просто продължаваш от следващия.</div></div>
+    <div class="rule"><div class="rule-num">03</div><div>Телефонът не влиза в леглото. Сложи го от другата страна на стаята.</div></div>
+    <div class="rule"><div class="rule-num">04</div><div>Не оценяваш резултатите всяка седмица. Оценяваш дали си следвал системата.</div></div>
+    <div class="rule"><div class="rule-num">05</div><div>Виното е спряно. Не "намалено" — спряно.</div></div>
+  </div>
+</div>
+
+<script>
+// ─── CONSTANTS ────────────────────────────────────────────────────────────────
+const BG_DAYS = ['Неделя','Понеделник','Вторник','Сряда','Четвъртък','Петък','Събота'];
+const BG_MONTHS = ['януари','февруари','март','април','май','юни','юли','август','септември','октомври','ноември','декември'];
+const PROGRAM_START = new Date('2026-07-01');
+const today = new Date();
+let currentDate = new Date(today);
+
+// ─── HABITS ───────────────────────────────────────────────────────────────────
+const HABITS = [
+  {id:'wake',     icon:'⏰', label:'Ставане рано',         desc:'07:15 → 05:45'},
+  {id:'train',    icon:'💪', label:'Тренировка',            desc:'30-40 мин, Пон/Ср/Пет'},
+  {id:'wine',     icon:'🚫', label:'Без вино',              desc:'Спряно — не намалено'},
+  {id:'phone',    icon:'📵', label:'Без телефон пр. сън',  desc:'Сложи го от другата страна'},
+  {id:'breakfast',icon:'🥗', label:'Закуска',               desc:'Задължителна всяка сутрин'},
+  {id:'water',    icon:'💧', label:'Вода преди кафе',       desc:'Веднага след ставане'},
+  {id:'review',   icon:'📋', label:'Вечерен преглед',       desc:'5 мин — какво, какво утре'},
+  {id:'sleep',    icon:'🌙', label:'Лягане 22:00',          desc:'Тримата заедно'},
+];
+
+function dateKey(d) {
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function getHabitsLog() { return JSON.parse(localStorage.getItem('habits_log')||'{}'); }
+function saveHabitsLog(l) { localStorage.setItem('habits_log',JSON.stringify(l)); }
+function toggleHabit(id, key) {
+  const l=getHabitsLog(); if(!l[key])l[key]={};
+  l[key][id]=!l[key][id]; saveHabitsLog(l);
+}
+function getStreak(id) {
+  const l=getHabitsLog(); let s=0;
+  const d=new Date(today);
+  if(!(l[dateKey(d)]&&l[dateKey(d)][id])) d.setDate(d.getDate()-1);
+  while(true){const k=dateKey(d);if(l[k]&&l[k][id]){s++;d.setDate(d.getDate()-1);}else break;if(s>365)break;}
+  return s;
+}
+
+// ─── SCHEDULE ─────────────────────────────────────────────────────────────────
+function isOffDay(d){const w=d.getDay();return w===0||w===1;}
+function isTrainingDay(d){const w=d.getDay();return w===1||w===3||w===5;}
+function catColor(c){return{wake:'#8b5cf6',train:'#22c55e',work:'#3b82f6',project:'#f59e0b',family:'#f97316',food:'#555',review:'#ef4444',sleep:'rgba(139,92,246,0.4)'}[c]||'#555';}
+function getSchedule(d) {
+  const w=d.getDay(),tr=isTrainingDay(d);
+  if(w===1)return[
+    {time:'05:45',title:'Събуждане',sub:'Чаша вода, без телефон',cat:'wake'},
+    {time:'06:00',title:'Работа по проекти',sub:'aia.creative / часовници / Техномаркет',cat:'project'},
+    {time:'07:45',title:'Тренировка вкъщи',sub:'30-40 мин, телесно тегло',cat:'train'},
+    {time:'08:30',title:'Душ + закуска',sub:'Заедно с жена ти и детето',cat:'family'},
+    {time:'10:00',title:'Разходка с детето',sub:'Свеж въздух, игра, семейство',cat:'family'},
+    {time:'13:00',title:'Обяд заедно',sub:'',cat:'food'},
+    {time:'14:00',title:'Работа по проекти',sub:'Детето спи — дълбока работа',cat:'project'},
+    {time:'16:00',title:'Семейство',sub:'Детето се е събудило',cat:'family'},
+    {time:'19:30',title:'Вечеря',sub:'Готвите заедно',cat:'food'},
+    {time:'21:30',title:'Телефон на зарядно',sub:'От другата страна на стаята',cat:'review'},
+    {time:'22:00',title:'Лягане',sub:'Тримата заедно',cat:'sleep'},
+  ];
+  if(w===0)return[
+    {time:'07:00',title:'Бавна сутрин',sub:'Без будилник, семейна закуска',cat:'family'},
+    {time:'10:00',title:'Семейство',sub:'Разходка, игра с детето',cat:'family'},
+    {time:'13:00',title:'Обяд',sub:'',cat:'food'},
+    {time:'14:30',title:'Седмичен преглед',sub:'1-2 часа — планиране на идващата седмица',cat:'review'},
+    {time:'16:30',title:'Семейство',sub:'',cat:'family'},
+    {time:'19:30',title:'Вечеря',sub:'',cat:'food'},
+    {time:'21:30',title:'Телефон на зарядно',sub:'',cat:'review'},
+    {time:'22:00',title:'Лягане',sub:'',cat:'sleep'},
+  ];
+  return[
+    {time:'07:15',title:'Събуждане',sub:'Чаша вода, без телефон',cat:'wake'},
+    tr?{time:'07:30',title:'Тренировка вкъщи',sub:'30-40 мин преди работа',cat:'train'}:null,
+    {time:tr?'08:10':'07:30',title:'Душ + закуска',sub:'Бързо но задължително',cat:'food'},
+    {time:'09:10',title:'Тръгване за работа',sub:'',cat:'work'},
+    {time:'09:30',title:'Работа — Техномаркет',sub:'Снимай контент при свободен момент',cat:'work'},
+    {time:'13:00',title:'Обяд',sub:'Храна от вкъщи — не бургер кинг',cat:'food'},
+    {time:'19:30',title:'Прибиране',sub:'',cat:'family'},
+    {time:'19:45',title:'Вечеря + семейство',sub:'Вечерта е тяхна',cat:'family'},
+    {time:'21:30',title:'Телефон на зарядно',sub:'От другата страна на стаята',cat:'review'},
+    {time:'21:35',title:'Вечерен преглед 5 мин',sub:'Какво направих? Какво е важно утре?',cat:'review'},
+    {time:'22:00',title:'Лягане',sub:'',cat:'sleep'},
+  ].filter(Boolean);
+}
+
+// ─── MONTHLY DATA ─────────────────────────────────────────────────────────────
+const catColorMap={purple:'var(--purple)',green:'var(--green)',amber:'var(--amber)',blue:'var(--blue)',coral:'var(--coral)',text:'var(--text2)'};
+const catLabelMap={purple:'Навици/Mindset',green:'Здраве',amber:'aia.creative',blue:'Техномаркет',coral:'Часовници',text:'Финанси'};
+const months=[
+  {name:'Юли',id:0,theme:'Детокс и основи',goals:[
+    {text:'Спри виното — от днес',cat:'purple'},{text:'Телефонът не влиза в леглото',cat:'purple'},
+    {text:'Ставане 07:15 всеки ден',cat:'purple'},{text:'Закуска всяка сутрин',cat:'green'},
+    {text:'3 тренировки седмично вкъщи',cat:'green'},{text:'Първи 4 видеа за aia.creative',cat:'amber'},
+    {text:'Създай профили за Техномаркет (IG + TikTok)',cat:'blue'},{text:'Поръчай първа пратка часовници',cat:'coral'},
+    {text:'Настрой автоматично DCA за крипто',cat:'text'},
+  ]},
+  {name:'Август',id:1,theme:'Изграждане на системата',goals:[
+    {text:'Ставане 06:30 (преход от 07:15)',cat:'purple'},{text:'Изпрати 20 DM-а за aia.creative колаборации',cat:'amber'},
+    {text:'Публикувай 2 видеа/седмица за Техномаркет',cat:'blue'},{text:'Първи 2-3 часовника продадени',cat:'coral'},
+    {text:'Прочети 1 книга (Atomic Habits)',cat:'purple'},{text:'Месечен финансов преглед',cat:'text'},
+    {text:'Meal prep в неделя за цялата седмица',cat:'green'},
+  ]},
+  {name:'Септември',id:2,theme:'Първи резултати',goals:[
+    {text:'aia.creative — достигни 500 последователи',cat:'amber'},{text:'Техномаркет — виден ръст в ангажираността',cat:'blue'},
+    {text:'Часовници — 5-10 продажби',cat:'coral'},{text:'Подготви се за ясла от октомври',cat:'green'},
+    {text:'Крипто преглед — ребалансирай ако е нужно',cat:'text'},{text:'Ставане 06:00',cat:'purple'},
+  ]},
+  {name:'Октомври',id:3,theme:'Ускоряване',goals:[
+    {text:'Детето тръгва на ясла — понеделник е твой ден',cat:'green'},{text:'Ставане 05:45 — достигна си финалната цел',cat:'purple'},
+    {text:'aia.creative — първи платен клиент',cat:'amber'},{text:'Техномаркет — измерим ръст на оборота',cat:'blue'},
+    {text:'Часовници — систематизирай процеса',cat:'coral'},{text:'4 тренировки/седмица',cat:'green'},
+  ]},
+  {name:'Ноември',id:4,theme:'Ускоряване',goals:[
+    {text:'aia.creative — recurring клиент или retainer',cat:'amber'},{text:'Техномаркет — анализ кое работи',cat:'blue'},
+    {text:'Часовници — 5-10 продажби стабилно',cat:'coral'},{text:'30-дневен дисциплинарен challenge',cat:'purple'},
+    {text:'Крипто — следи CLARITY Act',cat:'text'},
+  ]},
+  {name:'Декември',id:5,theme:'Консолидация и план 2027',goals:[
+    {text:'Годишен преглед на aia.creative',cat:'amber'},{text:'Планирай Q1 2027 content calendar',cat:'amber'},
+    {text:'Крипто — оцени портфолиото',cat:'text'},{text:'Напиши 3 урока от 2026 и 3 цели за 2027',cat:'purple'},
+    {text:'Отпразнувай с семейството',cat:'coral'},
+  ]},
+];
+function currentMonthIdx(){return Math.max(0,Math.min(5,today.getMonth()-6));}
+
+// ─── FOOD DATA ────────────────────────────────────────────────────────────────
+const tagMap={butcher:{label:'🥩 Месарница',cls:'tag-butcher'},quick:{label:'⚡ До 30 мин',cls:'tag-quick'},work:{label:'📦 За работа',cls:'tag-work'},season:{label:'🌿 Сезонно',cls:'tag-season'}};
+
+const recipes = {
+  "нед-закуска":{type:"Закуска",icon:"☀️",name:"Яйца с бекон + домат",desc:"Богата неделна закуска без бързане.",appliances:["Котлон","Тиган"],
+    ingredients:[{name:"Яйца",a1:"2 бр",a2:"4 бр"},{name:"Бекон / кренвирш",a1:"2–3 резена",a2:"4–6 резена"},{name:"Домат",a1:"1 бр",a2:"2 бр"},{name:"Масло",a1:"1 ч.л.",a2:"2 ч.л."},{name:"Сол, пипер",a1:"на вкус",a2:"на вкус"}],
+    steps:["Загрей тиган на среден огън и добави маслото.","Запържи бекона от двете страни по ~2 мин до хрупкавост. Извади.","В същия тиган счупи яйцата. Пържи 2–3 мин за полутечен жълтък.","Нарежи домата на резени, поръси с малко сол и зехтин.","Сервирай яйцата с бекона и домата."],
+    prepNote:null,snack:false,tag:null},
+  "нед-обяд":{type:"Обяд — вкъщи",icon:"🏠",name:"Мусака с картофи и кайма",desc:"Класика — готви се само веднъж, яде се два пъти.",appliances:["Фурна ⭐","Котлон","Мултикукър"],
+    ingredients:[{name:"Картофи",a1:"400г",a2:"700г"},{name:"Смесена кайма",a1:"300г",a2:"500г"},{name:"Лук",a1:"1 бр",a2:"2 бр"},{name:"Консервирани домати",a1:"200г",a2:"400г"},{name:"Яйца (за заливка)",a1:"2 бр",a2:"3 бр"},{name:"Кисело мляко (за заливка)",a1:"150г",a2:"250г"},{name:"Зехтин",a1:"2 с.л.",a2:"3 с.л."},{name:"Сол, пипер, червен пипер",a1:"на вкус",a2:"на вкус"}],
+    steps:["Загрей фурната на 180°C.","Нарежи картофите на тънки кръгове (~5мм). Поднарежи лука.","Запържи лука в тиган с малко зехтин 2–3 мин. Добави каймата и разбъркай докато побелее. Добави доматите, сол, пипер. Гответе 5 мин.","В намаслена тава наредей пласт картофи, след това пласт кайма. Повтори. Завърши с картофи.","Разбий яйцата с кисело мляко, поръси с малко сол и изсипи отгоре.","Пека на 180°C за 45–50 мин до златисто."],
+    prepNote:"🍱 <strong>Двойна порция:</strong> Направи по-голяма тава. Половината е обядът за утре (Понеделник) — само я загрей.",snack:false,tag:null},
+  "нед-следобед":{type:"Следобедна закуска — ~16:00",icon:"🍑",name:"Праскова + шепа ядки",desc:"Нулева подготовка. Засища до вечерята.",appliances:[],
+    ingredients:[{name:"Прясна праскова",a1:"1–2 бр",a2:"2–3 бр"},{name:"Бадеми или орехи",a1:"20г (шепа)",a2:"40г"}],
+    steps:["Измий прасковата. Нарежи на резени или яж направо.","Сервирай с ядките. Готово."],
+    prepNote:null,snack:true,tag:"season"},
+  "нед-вечеря":{type:"Вечеря",icon:"🌙",name:"Омлет с домат и сирене",desc:"Лека вечеря преди работната седмица.",appliances:["Котлон ⭐","Тиган"],
+    ingredients:[{name:"Яйца",a1:"3 бр",a2:"4 бр"},{name:"Домат",a1:"½ бр",a2:"1 бр"},{name:"Сирене",a1:"30г",a2:"50г"},{name:"Масло",a1:"1 ч.л.",a2:"1 ч.л."},{name:"Сол, пипер",a1:"на вкус",a2:"на вкус"}],
+    steps:["Разбий яйцата в купа с щипка сол и пипер. Разбъркай добре с вилица.","Загрей тиган на среден огън, добави маслото.","Изсипи яйцата. Не разбърквай — изчакай краищата да се стегнат (~1 мин).","Нарежи домата и поставей с накъсаното сирене върху половината омлет.","Сгъни другата половина отгоре. Дръж още 30 сек и сервирай."],
+    prepNote:null,snack:false,tag:"quick"},
+  "пон-закуска":{type:"Закуска",icon:"☀️",name:"Овесена каша с мед и череши",desc:"Лятна и бавна сутрин.",appliances:["Котлон ⭐","Микровълнова"],
+    ingredients:[{name:"Овесени ядки",a1:"50г",a2:"100г"},{name:"Вода или мляко",a1:"150мл",a2:"300мл"},{name:"Мед",a1:"1 ч.л.",a2:"2 ч.л."},{name:"Пресни череши",a1:"80г (шепа)",a2:"150г"}],
+    steps:["Изсипи овесените ядки и течността в тенджерка.","Вари на среден огън като разбъркваш ~4–5 мин до кремообразна консистенция.","Свали от огъня. Изсипи в купа.","Полей с мед и добави измитите череши отгоре."],
+    prepNote:null,snack:false,tag:"season"},
+  "пон-обяд":{type:"Обяд — вкъщи",icon:"🏠",name:"Остатъци от мусака + салата",desc:"Загряваш мусаката, правиш бърза салата.",appliances:["Фурна ⭐","Микровълнова","Air Fryer"],
+    ingredients:[{name:"Мусака (от вчера)",a1:"1 порция",a2:"—"},{name:"Домат",a1:"1 бр",a2:"—"},{name:"Краставица",a1:"½ бр",a2:"—"},{name:"Зехтин, сол",a1:"на вкус",a2:"—"}],
+    steps:["Загрей мусаката: Фурна 160°C за 10 мин, или микровълнова 2 мин.","Нарежи домата и краставицата на кубчета. Поръси с малко зехтин и сол.","Сервирай заедно."],
+    prepNote:null,snack:false,tag:null},
+  "пон-следобед":{type:"Следобедна закуска — ~16:00",icon:"🫐",name:"Плодова купа — боровинки и череши",desc:"Понеделник = малко по-специално.",appliances:[],
+    ingredients:[{name:"Боровинки",a1:"60г",a2:"120г"},{name:"Череши",a1:"60г",a2:"100г"},{name:"Мед (по желание)",a1:"½ ч.л.",a2:"1 ч.л."}],
+    steps:["Измий плодовете.","Смеси в купа и полей с капка мед ако искаш."],
+    prepNote:null,snack:true,tag:"season"},
+  "пон-вечеря":{type:"Вечеря + PREP за Вт",icon:"🌙",name:"Пилешки гърди с тиквички и ориз",desc:"Двойна порция — едната е вечерята, другата е обядът за работа утре.",appliances:["Котлон ⭐","Air Fryer","Фурна"],
+    ingredients:[{name:"Пилешки гърди",a1:"200г (1 гръд)",a2:"400г (2 гърди)"},{name:"Тиквичка",a1:"1 бр",a2:"2 бр"},{name:"Чушка",a1:"1 бр",a2:"2 бр"},{name:"Ориз",a1:"70г (сух)",a2:"140г (сух)"},{name:"Зехтин",a1:"1 с.л.",a2:"2 с.л."},{name:"Чесън",a1:"1 скилидка",a2:"2 скилидки"},{name:"Сол, пипер, паприка",a1:"на вкус",a2:"на вкус"}],
+    steps:["<strong>Ориза:</strong> 1 ч. ориз : 2 ч. вода, 15–18 мин на тих огън с капак.","<strong>Пилето:</strong> Нарежи гърдите на ивици. Поръси с сол, пипер и паприка.","Загрей тиган с 1 с.л. зехтин. Запържи пилето ~4–5 мин до златисто. Извади.","В същия тиган добави тиквичките и чушките. Запържи 3–4 мин. Добави чесъна за последната минута.","Върни пилето в тигана, разбъркай, дръж още 1–2 мин.","<strong>Air Fryer вариант:</strong> Пилешките ивици 185°C за 12 мин — по-хрупкаво."],
+    prepNote:"🍱 <strong>Prep за утре:</strong> Запази половината пиле + ориз + зеленчуци в кутия за обяд на работа. Загряваш в микровълнова.",snack:false,tag:"quick"},
+  "вт-закуска":{type:"Закуска",icon:"☀️",name:"Яйца по панагюрски + тост",desc:"Бързо и засищащо преди работа.",appliances:["Котлон ⭐"],
+    ingredients:[{name:"Яйца",a1:"2 бр",a2:"4 бр"},{name:"Кисело мляко",a1:"100г",a2:"150г"},{name:"Масло",a1:"1 ч.л.",a2:"2 ч.л."},{name:"Тостов хляб",a1:"2 филийки",a2:"3 филийки"},{name:"Сол, червен пипер",a1:"на вкус",a2:"на вкус"}],
+    steps:["Загрей кисело млякото леко в малка тенджерка на тих огън — само да се затопли.","В отделен тиган загрей вода с малко оцет до тих кипеж. Пошира яйцата 3 мин.","Изсипи топлото кисело мляко в купа. Постави яйцата отгоре.","Запечи тоста. Разтопи маслото с малко червен пипер и полей яйцата."],
+    prepNote:null,snack:false,tag:null},
+  "вт-обяд":{type:"Обяд — за работа",icon:"🏢",name:"Пиле с ориз (от вчера)",desc:"Вчерашното в кутия. Нулево утринно готвене.",appliances:[],
+    ingredients:[{name:"Пиле с ориз и зеленчуци",a1:"1 кутия",a2:"—"}],
+    steps:["Вземи кутията от хладилника.","Загрей в микровълнова ако имаш, или яж студено."],
+    prepNote:null,snack:false,tag:"work"},
+  "вт-следобед":{type:"Следобедна закуска — ~16:00",icon:"🍉",name:"Диня — голяма порция",desc:"Хидратираща след работен ден.",appliances:[],
+    ingredients:[{name:"Диня",a1:"300–400г",a2:"600–700г"}],
+    steps:["Нарежи дината вкъщи вечерта и сложи в кутия.","Яж на работа директно."],
+    prepNote:null,snack:true,tag:"season"},
+  "вт-вечеря":{type:"Вечеря + PREP за Ср",icon:"🌙",name:"Паста болонезе с кайма",desc:"Двойна порция — половината е вечерята, другата е обядът за утре.",appliances:["Котлон ⭐"],
+    ingredients:[{name:"Паста (пене или спагети)",a1:"100г",a2:"200г"},{name:"Смесена кайма",a1:"200г",a2:"400г"},{name:"Консервирани домати",a1:"200г",a2:"400г"},{name:"Лук",a1:"½ бр",a2:"1 бр"},{name:"Чесън",a1:"1 скилидка",a2:"2 скилидки"},{name:"Зехтин",a1:"1 с.л.",a2:"2 с.л."},{name:"Сол, пипер, риган",a1:"на вкус",a2:"на вкус"}],
+    steps:["Свари пастата в осолена вода. Отцеди.","В тиган загрей зехтина. Запържи лука 2–3 мин.","Добави каймата. Разбъркай и пържи докато побелее ~5 мин.","Добави доматите, чесъна, сол, пипер, риган. Вари на тих огън 10 мин.","Смеси соса с пастата или сервирай отделно."],
+    prepNote:"🍱 <strong>Prep за утре:</strong> Отдели половин порция в кутия веднага — болонезето е по-вкусно на следващия ден.",snack:false,tag:null},
+  "ср-закуска":{type:"Закуска",icon:"☀️",name:"Бъркани яйца + домат + тост",desc:"Класика за работна сутрин.",appliances:["Котлон ⭐"],
+    ingredients:[{name:"Яйца",a1:"2 бр",a2:"3 бр"},{name:"Масло",a1:"1 ч.л.",a2:"2 ч.л."},{name:"Домат",a1:"1 бр",a2:"2 бр"},{name:"Тостов хляб",a1:"2 филийки",a2:"3 филийки"},{name:"Сол, пипер",a1:"на вкус",a2:"на вкус"}],
+    steps:["Счупи яйцата в купа, добави сол и пипер, разбий с вилица.","Загрей тиган с масло на тих-среден огън.","Изсипи яйцата. Разбърквай бавно с шпатула ~2 мин. Свали преди да са съвсем готови.","Нарежи домата, поръси с малко зехтин и сол.","Запечи тоста. Сервирай заедно."],
+    prepNote:null,snack:false,tag:null},
+  "ср-обяд":{type:"Обяд — за работа",icon:"🏢",name:"Паста болонезе (от вчера)",desc:"В кутия — нулево готвене.",appliances:[],
+    ingredients:[{name:"Болонезе с паста",a1:"1 кутия",a2:"—"}],
+    steps:["Вземи кутията от хладилника.","Загрей в микровълнова 1.5–2 мин или яж студено."],
+    prepNote:null,snack:false,tag:"work"},
+  "ср-следобед":{type:"Следобедна закуска — ~16:00",icon:"🍒",name:"Череши + кашкавал",desc:"Сладко + солено = перфектна комбинация.",appliances:[],
+    ingredients:[{name:"Пресни череши",a1:"100г (шепа)",a2:"200г"},{name:"Кашкавал",a1:"40г (2–3 резена)",a2:"80г"}],
+    steps:["Измий черешите.","Нарежи кашкавала на резени.","Яж заедно — контрастът е поантата."],
+    prepNote:null,snack:true,tag:"season"},
+  "ср-вечеря":{type:"Вечеря",icon:"🌙",name:"Телешки кюфтета с печени картофи",desc:"Кюфтетата от месарницата — просто ги наредиш и чакаш.",appliances:["Air Fryer ⭐","Фурна"],
+    ingredients:[{name:"Телешки кюфтета",a1:"250г (4–5 бр)",a2:"450г (8–9 бр)"},{name:"Картофи",a1:"300г",a2:"500г"},{name:"Чушка",a1:"1 бр",a2:"2 бр"},{name:"Зехтин",a1:"1 с.л.",a2:"2 с.л."},{name:"Сол, паприка",a1:"на вкус",a2:"на вкус"}],
+    steps:["Нарежи картофите на клинове. Поръси с зехтин, сол и паприка. Разбъркай.","<strong>Air Fryer:</strong> Картофите 200°C за 18–20 мин, разклати в средата.","Кюфтетата добави последните 10–12 мин заедно с картофите.","<strong>Фурна алтернатива:</strong> Всичко на 200°C за 30–35 мин. Обърни кюфтетата в средата.","Нарежи чушката и я добави в последните 8 мин."],
+    prepNote:"🍱 <strong>Prep за утре:</strong> Запази 2–3 кюфтета + малко картофи в кутия за обяд на работа.",snack:false,tag:"butcher"},
+  "чет-закуска":{type:"Закуска",icon:"☀️",name:"Гръцко кисело мляко с мед и ядки",desc:"Без киселини — пълномасленото се понася добре.",appliances:[],
+    ingredients:[{name:"Гръцко кисело мляко (пълномаслено)",a1:"150г",a2:"250г"},{name:"Мед",a1:"1 ч.л.",a2:"2 ч.л."},{name:"Бадеми или орехи",a1:"20г",a2:"40г"}],
+    steps:["Изсипи киселото мляко в купа.","Полей с мед.","Добави ядките отгоре. Готово за 1 минута."],
+    prepNote:null,snack:false,tag:null},
+  "чет-обяд":{type:"Обяд — за работа",icon:"🏢",name:"Кюфтета + хляб + домат (от вчера)",desc:"Остатъчните кюфтета в кутия.",appliances:[],
+    ingredients:[{name:"Кюфтета (от вчера)",a1:"2–3 бр",a2:"—"},{name:"Хляб",a1:"1–2 филийки",a2:"—"},{name:"Домат",a1:"1 бр",a2:"—"}],
+    steps:["Сложи кюфтетата и хляба в кутия.","Домата нарежи и добави или вземи цял.","Яж студено — много са вкусни."],
+    prepNote:null,snack:false,tag:"work"},
+  "чет-следобед":{type:"Следобедна закуска — ~16:00",icon:"🫛",name:"Хумус с чушки и краставица",desc:"Протеинов и сезонен.",appliances:[],
+    ingredients:[{name:"Хумус",a1:"80г (3–4 с.л.)",a2:"150г"},{name:"Чушка",a1:"½ бр",a2:"1 бр"},{name:"Краставица",a1:"½ бр",a2:"1 бр"}],
+    steps:["Нарежи чушката и краставицата на пръчици.","Сложи хумуса в малка кутийка.","Топвай и яж."],
+    prepNote:null,snack:true,tag:"season"},
+  "чет-вечеря":{type:"Вечеря + PREP за Пет",icon:"🌙",name:"Пилешки бутчета с печени картофи",desc:"Двойна порция в тавата — половината е обяда за утре.",appliances:["Фурна ⭐","Air Fryer","Мултикукър"],
+    ingredients:[{name:"Пилешки бутчета",a1:"2 бр",a2:"4 бр"},{name:"Картофи",a1:"300г",a2:"500г"},{name:"Лук",a1:"1 бр",a2:"2 бр"},{name:"Зехтин",a1:"2 с.л.",a2:"3 с.л."},{name:"Паприка, сол, пипер, риган",a1:"на вкус",a2:"на вкус"}],
+    steps:["Загрей фурната на 190°C.","Нарежи картофите на клинове, лука — на четвъртинки.","Поръси бутчетата с паприка, сол, пипер и риган. Полей с малко зехтин.","Наредей бутчетата в тава. Около тях картофите и лука. Полей с останалия зехтин.","Пека на 190°C за 40–45 мин. Обърни бутчетата в средата.","<strong>Air Fryer вариант:</strong> Бутчета на 190°C за 25–28 мин."],
+    prepNote:"🍱 <strong>Prep за утре:</strong> Запази 1–2 бутчета + картофи в кутия за обяд на работа утре.",snack:false,tag:"quick"},
+  "пет-закуска":{type:"Закуска",icon:"☀️",name:"Бъркани яйца с чушка + тост",desc:"2 мин повече усилие — много повече вкус.",appliances:["Котлон ⭐"],
+    ingredients:[{name:"Яйца",a1:"2 бр",a2:"3 бр"},{name:"Чушка",a1:"½ бр",a2:"1 бр"},{name:"Масло",a1:"1 ч.л.",a2:"2 ч.л."},{name:"Тостов хляб",a1:"2 филийки",a2:"3 филийки"},{name:"Сол, пипер",a1:"на вкус",a2:"на вкус"}],
+    steps:["Нарежи чушката на ситно.","Загрей тиган с масло. Запържи чушката 2 мин.","Разбий яйцата в купа, добави сол и пипер.","Изсипи яйцата върху чушката. Разбърквай бавно на тих огън ~2 мин.","Сервирай с запечен тост."],
+    prepNote:null,snack:false,tag:null},
+  "пет-обяд":{type:"Обяд — за работа",icon:"🏢",name:"Пиле с картофи (от вчера)",desc:"Остатъчните бутчета в кутия.",appliances:[],
+    ingredients:[{name:"Бутче + картофи (от вчера)",a1:"1 кутия",a2:"—"}],
+    steps:["Вземи кутията от хладилника.","Студено е много вкусно, или загрей в микровълнова 2 мин."],
+    prepNote:null,snack:false,tag:"work"},
+  "пет-следобед":{type:"Следобедна закуска — ~16:00",icon:"🍉",name:"Пъпеш или диня",desc:"Нарязан предварително в хладилника.",appliances:[],
+    ingredients:[{name:"Пъпеш или диня",a1:"300г",a2:"500г"}],
+    steps:["Нарежи пъпеша/дината вечерта преди и сложи в кутия в хладилника.","Вземи директно за работа."],
+    prepNote:null,snack:true,tag:"season"},
+  "пет-вечеря":{type:"Вечеря",icon:"🌙",name:"Фритата с чушки и сирене",desc:"15 минути. Лек петъчен вариант.",appliances:["Котлон ⭐","Фурна"],
+    ingredients:[{name:"Яйца",a1:"4 бр",a2:"6 бр"},{name:"Чушка",a1:"1 бр",a2:"2 бр"},{name:"Сирене бяло",a1:"60г",a2:"100г"},{name:"Зехтин",a1:"1 с.л.",a2:"2 с.л."},{name:"Сол, пипер",a1:"на вкус",a2:"на вкус"}],
+    steps:["Нарежи чушката на ситно. Натроши сиренето.","Загрей тиган (с метална дръжка!) с зехтин на среден огън.","Запържи чушката 2–3 мин.","Разбий яйцата, добави сол и пипер. Изсипи върху чушката.","Поръси сиренето отгоре. Не разбърквай.","Дръж на тих огън 4–5 мин докато краищата се стегнат.","<strong>Финиш:</strong> Под грила на фурната за 2–3 мин до златисто отгоре."],
+    prepNote:null,snack:false,tag:"quick"},
+  "съб-закуска":{type:"Закуска",icon:"☀️",name:"Бързи яйца или овесена каша",desc:"Последният работен ден — лесно.",appliances:["Котлон ⭐"],
+    ingredients:[{name:"Яйца (ако яйца)",a1:"2 бр",a2:"3 бр"},{name:"Масло",a1:"1 ч.л.",a2:"2 ч.л."},{name:"ИЛИ овесени ядки",a1:"50г",a2:"—"},{name:"Мед",a1:"1 ч.л.",a2:"—"}],
+    steps:["Яйца: Загрей тиган с масло. Пържи яйцата 2–3 мин. Сол отгоре.","Овесена каша: 50г ядки + 150мл вода. Вари 4 мин. Полей с мед."],
+    prepNote:null,snack:false,tag:null},
+  "съб-обяд":{type:"Обяд — за работа",icon:"🏢",name:"Туна с варени яйца и домати",desc:"5 мин приготвяне вечерта преди.",appliances:["Котлон ⭐"],
+    ingredients:[{name:"Туна в консерва",a1:"1 кутийка (100г)",a2:"2 кутийки"},{name:"Варени яйца",a1:"2 бр",a2:"3 бр"},{name:"Домат",a1:"1 бр",a2:"2 бр"},{name:"Краставица",a1:"½ бр",a2:"1 бр"},{name:"Зехтин",a1:"1 с.л.",a2:"2 с.л."},{name:"Сол, пипер",a1:"на вкус",a2:"на вкус"}],
+    steps:["Свари яйцата вечерта: в студена вода, доведи до кипеж, вари 8 мин, охлади.","Нарежи домата и краставицата.","Отцеди туната от консервата.","Наредей всичко в кутия: туна, яйца, домат, краставица.","Полей с зехтин и добави сол и пипер."],
+    prepNote:null,snack:false,tag:"work"},
+  "съб-следобед":{type:"Следобедна закуска — ~16:00",icon:"🫐",name:"Гръцко кисело мляко с боровинки",desc:"100г кисело мляко, шепа боровинки, капка мед.",appliances:[],
+    ingredients:[{name:"Гръцко кисело мляко",a1:"100г",a2:"200г"},{name:"Боровинки",a1:"60г",a2:"120г"},{name:"Мед",a1:"½ ч.л.",a2:"1 ч.л."}],
+    steps:["Изсипи киселото мляко в купа.","Добави измитите боровинки и полей с мед."],
+    prepNote:null,snack:true,tag:"season"},
+  "съб-вечеря":{type:"Вечеря",icon:"🌙",name:"Пиле със спанак и ориз",desc:"Края на работната седмица — заслужено хубаво ядене.",appliances:["Котлон ⭐","Мултикукър"],
+    ingredients:[{name:"Пилешки гърди",a1:"200г",a2:"350г"},{name:"Пресен спанак",a1:"150г",a2:"250г"},{name:"Ориз",a1:"70г (сух)",a2:"120г (сух)"},{name:"Чесън",a1:"2 скилидки",a2:"3 скилидки"},{name:"Зехтин",a1:"1 с.л.",a2:"2 с.л."},{name:"Сол, пипер, мускатен орех (по желание)",a1:"на вкус",a2:"на вкус"}],
+    steps:["Свари ориза: 1 ч. ориз : 2 ч. вода, 15–18 мин с капак.","Нарежи пилешките гърди на малки кубчета. Поръси с сол и пипер.","Загрей тиган с зехтин. Запържи пилето ~5 мин до готовност. Извади.","В същия тиган добави чесъна (нарязан) — 30 секунди.","Добави спанака. Разбъркай и задуши ~2 мин докато поомекне.","Върни пилето, разбъркай. Поръси с мускатен орех.","Сервирай с ориза."],
+    prepNote:null,snack:false,tag:null}
+};
+
+const plan=[
+  {day:"Неделя 🛋️",short:"Нед",off:true,meals:[
+    {key:"нед-закуска"},{key:"нед-обяд"},{key:"нед-следобед"},{key:"нед-вечеря"}]},
+  {day:"Понеделник 🛋️",short:"Пон",off:true,meals:[
+    {key:"пон-закуска"},{key:"пон-обяд"},{key:"пон-следобед"},{key:"пон-вечеря"}]},
+  {day:"Вторник",short:"Вт",off:false,meals:[
+    {key:"вт-закуска"},{key:"вт-обяд"},{key:"вт-следобед"},{key:"вт-вечеря"}]},
+  {day:"Сряда",short:"Ср",off:false,meals:[
+    {key:"ср-закуска"},{key:"ср-обяд"},{key:"ср-следобед"},{key:"ср-вечеря"}]},
+  {day:"Четвъртък",short:"Чет",off:false,meals:[
+    {key:"чет-закуска"},{key:"чет-обяд"},{key:"чет-следобед"},{key:"чет-вечеря"}]},
+  {day:"Петък",short:"Пет",off:false,meals:[
+    {key:"пет-закуска"},{key:"пет-обяд"},{key:"пет-следобед"},{key:"пет-вечеря"}]},
+  {day:"Събота",short:"Съб",off:false,meals:[
+    {key:"съб-закуска"},{key:"съб-обяд"},{key:"съб-следобед"},{key:"съб-вечеря"}]},
+];
+
+const shopItems = [
+  {trip:"🛒 Пазаруване 1 — Неделя (почивен ден)",categories:[
+    {cat:"🥩 Месарница",items:["Пилешки гърди (1кг) — за Вт и Съб","Смесена кайма (500г) — за Ср"]},
+    {cat:"🌿 Зеленчуков",items:["Домати (600г)","Краставици (2–3 бр)","Чушки (3 бр)","Тиквички (2 бр)","Картофи (500г)","Лук (2 бр) + чесън (1 гл)","🍑 Праскови (2–3 бр)","🫐 Боровинки (1 кутийка)"]},
+    {cat:"🏪 Супермаркет",items:["Яйца (12 бр)","Гръцко кисело мляко пълномаслено","Масло / зехтин","Тостов хляб","Овесени ядки + мед","Ориз (500г)","Паста (500г)","Консервирани домати (2 кутии)","Туна в консерва (3 кутии)","Ядки — бадеми или орехи (200г)","Подправки: сол, пипер, паприка, риган, кимион"]},
+  ]},
+  {trip:"🛒 Пазаруване 2 — Сряда (след работа)",categories:[
+    {cat:"🥩 Месарница",items:["Телешки кюфтета (400–500г) — за Чет","Пилешки бутчета (500г) — за Пет"]},
+    {cat:"🌿 Зеленчуков",items:["Домати (400г)","Краставици (2 бр)","Чушки (2 бр)","Спанак (300г)","Патладжан (1 бр)","Картофи (500г)","🍒 Череши (300г)","🍉 Диня или пъпеш (½ бр)"]},
+    {cat:"🏪 Супермаркет",items:["Сирене бяло (200г)","Кашкавал (150г)","Хумус (1 кутийка)","Хляб / пита"]},
+  ]},
+];
+
+// ─── FOOD RENDER ──────────────────────────────────────────────────────────────
+let foodDay = today.getDay() === 0 ? 0 : today.getDay() === 1 ? 1 : today.getDay() - 1; // 0=Нед,1=Пон,2=Вт...6=Съб => map to plan index
+// Actually plan[0]=Нед(0), plan[1]=Пон(1), plan[2]=Вт(2), plan[3]=Ср(3), plan[4]=Чет(4), plan[5]=Пет(5), plan[6]=Съб(6)
+// today.getDay(): 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
+// plan index: Sun→0, Mon→1, Tue→2, Wed→3, Thu→4, Fri→5, Sat→6
+const dayOfWeekToPlان = [0,1,2,3,4,5,6];
+foodDay = dayOfWeekToPlان[today.getDay()];
+
+const openRecipes = {};
+const portionState = {};
+
+function renderFood() {
+  // Day strip
+  const strip = document.getElementById('foodDayStrip');
+  strip.innerHTML = plan.map((d,i)=>`
+    <div class="food-day-btn ${i===foodDay?'active':''}" onclick="selectFoodDay(${i})">
+      <div class="food-day-name">${d.short}</div>
+      <div class="food-day-off">${d.off?'🛋️':'🏢'}</div>
+    </div>`).join('');
+
+  // Meals
+  const d = plan[foodDay];
+  const mealsEl = document.getElementById('foodMeals');
+  mealsEl.innerHTML = d.meals.map(m=>{
+    const r = recipes[m.key];
+    if(!r) return '';
+    const isOpen = openRecipes[m.key];
+    const portions = portionState[m.key] || 1;
+    const tag = r.tag ? `<span class="meal-tag ${tagMap[r.tag].cls}">${tagMap[r.tag].label}</span>` : '';
+    let recipeHTML = '';
+    if(isOpen) {
+      const appHTML = r.appliances && r.appliances.length ?
+        `<div class="appliance-row">${r.appliances.map(a=>`<span class="appliance-badge ${a.includes('⭐')?'rec':''}">${a.replace(' ⭐','')}</span>`).join('')}</div>` : '';
+      const ptHTML = `<div class="portions-toggle"><span>Порции:</span>
+        <button class="ptbtn ${portions===1?'active':''}" onclick="event.stopPropagation();setPortion('${m.key}',1)">1 порция</button>
+        <button class="ptbtn ${portions===2?'active':''}" onclick="event.stopPropagation();setPortion('${m.key}',2)">2 порции ✕</button>
+      </div>`;
+      const ingHTML = `<div class="recipe-section">Съставки</div>
+        <div>${r.ingredients.map(ing=>`<div class="ingredient-row"><span>${ing.name}</span><span class="ing-amount-dark">${portions===1?ing.a1:(ing.a2||ing.a1)}</span></div>`).join('')}</div>`;
+      const stepsHTML = `<div class="recipe-section">Начин на приготвяне</div>
+        <div>${r.steps.map((s,i)=>`<div class="step-row"><span class="step-num-dark">${i+1}</span><span>${s}</span></div>`).join('')}</div>`;
+      const prepHTML = r.prepNote ? `<div class="prep-note-dark">${r.prepNote}</div>` : '';
+      recipeHTML = `<div class="meal-recipe">${appHTML}${ptHTML}${ingHTML}${stepsHTML}${prepHTML}</div>`;
+    }
+    return `<div class="meal-card-dark ${r.snack?'snack':''} ${isOpen?'open':''}" onclick="toggleRecipe('${m.key}')">
+      <div class="meal-card-header">
+        <div class="meal-icon-lg">${r.icon}</div>
+        <div style="flex:1">
+          <div class="meal-type-label">${r.type}</div>
+          <div class="meal-name-dark">${r.name}</div>
+          <div class="meal-desc-dark">${r.desc}</div>
+          ${tag}
+        </div>
+        <div class="meal-expand-icon">${isOpen?'▲':'▼'}</div>
+      </div>
+      ${recipeHTML}
+    </div>`;
+  }).join('');
+}
+function selectFoodDay(i){ foodDay=i; renderFood(); }
+function toggleRecipe(key){ openRecipes[key]=!openRecipes[key]; renderFood(); }
+function setPortion(key,n){ portionState[key]=n; renderFood(); }
+
+// ─── SHOPPING LIST ────────────────────────────────────────────────────────────
+let shopOpen = false;
+function toggleShopList(){
+  shopOpen=!shopOpen;
+  document.getElementById('shopToggleIcon').textContent=shopOpen?'▲':'▾';
+  const el=document.getElementById('shopList');
+  el.classList.toggle('open',shopOpen);
+  if(shopOpen && !el.innerHTML) renderShopList();
+}
+function renderShopList(){
+  const checks=JSON.parse(localStorage.getItem('shop_checks')||'{}');
+  const el=document.getElementById('shopList');
+  el.innerHTML=shopItems.map((trip,ti)=>`
+    <div class="shop-trip-header">${trip.trip}</div>
+    ${trip.categories.map((cat,ci)=>`
+      <div class="shop-category">${cat.cat}</div>
+      ${cat.items.map((item,ii)=>{
+        const key=`${ti}-${ci}-${ii}`;
+        const checked=checks[key];
+        return `<div class="shop-item ${checked?'checked-item':''}" onclick="toggleShopItem('${key}')">
+          <div class="shop-checkbox ${checked?'checked':''}"></div>
+          <div class="shop-item-text">${item}</div>
+        </div>`;
+      }).join('')}
+    `).join('')}
+  `).join('')+`<button class="shop-clear-btn" onclick="clearShop()">↺ Изчисти всички отметки</button>`;
+}
+function toggleShopItem(key){
+  const checks=JSON.parse(localStorage.getItem('shop_checks')||'{}');
+  checks[key]=!checks[key];
+  localStorage.setItem('shop_checks',JSON.stringify(checks));
+  renderShopList();
+}
+function clearShop(){
+  localStorage.removeItem('shop_checks');
+  renderShopList();
+}
+
+// ─── DASHBOARD ────────────────────────────────────────────────────────────────
+function renderDashboard(){
+  const daysDiff=Math.max(0,Math.floor((today-PROGRAM_START)/86400000)+1);
+  document.getElementById('ds-days').textContent=daysDiff;
+  const log=getHabitsLog(); const tk=dateKey(today); const tl=log[tk]||{};
+  const doneCnt=HABITS.filter(h=>tl[h.id]).length;
+  document.getElementById('ds-habits-today').textContent=doneCnt+'/'+HABITS.length;
+  const mi=currentMonthIdx();
+  const stored=JSON.parse(localStorage.getItem('goals_'+mi)||'{}');
+  const total=months[mi].goals.length; const done=Object.values(stored).filter(Boolean).length;
+  const pct=total>0?Math.round(done/total*100):0;
+  document.getElementById('ds-goals-pct').textContent=pct+'%';
+  document.getElementById('dashMonthName').textContent=months[mi].name;
+  document.getElementById('dashGoalTitle').textContent=months[mi].theme;
+  document.getElementById('dashGoalPct').textContent=done+'/'+total+' цели';
+  document.getElementById('dashGoalBar').style.width=pct+'%';
+  document.getElementById('dashGoalSub').textContent=pct>=100?'🎉 Всички цели изпълнени!':'Остават '+(total-done)+' цели';
+  // Today check
+  document.getElementById('dashTodayCheck').innerHTML=HABITS.map(h=>{
+    const d=tl[h.id];
+    return `<div class="tqc-item${d?' done':''}" onclick="dashToggleHabit('${h.id}')">
+      <div class="tqc-icon">${h.icon}</div>
+      <div class="tqc-label">${h.label}</div>
+    </div>`;
+  }).join('');
+  // Серии
+  document.getElementById('dashStreaks').innerHTML=HABITS.map(h=>{
+    const s=getStreak(h.id);
+    return `<div class="streak-item">
+      <div class="streak-icon">${h.icon}</div>
+      <div><div style="font-size:13px;font-weight:500">${h.label}</div><div style="font-size:11px;color:var(--text3)">серия</div></div>
+      <div class="streak-val${s===0?' zero':''}">${s}${s>0?'🔥':''}</div>
+    </div>`;
+  }).join('');
+}
+function dashToggleHabit(id){
+  toggleHabit(id,dateKey(today)); renderDashboard(); renderHabits();
+}
+
+// ─── DAILY VIEW ───────────────────────────────────────────────────────────────
+function renderDay(d){
+  const w=d.getDay(),off=isOffDay(d),isT=d.toDateString()===today.toDateString();
+  document.getElementById('dayTitle').textContent=(isT?'Днес — ':'')+BG_DAYS[w];
+  document.getElementById('daySubtitle').textContent=d.getDate()+' '+BG_MONTHS[d.getMonth()]+' '+d.getFullYear();
+  const b=document.getElementById('dayBadge');
+  if(off){b.textContent='Почивен ден';b.className='day-type-badge badge-off';}
+  else{b.textContent='Работен ден';b.className='day-type-badge badge-work';}
+  document.getElementById('timeline').innerHTML=getSchedule(d).map(s=>`
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:${catColor(s.cat)}"></div>
+      <div class="timeline-time">${s.time}</div>
+      <div class="timeline-block cat-${s.cat}">
+        <div class="timeline-block-title">${s.title}</div>
+        ${s.sub?`<div class="timeline-block-sub">${s.sub}</div>`:''}
+      </div>
+    </div>`).join('');
+  renderWeekStrip(d);
+}
+function renderWeekStrip(sel){
+  const strip=document.getElementById('weekStrip');
+  const st=new Date(sel); const dw=st.getDay();
+  st.setDate(st.getDate()+(dw===0?-6:1-dw));
+  strip.innerHTML='';
+  ['Пон','Вт','Ср','Чет','Пет','Съб','Нед'].forEach((name,i)=>{
+    const d=new Date(st);d.setDate(d.getDate()+i);
+    const isT=d.toDateString()===today.toDateString(),isSel=d.toDateString()===sel.toDateString(),off=isOffDay(d);
+    const div=document.createElement('div');
+    div.className='week-day'+(isT?' today':'')+(isSel&&!isT?' selected':'');
+    div.innerHTML=`<div class="week-day-name">${name}</div><div class="week-day-num">${d.getDate()}</div><div class="week-day-type" style="background:${off?'var(--green)':'var(--blue)'}"></div>`;
+    div.onclick=()=>{currentDate=new Date(d);renderDay(currentDate);};
+    strip.appendChild(div);
+  });
+}
+function prevDay(){currentDate.setDate(currentDate.getDate()-1);renderDay(currentDate);}
+function nextDay(){currentDate.setDate(currentDate.getDate()+1);renderDay(currentDate);}
+
+// ─── MONTHLY ──────────────────────────────────────────────────────────────────
+let selectedMonth=currentMonthIdx();
+function renderMonthly(){
+  document.getElementById('monthTabs').innerHTML=months.map((m,i)=>
+    `<button class="month-tab ${i===selectedMonth?'active':''}" onclick="selectMonth(${i})">${m.name}</button>`).join('');
+  const m=months[selectedMonth];
+  const stored=JSON.parse(localStorage.getItem('goals_'+selectedMonth)||'{}');
+  document.getElementById('monthContent').innerHTML=`<div class="card">
+    <div style="margin-bottom:14px"><div style="font-size:18px;font-weight:600">${m.name} 2026</div>
+    <div style="font-size:13px;color:var(--text2);margin-top:3px">${m.theme}</div></div>
+    ${m.goals.map((g,i)=>`<div class="goal-item">
+      <div class="goal-check ${stored[i]?'done':''}" onclick="toggleGoal(${i})"></div>
+      <div><div class="goal-text ${stored[i]?'done':''}">${g.text}</div>
+      <div class="goal-cat" style="color:${catColorMap[g.cat]}">${catLabelMap[g.cat]}</div></div>
+    </div>`).join('')}
+  </div>`;
+}
+function selectMonth(i){selectedMonth=i;renderMonthly();}
+function toggleGoal(i){
+  const s=JSON.parse(localStorage.getItem('goals_'+selectedMonth)||'{}');
+  s[i]=!s[i];localStorage.setItem('goals_'+selectedMonth,JSON.stringify(s));renderMonthly();
+}
+
+// ─── HABITS ───────────────────────────────────────────────────────────────────
+function renderHabits(){
+  const log=getHabitsLog(),tk=dateKey(today);
+  document.getElementById('habitsDateLabel').textContent=BG_DAYS[today.getDay()]+', '+today.getDate()+' '+BG_MONTHS[today.getMonth()];
+  const last7=[];for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);last7.push({key:dateKey(d),label:d.getDate(),isToday:i===0});}
+  document.getElementById('habitTrackerGrid').innerHTML=HABITS.map(h=>{
+    const todayDone=log[tk]&&log[tk][h.id];
+    const s=getStreak(h.id);
+    const days7=last7.map(day=>{
+      const done=log[day.key]&&log[day.key][h.id];
+      const cls=['habit-day-dot',done?'done':'',day.isToday?'today-dot':'',!day.isToday?'past':''].filter(Boolean).join(' ');
+      return `<div class="${cls}" ${day.isToday?`onclick="toggleHabitToday('${h.id}')"`:''}>${done?'✓':day.label}</div>`;
+    }).join('');
+    return `<div class="habit-row">
+      <div class="habit-icon-sm">${h.icon}</div>
+      <div class="habit-info">
+        <div class="habit-name">${h.label}</div>
+        <div class="habit-streak">Серия: <span>${s} ${s===1?'ден':'дни'}</span>${s>0?' 🔥':''}</div>
+      </div>
+      <div class="habit-days">${days7}</div>
+      <div class="habit-check-today${todayDone?' done':''}" onclick="toggleHabitToday('${h.id}')">${todayDone?'✓':'○'}</div>
+    </div>`;
+  }).join('');
+}
+function toggleHabitToday(id){toggleHabit(id,dateKey(today));renderHabits();renderDashboard();}
+
+// ─── TAB SWITCHING ────────────────────────────────────────────────────────────
+function switchTab(name,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(name==='monthly')renderMonthly();
+  if(name==='habits')renderHabits();
+  if(name==='food')renderFood();
+  if(name==='dashboard')renderDashboard();
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+const d0=today;
+document.getElementById('todayBadge').textContent=BG_DAYS[d0.getDay()]+', '+d0.getDate()+' '+BG_MONTHS[d0.getMonth()];
+renderDashboard();
+renderDay(currentDate);
+</script>
+</body>
+</html>
