@@ -192,6 +192,57 @@
   .shop-clear-btn { font-size: 11px; color: var(--text3); background: none; border: none; cursor: pointer; margin-top: 16px; display: block; }
   .shop-clear-btn:hover { color: var(--red); }
 
+  /* ═══ TRAINING TAB ═══ */
+  .train-profile { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .train-profile-item { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+  .train-profile-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 2px; }
+  .train-profile-val { font-size: 14px; font-weight: 600; }
+  .train-warn { background: rgba(245,158,11,0.08); border: 0.5px solid rgba(245,158,11,0.25); border-radius: 10px; padding: 14px; margin-bottom: 16px; }
+  .train-warn-title { font-size: 13px; font-weight: 600; color: var(--amber); margin-bottom: 8px; }
+  .train-warn li { font-size: 12px; line-height: 1.6; color: var(--text2); margin-left: 16px; }
+  .train-today-card { background: var(--green-dim); border: 1px solid rgba(34,197,94,0.3); border-radius: 12px; padding: 16px; margin-bottom: 16px; cursor: pointer; transition: all .2s; }
+  .train-today-card:hover { border-color: var(--green); }
+  .train-today-label { font-size: 10px; color: var(--green); text-transform: uppercase; letter-spacing: .1em; font-weight: 600; margin-bottom: 4px; }
+  .train-today-name { font-size: 20px; font-weight: 700; }
+  .train-today-focus { font-size: 12px; color: var(--text2); margin-top: 4px; }
+  .train-workout-tabs { display: flex; gap: 4px; margin-bottom: 16px; }
+  .train-workout-tab { flex: 1; padding: 10px 6px; font-size: 12px; font-weight: 500; background: var(--bg3); border: 0.5px solid var(--border); border-radius: 8px; cursor: pointer; text-align: center; color: var(--text2); transition: all .2s; }
+  .train-workout-tab.active { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+  .train-exercise { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; margin-bottom: 8px; overflow: hidden; }
+  .train-ex-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; }
+  .train-ex-num { width: 24px; height: 24px; border-radius: 50%; background: var(--bg4); border: 0.5px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--text2); flex-shrink: 0; }
+  .train-ex-info { flex: 1; }
+  .train-ex-name { font-size: 14px; font-weight: 600; }
+  .train-ex-sets { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .train-ex-star { color: var(--amber); font-size: 14px; flex-shrink: 0; }
+  .train-ex-expand { font-size: 12px; color: var(--text3); flex-shrink: 0; }
+  .train-ex-detail { display: none; padding: 0 14px 14px; border-top: 0.5px solid var(--border); }
+  .train-exercise.open .train-ex-detail { display: block; }
+  .train-ex-detail p { font-size: 12px; line-height: 1.6; color: var(--text2); margin-top: 8px; }
+  .train-ex-meta { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+  .train-ex-meta-item { font-size: 11px; padding: 4px 10px; background: var(--bg3); border-radius: 20px; color: var(--text2); }
+  .train-warmup { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 16px; }
+  .train-warmup-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--amber); }
+  .train-warmup-item { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; border-bottom: 0.5px solid var(--border); font-size: 12px; line-height: 1.5; }
+  .train-warmup-item:last-child { border-bottom: none; }
+  .train-checklist { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 16px; }
+  .train-check-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--border); cursor: pointer; user-select: none; }
+  .train-check-item:last-child { border-bottom: none; }
+  .train-check-box { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--border2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .2s; }
+  .train-check-box.done { background: var(--green); border-color: var(--green); }
+  .train-check-box.done::after { content: '✓'; font-size: 11px; color: #000; font-weight: 700; }
+  .train-check-label { font-size: 13px; }
+  .train-check-label.done { text-decoration: line-through; color: var(--text3); }
+  .train-progress-table { width: 100%; font-size: 11px; border-collapse: collapse; }
+  .train-progress-table th, .train-progress-table td { padding: 8px 6px; border-bottom: 0.5px solid var(--border); text-align: center; }
+  .train-progress-table th { color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; font-size: 10px; }
+  .train-progress-table td:first-child { text-align: left; font-weight: 500; font-size: 12px; }
+  .train-progress-input { width: 36px; background: var(--bg3); border: 0.5px solid var(--border2); border-radius: 4px; color: var(--text); text-align: center; padding: 4px 2px; font-size: 11px; }
+  .train-phase { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 8px; }
+  .train-phase-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .train-phase-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .train-week-badge { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 600; margin-bottom: 6px; }
+
   @media (max-width: 600px) {
     .phase-grid { grid-template-columns: 1fr; }
     .stat-grid { grid-template-columns: repeat(3, 1fr); }
@@ -199,6 +250,9 @@
     .today-check-grid { grid-template-columns: repeat(4, 1fr); }
     .stop-habits-grid { grid-template-columns: 1fr; }
     .habit-days { display: none; }
+    .train-profile { grid-template-columns: 1fr 1fr; }
+    .train-workout-tabs { gap: 3px; }
+    .train-workout-tab { font-size: 11px; padding: 8px 4px; }
   }
 </style>
 </head>
@@ -216,6 +270,7 @@
     <button class="tab" onclick="switchTab('monthly',this)">Месец</button>
     <button class="tab" onclick="switchTab('habits',this)">Навици</button>
     <button class="tab" onclick="switchTab('food',this)">Храна</button>
+    <button class="tab" onclick="switchTab('training',this)">Тренировка</button>
     <button class="tab" onclick="switchTab('annual',this)">Година</button>
   </div>
 </div>
@@ -308,6 +363,52 @@
   <div id="foodMeals"></div>
   <button class="shop-toggle-btn" onclick="toggleShopList()">🛒 Списък за пазаруване <span id="shopToggleIcon">▾</span></button>
   <div class="shop-list card" id="shopList"></div>
+</div>
+
+<!-- ===== TRAINING ===== -->
+<div id="training" class="view">
+  <div class="train-today-card" id="trainTodayCard" onclick="goToTodayWorkout()">
+    <div class="train-today-label" id="trainTodayLabel">Днешна тренировка</div>
+    <div class="train-today-name" id="trainTodayName"></div>
+    <div class="train-today-focus" id="trainTodayFocus"></div>
+  </div>
+
+  <div class="section-title">Загрявка (5–7 мин) — задължителна</div>
+  <div class="train-warmup" id="trainWarmup"></div>
+
+  <div class="section-title">Тренировки</div>
+  <div class="train-workout-tabs" id="trainWorkoutTabs"></div>
+  <div id="trainWorkoutContent"></div>
+
+  <div class="section-title">Чеклист за тренировката</div>
+  <div class="train-checklist" id="trainChecklist"></div>
+
+  <div class="section-title">Напредък по седмици</div>
+  <div class="card" style="overflow-x:auto">
+    <table class="train-progress-table" id="trainProgressTable"></table>
+  </div>
+
+  <div class="section-title">Прогресия</div>
+  <div id="trainPhases"></div>
+
+  <div class="train-warn">
+    <div class="train-warn-title">⚠️ Важно за кръста</div>
+    <ul>
+      <li><strong>Никога</strong> sit-ups или коремни преси — компресират гръбнака</li>
+      <li>Напрягай корема <strong>преди</strong> да започнеш движението</li>
+      <li>Ако усетиш <strong>болка</strong> (не напрежение) — спри</li>
+      <li>Неутрален гръбнак при клякове и лунгове</li>
+      <li>Спи достатъчно — кръстът се възстановява по-добре</li>
+    </ul>
+  </div>
+
+  <div class="section-title">Хранителни основи</div>
+  <div class="card">
+    <div class="rule"><div class="rule-num">🥩</div><div>Протеин на всяко хранене — яйца, пиле, риба, извара, боб</div></div>
+    <div class="rule"><div class="rule-num">🚫</div><div>Намали преработени храни и захар — не забранявай, само намали</div></div>
+    <div class="rule"><div class="rule-num">💧</div><div>Минимум 2–2.5 литра вода на ден (кръстът обича хидратация)</div></div>
+    <div class="rule"><div class="rule-num">🕐</div><div>Не яж 2 часа преди тренировка, но не тренирай гладен</div></div>
+  </div>
 </div>
 
 <!-- ===== ANNUAL ===== -->
@@ -849,6 +950,212 @@ function renderHabits(){
 }
 function toggleHabitToday(id){toggleHabit(id,dateKey(today));renderHabits();renderDashboard();}
 
+// ─── TRAINING ────────────────────────────────────────────────────────────────
+const WORKOUTS = [
+  {id:'A',name:'Тренировка А — Горна половина + Кор',focus:'Гърди, рамене, ръце, кор стабилност',exercises:[
+    {name:'Push-up (лицеви опори)',sets:'3 × max*',rest:'60 сек',note:'Ако не можеш 5 — прави с колена',star:false,desc:null},
+    {name:'Pike Push-up (за рамене)',sets:'3 × 8–10',rest:'60 сек',note:'Ханшът горе, глава между ръцете',star:false,desc:null},
+    {name:'Dips на стол',sets:'3 × 8–12',rest:'60 сек',note:'Гърбът близо до стола',star:false,desc:null},
+    {name:'Wall Sit (стенен клек)',sets:'3 × 20–30 сек',rest:'45 сек',note:'90° в коленете',star:false,desc:null},
+    {name:'Dead Bug',sets:'3 × 8 (всяка страна)',rest:'60 сек',note:'Кръстът залепен за пода',star:true,
+      desc:'Легни по гръб, ръце нагоре (перпендикулярно), крака огнати на 90°. Едновременно спусни лявата ръка назад и изпъни десния крак — без да докосваш пода. Върни. Редувай страни. Кръстът ти трябва да е залепен за пода ПРЕЗ ЦЯЛОТО ДВИЖЕНИЕ.'},
+    {name:'Plank (дъска)',sets:'3 × 20–30 сек',rest:'45 сек',note:'Тялото права линия, не пускай ханша',star:false,desc:null},
+  ]},
+  {id:'Б',name:'Тренировка Б — Долна половина + Кор',focus:'Крака, задник, кор укрепване',exercises:[
+    {name:'Bodyweight Squat (клек)',sets:'3 × 15',rest:'60 сек',note:'Петите на земята, гърбът прав',star:false,desc:null},
+    {name:'Reverse Lunge (обратен лунг)',sets:'3 × 10 (всяка страна)',rest:'60 сек',note:'По-щадящ за кръста от предния',star:false,desc:null},
+    {name:'Glute Bridge',sets:'3 × 15',rest:'45 сек',note:'Стискай задника горе',star:true,desc:null},
+    {name:'Step-Up на стол',sets:'3 × 10 (всяка страна)',rest:'60 сек',note:'Качвай се с целия крак',star:false,desc:null},
+    {name:'Bird-Dog',sets:'3 × 8 (всяка страна)',rest:'60 сек',note:'Без завъртане на ханша',star:true,
+      desc:'На четири крака. Неутрален гръбнак (не извивай). Едновременно изпъни левия крак назад и дясната ръка напред. Задръж 2 сек. Върни бавно. Редувай страни. Избягвай завъртане на ханша.'},
+    {name:'Side Plank',sets:'3 × 15–20 сек (всяка страна)',rest:'45 сек',note:'Ако е трудно — с огнато коляно',star:false,desc:null},
+  ]},
+  {id:'В',name:'Тренировка В — Пълно тяло + Кор',focus:'Цялото тяло, издръжливост, кор интеграция',exercises:[
+    {name:'Push-up',sets:'3 × max',rest:'60 сек',note:'',star:false,desc:null},
+    {name:'Squat + Hold (задръж 2 сек)',sets:'3 × 12',rest:'60 сек',note:'',star:false,desc:null},
+    {name:'Superman Hold',sets:'3 × 10 (задръж 2 сек)',rest:'60 сек',note:'Работа в долния гръб и задника',star:true,
+      desc:'Легни по корем, ръце напред. Едновременно вдигни ръцете и краката от пода — задръж 2 сек. Свали бавно. Ако усещаш болка (не напрежение) — пропусни засега.'},
+    {name:'Reverse Lunge',sets:'3 × 8 (всяка страна)',rest:'60 сек',note:'',star:false,desc:null},
+    {name:'Dead Bug',sets:'3 × 10 (всяка страна)',rest:'60 сек',note:'',star:false,desc:null},
+    {name:'Plank',sets:'3 × 30 сек',rest:'45 сек',note:'',star:false,desc:null},
+  ]},
+  {id:'Г',name:'Тренировка Г — Мобилност + Лек Кор',focus:'По-лека, фокус върху гъвкавост и кръста (опционална — 4-ти ден)',exercises:[
+    {name:'Cat-Cow',sets:'2 мин',rest:'—',note:'Бавно, дишай',star:false,desc:null},
+    {name:'Child\'s Pose',sets:'1 мин',rest:'—',note:'Протягане на кръста',star:false,desc:null},
+    {name:'Hip Flexor Stretch',sets:'45 сек всяка страна',rest:'—',note:'Коляно на земята',star:false,desc:null},
+    {name:'Glute Bridge',sets:'2 × 15',rest:'—',note:'Активиране',star:false,desc:null},
+    {name:'Bird-Dog',sets:'2 × 8 всяка страна',rest:'—',note:'Бавно',star:false,desc:null},
+    {name:'Side Plank',sets:'2 × 20 сек всяка страна',rest:'—',note:'',star:false,desc:null},
+    {name:'Piriformis Stretch',sets:'45 сек всяка страна',rest:'—',note:'Важно за кръста',star:false,desc:null},
+    {name:'Thoracic Rotation',sets:'10 всяка страна',rest:'—',note:'Легни на страни, завъртай горното рамо',star:false,desc:null},
+  ]},
+];
+
+const WARMUP_ITEMS = [
+  {name:'Cat-Cow (котка-крава)',detail:'10 повт. — На четири крака. Вдишвай и извий гърба нагоре, издишвай и спусни надолу.'},
+  {name:'Hip Circles (кръгове с ханша)',detail:'10 в посока, 10 обратно'},
+  {name:'Glute Bridge Hold',detail:'3 × 10 сек — Вдигни ханша до права линия, задръж.'},
+  {name:'Arm Circles',detail:'10 напред, 10 назад'},
+  {name:'Лек клек',detail:'10 повт. — без тежест, само подгряване'},
+];
+
+const TRAIN_CHECKLIST = [
+  'Загрявка 5–7 мин',
+  'Техника преди бройки',
+  'Записвам повторенията',
+  'Разтягане след тренировка (5 мин)',
+  'Пия вода',
+];
+
+const TRAIN_PROGRESS_ROWS = [
+  {label:'Push-up (повт.)',key:'pushup'},
+  {label:'Glute Bridge (повт.)',key:'bridge'},
+  {label:'Plank (сек)',key:'plank'},
+  {label:'Squat (повт.)',key:'squat'},
+  {label:'Dead Bug (повт./стр.)',key:'deadbug'},
+];
+
+let trainWorkoutIdx = 0;
+const openExercises = {};
+
+function getTodayWorkout() {
+  const w = today.getDay();
+  // Пон=1,Ср=3,Пет=5 => А,Б,В  Съб=6 => Г
+  if (w===1) return {idx:0,rest:false};
+  if (w===3) return {idx:1,rest:false};
+  if (w===5) return {idx:2,rest:false};
+  if (w===6) return {idx:3,rest:false};
+  return {idx:-1,rest:true};
+}
+
+function goToTodayWorkout() {
+  const tw = getTodayWorkout();
+  if (!tw.rest) { trainWorkoutIdx = tw.idx; renderTraining(); }
+}
+
+function getTrainWeek() {
+  const diff = Math.floor((today - PROGRAM_START) / 86400000);
+  return Math.max(1, Math.min(8, Math.floor(diff / 7) + 1));
+}
+
+function renderTraining() {
+  const tw = getTodayWorkout();
+  const todayCard = document.getElementById('trainTodayCard');
+  const nameEl = document.getElementById('trainTodayName');
+  const focusEl = document.getElementById('trainTodayFocus');
+  const labelEl = document.getElementById('trainTodayLabel');
+
+  if (tw.rest) {
+    labelEl.textContent = BG_DAYS[today.getDay()];
+    nameEl.textContent = '🛋️ Ден за почивка';
+    focusEl.textContent = 'Тялото расте по време на почивка, не по време на тренировка';
+    todayCard.style.background = 'var(--purple-dim)';
+    todayCard.style.borderColor = 'rgba(139,92,246,0.3)';
+    labelEl.style.color = 'var(--purple)';
+  } else {
+    const wo = WORKOUTS[tw.idx];
+    labelEl.textContent = 'Днес — ' + BG_DAYS[today.getDay()];
+    nameEl.textContent = wo.name;
+    focusEl.textContent = wo.focus;
+    todayCard.style.background = 'var(--green-dim)';
+    todayCard.style.borderColor = 'rgba(34,197,94,0.3)';
+    labelEl.style.color = 'var(--green)';
+  }
+
+  // Warmup
+  document.getElementById('trainWarmup').innerHTML = WARMUP_ITEMS.map((w,i) =>
+    `<div class="train-warmup-item"><div class="train-ex-num">${i+1}</div><div><strong>${w.name}</strong><br><span style="color:var(--text2)">${w.detail}</span></div></div>`
+  ).join('');
+
+  // Workout tabs
+  document.getElementById('trainWorkoutTabs').innerHTML = WORKOUTS.map((w,i) =>
+    `<div class="train-workout-tab${i===trainWorkoutIdx?' active':''}" onclick="selectTrainWorkout(${i})">${w.id}</div>`
+  ).join('');
+
+  // Workout content
+  const wo = WORKOUTS[trainWorkoutIdx];
+  document.getElementById('trainWorkoutContent').innerHTML =
+    `<div style="margin-bottom:12px"><div style="font-size:16px;font-weight:600">${wo.name}</div><div style="font-size:12px;color:var(--text2);margin-top:4px">${wo.focus}</div></div>` +
+    wo.exercises.map((ex,i) => {
+      const isOpen = openExercises[trainWorkoutIdx+'-'+i];
+      let detailHTML = '';
+      if (isOpen) {
+        detailHTML = `<div class="train-ex-detail">
+          <div class="train-ex-meta">
+            <div class="train-ex-meta-item">📊 ${ex.sets}</div>
+            <div class="train-ex-meta-item">⏱ Почивка: ${ex.rest}</div>
+          </div>
+          ${ex.note?`<p>💡 ${ex.note}</p>`:''}
+          ${ex.desc?`<p style="background:var(--bg3);padding:10px 12px;border-radius:8px;margin-top:8px;border-left:2px solid var(--amber)">${ex.desc}</p>`:''}
+        </div>`;
+      }
+      return `<div class="train-exercise${isOpen?' open':''}" onclick="toggleExercise(${trainWorkoutIdx},${i})">
+        <div class="train-ex-header">
+          <div class="train-ex-num">${i+1}</div>
+          <div class="train-ex-info">
+            <div class="train-ex-name">${ex.name}${ex.star?' ⭐':''}</div>
+            <div class="train-ex-sets">${ex.sets} · ${ex.rest}</div>
+          </div>
+          <div class="train-ex-expand">${isOpen?'▲':'▼'}</div>
+        </div>
+        ${detailHTML}
+      </div>`;
+    }).join('');
+
+  // Checklist
+  const checkLog = JSON.parse(localStorage.getItem('train_check_'+dateKey(today))||'{}');
+  document.getElementById('trainChecklist').innerHTML = TRAIN_CHECKLIST.map((item,i) => {
+    const done = checkLog[i];
+    return `<div class="train-check-item" onclick="toggleTrainCheck(${i})">
+      <div class="train-check-box${done?' done':''}"></div>
+      <div class="train-check-label${done?' done':''}">${item}</div>
+    </div>`;
+  }).join('');
+
+  // Progress table
+  const week = getTrainWeek();
+  let thHTML = '<tr><th>Упражнение</th>';
+  for (let w=1;w<=8;w++) thHTML += `<th${w===week?' style="color:var(--green)"':''}>С${w}</th>`;
+  thHTML += '</tr>';
+  const progressData = JSON.parse(localStorage.getItem('train_progress')||'{}');
+  let tbHTML = TRAIN_PROGRESS_ROWS.map(row => {
+    let cells = `<td>${row.label}</td>`;
+    for (let w=1;w<=8;w++) {
+      const val = (progressData[row.key]&&progressData[row.key][w])||'';
+      const isCurrent = w === week;
+      cells += `<td><input class="train-progress-input" ${isCurrent?'style="border-color:var(--green)"':''} value="${val}" onchange="saveTrainProgress('${row.key}',${w},this.value)" onclick="event.stopPropagation()"></td>`;
+    }
+    return `<tr>${cells}</tr>`;
+  }).join('');
+  document.getElementById('trainProgressTable').innerHTML = thHTML + tbHTML;
+
+  // Phases
+  document.getElementById('trainPhases').innerHTML =
+    `<div class="train-phase">
+      <div class="train-week-badge" style="background:var(--purple-dim);color:var(--purple)">Седмици 1–4</div>
+      <div class="train-phase-title">Фаза 1: Фундамент</div>
+      <div class="train-phase-desc">Научи движенията и укрепи кора. Фокус върху техника, не бройки. Push-up с колена е ок. Записвай повторенията.</div>
+    </div>
+    <div class="train-phase">
+      <div class="train-week-badge" style="background:var(--green-dim);color:var(--green)">Седмици 5–8</div>
+      <div class="train-phase-title">Фаза 2: Изграждане</div>
+      <div class="train-phase-desc">Push-up: +2–3 повт. • Glute Bridge → Single-leg • Plank: до 45–60 сек • Dead Bug: +2 повт./стр. • Squat: pause 3 сек долу</div>
+    </div>`;
+}
+
+function selectTrainWorkout(i) { trainWorkoutIdx = i; renderTraining(); }
+function toggleExercise(wi, ei) { const k=wi+'-'+ei; openExercises[k]=!openExercises[k]; renderTraining(); }
+function toggleTrainCheck(i) {
+  const k='train_check_'+dateKey(today);
+  const log=JSON.parse(localStorage.getItem(k)||'{}');
+  log[i]=!log[i]; localStorage.setItem(k,JSON.stringify(log)); renderTraining();
+}
+function saveTrainProgress(key,week,val) {
+  const d=JSON.parse(localStorage.getItem('train_progress')||'{}');
+  if(!d[key])d[key]={}; d[key][week]=val;
+  localStorage.setItem('train_progress',JSON.stringify(d));
+}
+
 // ─── TAB SWITCHING ────────────────────────────────────────────────────────────
 function switchTab(name,btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -858,6 +1165,7 @@ function switchTab(name,btn){
   if(name==='monthly')renderMonthly();
   if(name==='habits')renderHabits();
   if(name==='food')renderFood();
+  if(name==='training')renderTraining();
   if(name==='dashboard')renderDashboard();
 }
 
