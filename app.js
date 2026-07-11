@@ -75,6 +75,7 @@ let openMeal = null, openEx = null, addingTask = false, editHabits = false, edit
 let editingTask = null;         // id на ръчна задача в режим редакция
 let editingExtra = null;        // id на допълнителен артикул от пазара в режим редакция
 let editingShopItem = null;     // id на продукт от месечния пазарски списък в режим редакция
+let editingPlanItem = null;     // id на вграден елемент от "Планът за деня" в режим редакция
 let scrollToNow = true;         // еднократен автоскрол до текущия час в "Днес"
 let pendingScroll = null;       // id (data-scroll) към който да се скролне след следващия render()
 let lastTab = "today";          // за плавния преход между табове
@@ -89,7 +90,7 @@ function migrateReading(st) {
   return st;
 }
 function loadState() {
-  const empty = { checks:{}, refl:{}, tasks:{}, weights:{}, shopping:{}, shopExtra:{}, shopEdits:{}, edits:{}, reading:{},
+  const empty = { checks:{}, refl:{}, tasks:{}, weights:{}, shopping:{}, shopExtra:{}, shopEdits:{}, planEdits:{}, edits:{}, reading:{},
     habitsGood: DEFAULT_HABITS_GOOD.slice(), habitsBad: DEFAULT_HABITS_BAD.slice() };
   try {
     let raw = localStorage.getItem(LS_KEY);
@@ -519,30 +520,32 @@ function viewToday() {
   tasks.forEach((tk) => items.push({
     custom:true, task:tk, id:"task"+tk.id, time:tk.time||"",
     t:tk.t, s:tk.time?"твоя задача":"твоя задача · без час", ico:tk.ico||detectTaskIcon(tk.t) }));
+  // корекции на вградените елементи за този ден (текст/час) — пазят се върху плана
+  const pe = state.planEdits[key]||{};
+  items.forEach((e) => {
+    if (e.custom) return;
+    e.origT = e.t; e.origTime = e.time;
+    const ov = pe[e.id];
+    if (ov) { if (ov.t) e.t = ov.t; if (ov.time) e.time = ov.time; }
+  });
   items.sort((a,b) => parseTimeMin(a.time) - parseTimeMin(b.time)); // стабилно: равни часове пазят реда
   const icoMap = { habit:"habit", food:"bowl", train:"train", cam:"cam", info:"chev" };
 
   const statEls = [];
   const stat = (val,lbl) => { const b = h("b",null,"0"); statEls.push([b,val]); return h("div",{class:"stat"},b,h("span",null,lbl)); };
-  const allHabits = [...state.habitsGood, ...state.habitsBad];
-  const habitChip = (hb) => {
-    const isRead = hb.id === READING_ID;
-    const b = h("b",null,"0");
-    statEls.push([b, isRead ? totalPages() : habitCount(hb.id)]);
-    return h("div",{class:"habitChip"}, b, h("span",null, isRead ? "прочетени стр" : hb.name));
-  };
 
   const sec = h("section", null,
     h("div",{class:"quoteBan"}, h("b",null,"ЦИТАТ НА СЕДМИЦАТА"),
       h("p",{class:"quoteTxt"},`„${quote.t}“`),
       h("span",{class:"quoteAuthor"},"— "+quote.a)),
-    h("div",{class:"stats"}, stat(tot.workouts,"тренировки"), stat(tot.meals,"хранения"), stat(tot.videos,"видеа"), stat(tot.refls,"рефлексии")),
-    allHabits.length ? h("div",{class:"habitChips"}, allHabits.map(habitChip)) : null,
+    h("div",{class:"stats"}, stat(tot.workouts,"тренировки"), stat(tot.meals,"хранения"), stat(totalPages(),"прочетени стр"), stat(tot.refls,"рефлексии")),
     h("h2",{class:"secT"},"Планът за деня"),
     h("div",{class:"tl"},
       items.map((e) => {
+        if (!e.custom && editingPlanItem === e.id) return planItemForm(key, e);
         if (e.k==="info")
-          return h("div",{class:"tlInfo","data-time":e.time}, h("span",{class:"tlTime"},e.time), h("span",null,e.t));
+          return h("div",{class:"tlInfo","data-time":e.time}, h("span",{class:"tlTime"},e.time), h("span",null,e.t),
+            h("button",{class:"del","aria-label":"Редактирай",onclick:()=>{editingPlanItem=e.id;editingTask=null;addingTask=false;render();}},icon("edit",13)));
         if (e.k==="rest")
           return h("div",{class:"tlItem restRow","data-time":e.time},
             h("span",{class:"tlTime"},e.time),
@@ -574,6 +577,7 @@ function viewToday() {
             h("button",{class:"tlBody",onclick:()=>{ if(e.nav) goToPlan(e.nav[1], e.id); }},
               h("span",{class:"tlT"},e.t),
               e.s ? h("span",{class:"tlS"},e.s) : null),
+            h("button",{class:"del","aria-label":"Редактирай",onclick:()=>{editingPlanItem=e.id;editingTask=null;addingTask=false;render();}},icon("edit",14)),
             e.id==="__workout"
               ? checkBtn(e.done,()=>goToPlan("train","__workout"))
               : checkBtn(!!o[e.id],()=>toggleCheck(e.id)));
@@ -587,10 +591,33 @@ function viewToday() {
         onclick:(ev)=>{ if((k.rate||0)<e) burst(ev.clientX,ev.clientY); setRefl({rate:k.rate===e?0:e}); render(); }},icon("flame",24)))),
       reflArea("Какво проработи",k.plus,"Едно нещо, което свърши работа днес…",(v)=>setRefl({plus:v})),
       reflArea("Какво не проработи",k.minus,"Без извинения — какво се разпадна…",(v)=>setRefl({minus:v})),
-      reflArea("Бележка към бъдещия ти",k.note,"Мисъл, идея за контент, каквото и да ��…",(v)=>setRefl({note:v}))));
+      reflArea("Бележка към бъдещия ти",k.note,"Мисъл, идея за контент, каквото и да е…",(v)=>setRefl({note:v}))));
 
   requestAnimationFrame(()=>statEls.forEach(([el,v])=>countUp(el,v)));
   return sec;
+}
+// редакция на вграден елемент от плана за деня (текст + час, само за този ден)
+function planItemForm(key, e) {
+  const inp = h("input",{class:"inp",value:e.t,"aria-label":"Текст на елемента"});
+  const time = h("input",{class:"inp time",type:"time","aria-label":"Час",value:e.time||""});
+  const hasOverride = !!(state.planEdits[key]||{})[e.id];
+  const saveIt = () => {
+    const t = inp.value.trim(); if (!t) return;
+    const m = { ...(state.planEdits[key]||{}) };
+    if (t === e.origT && (time.value||"") === e.origTime) delete m[e.id];
+    else m[e.id] = { t: t===e.origT ? "" : t, time: (time.value||"")===e.origTime ? "" : time.value };
+    state.planEdits = { ...state.planEdits, [key]: m };
+    editingPlanItem = null; save(); render();
+  };
+  inp.addEventListener("keydown",(ev)=>ev.key==="Enter"&&saveIt());
+  return h("div",{class:"addForm"},inp,time,
+    h("button",{class:"btn",onclick:saveIt},"Запази"),
+    hasOverride?h("button",{class:"btnGhost",onclick:()=>{
+      const m={...(state.planEdits[key]||{})}; delete m[e.id];
+      state.planEdits={...state.planEdits,[key]:m};
+      editingPlanItem=null; save(); render();
+    }},"Оригинал"):null,
+    h("button",{class:"btnGhost",onclick:()=>{editingPlanItem=null;render();}},"Откажи"));
 }
 function reflArea(label,val,ph,onInput) {
   return [h("span",{class:"lbl"},label),
@@ -986,7 +1013,7 @@ function importData() {
       try{
         const s=JSON.parse(rd.result);
         if(!s.checks&&!s.refl&&!s.tasks)throw 0;
-        state={checks:s.checks||{},refl:s.refl||{},tasks:s.tasks||{},weights:s.weights||{},shopping:s.shopping||{},shopExtra:s.shopExtra||{},shopEdits:s.shopEdits||{},edits:s.edits||{},reading:s.reading||{},
+        state={checks:s.checks||{},refl:s.refl||{},tasks:s.tasks||{},weights:s.weights||{},shopping:s.shopping||{},shopExtra:s.shopExtra||{},shopEdits:s.shopEdits||{},planEdits:s.planEdits||{},edits:s.edits||{},reading:s.reading||{},
           habitsGood:s.habitsGood||DEFAULT_HABITS_GOOD.slice(),habitsBad:s.habitsBad||DEFAULT_HABITS_BAD.slice()};
         migrateReading(state); save(); render();
       }catch(e){alert("Файлът не е валидно резервно копие на Жарава.");}
@@ -1216,7 +1243,7 @@ function goToPlan(sub, itemId) {
 }
 function navDay(delta) {
   const a = addDays(cur,delta);
-  if (a>=START&&a<=END){cur=a;openMeal=null;openEx=null;editPlan=false;editingTask=null;addingTask=false;render();}
+  if (a>=START&&a<=END){cur=a;openMeal=null;openEx=null;editPlan=false;editingTask=null;addingTask=false;editingPlanItem=null;render();}
 }
 
 function render() {
@@ -1240,7 +1267,7 @@ function render() {
             h("input",{type:"date",class:"dateInputOverlay",min:dk(START),max:dk(END),value:key,"aria-label":"Избери дата",
               onchange:(e)=>{ if(!e.target.value)return;
                 cur=clampDate(new Date(e.target.value+"T00:00:00"));
-                openMeal=null;openEx=null;editPlan=false;render(); }}),
+                openMeal=null;openEx=null;editPlan=false;editingTask=null;addingTask=false;editingPlanItem=null;render(); }}),
             h("strong",null,DOW[cur.getDay()]),
             h("span",null,`${cur.getDate()} ${MON[cur.getMonth()]} · ${workday?"работен ден":"почивен ден"}`)),
           h("button",{class:"navBtn","aria-label":"Следващ ден",disabled:key===dk(END),onclick:()=>navDay(1)},icon("chev",16))),
@@ -1254,7 +1281,7 @@ function render() {
   const nav = h("nav",{class:"nav"},
     [["today","flame","Днес"],["plan","bowl","План"],["shop","cart","Пазар"],["calendar","cal","Календар"],["habits","habit","Навици"],["progress","chart","Прогрес"]]
       .map(([id,ic,lbl])=>h("button",{class:`navTab ${tab===id?"act":""}`,
-        onclick:()=>{tab=id;editPlan=false;editingTask=null;addingTask=false;editingExtra=null;editingShopItem=null;
+        onclick:()=>{tab=id;editPlan=false;editingTask=null;addingTask=false;editingExtra=null;editingShopItem=null;editingPlanItem=null;
           if(id==="calendar")calMonth=mk(cur);
           if(id==="today")scrollToNow=true;
           render();window.scrollTo(0,0);}},
@@ -1324,7 +1351,7 @@ const FB_CONFIG = {
 // ▲▲▲ Само това трябва да попълниш. Останалото е автоматично. ▲▲▲
 
 const CLOUD_COL = "zharava", CLOUD_DOC = "state";
-const MAP_FIELDS = ["checks","refl","tasks","weights","shopping","shopExtra","shopEdits","edits","reading"];
+const MAP_FIELDS = ["checks","refl","tasks","weights","shopping","shopExtra","shopEdits","planEdits","edits","reading"];
 let cloudDb = null, cloudOn = false, cloudPushTimer = null;
 
 // Обединява две състояния: по-новото печели при конфликт,
