@@ -73,6 +73,7 @@ let planSub = "food";            // под-таб на План: food | train | 
 let calMonth = mk(cur);          // показван месец в календара
 let openMeal = null, openEx = null, addingTask = false, editHabits = false, editPlan = false;
 let editingTask = null;         // id на ръчна задача в режим редакция
+let editingExtra = null;        // id на допълнителен артикул от пазара в режим редакция
 let scrollToNow = true;         // еднократен автоскрол до текущия час в "Днес"
 let pendingScroll = null;       // id (data-scroll) към който да се скролне след следващия render()
 let lastTab = "today";          // за плавния преход между табове
@@ -554,7 +555,8 @@ function viewToday() {
           return h("div",{class:`tlItem custom ${tk.done?"done":""}`,"data-time":e.time},
             h("span",{class:"tlTime"},tk.time||"—"),
             h("div",{class:"tlIco emoji","aria-hidden":"true"},e.ico),
-            h("div",{class:"tlBody"},h("span",{class:"tlT"},tk.t),h("span",{class:"tlS"},e.s)),
+            h("button",{class:"tlBody","aria-label":"Редактирай задача",onclick:()=>{ editingTask=tk.id; addingTask=false; render(); }},
+              h("span",{class:"tlT"},tk.t),h("span",{class:"tlS"},e.s)),
             h("button",{class:"del","aria-label":"Редактирай задача",onclick:()=>{ editingTask=tk.id; addingTask=false; render(); }},icon("edit",14)),
             checkBtn(tk.done,()=>{ state.tasks[key]=tasks.map((t)=>t.id===tk.id?{...t,done:!t.done}:t); save(); render(); }),
             h("button",{class:"del","aria-label":"Изтрий задача",onclick:()=>{
@@ -1134,13 +1136,30 @@ function shopExtraSection(shopKey, extra) {
   return h("div",null,
     h("h3",{class:"shopTripT"},"Допълнително ",h("span",{class:"secHint"},"твои неща или молба от близък")),
     h("div",{class:"card"},
-      extra.length ? extra.map((it)=>
-        h("div",{class:`shopItem extra ${it.done?"on":""}`},
+      extra.length ? extra.map((it)=>{
+        if (editingExtra === it.id) return extraForm(shopKey, it);
+        return h("div",{class:`shopItem extra ${it.done?"on":""}`},
           checkBtn(!!it.done,()=>toggleExtra(it.id),true),
           h("span",null, it.t, it.who?h("i",{class:"shopWho"},` · ${it.who}`):null),
-          h("button",{class:"del","aria-label":"Изтрий артикул",onclick:()=>delExtra(it.id)},icon("x",13)))
-      ) : h("p",{class:"secS",style:"margin:0 0 10px"},"Все още няма добавени артикули — впиши каквото ти трябва (или каквото поиска половинката ти)."),
+          h("button",{class:"del","aria-label":"Редактирай артикул",onclick:()=>{editingExtra=it.id;render();}},icon("edit",14)),
+          h("button",{class:"del","aria-label":"Изтрий артикул",onclick:()=>delExtra(it.id)},icon("x",13)));
+      }) : h("p",{class:"secS",style:"margin:0 0 10px"},"Все още няма добавени артикули — впиши каквото ти трябва (или каквото поиска половинката ти)."),
       h("div",{class:"addForm"}, inp, who, h("button",{class:"btn",onclick:add},"Добави"))));
+}
+// редакция на вече добавен допълнителен артикул (текст + от кого)
+function extraForm(shopKey, existing) {
+  const inp = h("input",{class:"inp",placeholder:"Артикул…",value:existing.t});
+  const who = h("input",{class:"inp",style:"flex:0 0 128px;min-width:96px",placeholder:"от кого? (по избор)",value:existing.who||""});
+  const saveIt = () => {
+    const t = inp.value.trim(); if (!t) return;
+    state.shopExtra = { ...state.shopExtra, [shopKey]: (state.shopExtra[shopKey]||[]).map((x)=>x.id===existing.id?{...x,t,who:who.value.trim()}:x) };
+    editingExtra = null; save(); render();
+  };
+  inp.addEventListener("keydown",(e)=>e.key==="Enter"&&saveIt());
+  who.addEventListener("keydown",(e)=>e.key==="Enter"&&saveIt());
+  return h("div",{class:"addForm"}, inp, who,
+    h("button",{class:"btn",onclick:saveIt},"Запази"),
+    h("button",{class:"btnGhost",onclick:()=>{editingExtra=null;render();}},"Откажи"));
 }
 
 /* ---------- рамка ---------- */
@@ -1184,7 +1203,7 @@ function render() {
   const chevLeft = h("span",{style:"transform:rotate(180deg);display:inline-flex"},icon("chev",16));
   const header = h("header",{class:"hdr"},
     h("div",{class:"hdrTop"},
-      h("div",{class:"brand"},icon("flame",16),h("span",{class:"brandTxt"},"ХЪСЪЛ")),
+      h("div",{class:"brand"},h("img",{class:"brandLogo",src:"icon-192.png",alt:"",width:26,height:26}),h("span",{class:"brandTxt"},"ХЪСЪЛ")),
       h("span",{class:`sync ${syncLbl.indexOf("грешка")===0?"err":""}`},syncLbl)),
     h("div",{class:"hdrMain"},
       ring(Math.max(pct,0.02),day),
@@ -1209,7 +1228,7 @@ function render() {
   const nav = h("nav",{class:"nav"},
     [["today","flame","Днес"],["plan","bowl","План"],["shop","cart","Пазар"],["calendar","cal","Календар"],["habits","habit","Навици"],["progress","chart","Прогрес"]]
       .map(([id,ic,lbl])=>h("button",{class:`navTab ${tab===id?"act":""}`,
-        onclick:()=>{tab=id;editPlan=false;editingTask=null;addingTask=false;
+        onclick:()=>{tab=id;editPlan=false;editingTask=null;addingTask=false;editingExtra=null;
           if(id==="calendar")calMonth=mk(cur);
           if(id==="today")scrollToNow=true;
           render();window.scrollTo(0,0);}},

@@ -55,7 +55,9 @@
    bg-embers.webp
    sw.js
    manifest.webmanifest
-   icon.svg
+   icon-192.png
+   icon-512.png
+   apple-touch-icon.png
    README.md
    ```
 3. Settings → Pages → Deploy from a branch → main / (root) → Save.
