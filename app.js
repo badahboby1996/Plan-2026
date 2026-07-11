@@ -1407,6 +1407,15 @@ prevPct = dayScore(cur);
 initEmbers();
 render();
 initCloud();
+// приложението е рендирано -> splash екранът избледнява и се маха
+(function hideSplash() {
+  const sp = document.getElementById("splash");
+  if (!sp) return;
+  requestAnimationFrame(() => setTimeout(() => {
+    sp.classList.add("hide");
+    setTimeout(() => sp.remove(), 500);
+  }, 150));
+})();
 })();
 
 
