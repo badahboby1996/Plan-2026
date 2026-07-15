@@ -383,11 +383,15 @@ function countUp(el, target, from = 0) {
 const dayChecks = (key) => state.checks[key] || {};
 function dayScore(dateObj) {
   const key = dk(dateObj), o = dayChecks(key);
+  const workday = isWorkday(dateObj);
   const w = workoutFor(dateObj);
   const parts = [!!o.wake];
   if (w) parts.push(w.ex.every((_,i)=>o[`ex${i}`]));
+  parts.push(!!o.skill);                       // блокът умения/AI проекти го има всеки ден
+  if (!workday) parts.push(!!o.skillPm);       // почивен ден: и следобеден блок
   const meals = mealsFor(dateObj);
   if (meals) for (let i=0;i<meals.length;i++) parts.push(!!o[`meal${i}`]);
+  if (workday && meals) parts.push(!!o.family); // готвене / време с детето след прибиране
   parts.push(!!o.evening);
   (state.tasks[key]||[]).forEach((t)=>parts.push(!!t.done));
   return parts.filter(Boolean).length / parts.length;
@@ -499,19 +503,19 @@ function viewToday() {
   if (workday) {
     // работен ден: кардиото е веднага след ставане, домашната тренировка — след блока за умения
     if (w && isCardio) {
-      items.push({ id:"__workout", time:"06:05", t:`Тренировка · ${w.t}`, s:`${w.dur} мин · ${P}/${N} упражнения · приключи до 07:00`, k:"train", nav:["plan","train"], done:workoutDone });
-      items.push({ id:"__skill", time:"07:00", t:"Умения / AI проекти", s:"развиване на умения · до 08:00", k:"info" });
+      items.push({ id:"__workout", time:"06:05", t:`Тренировка · ${w.t}`, s:`${w.dur} мин · ${P}/${N} упражнения`, k:"train", nav:["plan","train"], done:workoutDone });
+      items.push({ id:"skill", time:"07:00", t:"Умения / AI проекти", k:"habit" });
     } else if (w) {
-      items.push({ id:"__skill", time:"06:05", t:"Умения / AI проекти", s:"работа по проектите · до 07:00", k:"info" });
-      items.push({ id:"__workout", time:"07:00", t:`Тренировка · ${w.t}`, s:`${w.dur} мин · ${P}/${N} упражнения · до 08:00`, k:"train", nav:["plan","train"], done:workoutDone });
+      items.push({ id:"skill", time:"06:05", t:"Умения / AI проекти", k:"habit" });
+      items.push({ id:"__workout", time:"07:00", t:`Тренировка · ${w.t}`, s:`${w.dur} мин · ${P}/${N} упражнения`, k:"train", nav:["plan","train"], done:workoutDone });
     } else {
-      items.push({ id:"__skill", time:"06:05", t:"Умения / AI проекти", s:"развиване на умения · до 08:00", k:"info" });
+      items.push({ id:"skill", time:"06:05", t:"Умения / AI проекти", k:"habit" });
     }
   } else {
-    // почивен ден (неделя/понеделник): сутрешен блок до ~09:00 + следобеден, докато детето спи
+    // почивен ден (неделя/понеделник): сутрешен блок + следобеден, докато детето спи
     if (w) items.push({ id:"__workout", time:"06:15", t:`Тренировка · ${w.t}`, s:`${w.dur} мин · ${P}/${N} упражнения`, k:"train", nav:["plan","train"], done:workoutDone });
-    items.push({ id:"__skill", time:w?"07:00":"06:15", t:"Умения / AI проекти · сутрешен блок", s:"до ~09:00", k:"info" });
-    items.push({ id:"__skillPm", time:"15:30", t:"Умения / AI проекти · следобеден блок", s:"докато детето спи · до ~18:00–18:30", k:"info" });
+    items.push({ id:"skill", time:w?"07:00":"06:15", t:"Умения / AI проекти · сутрешен блок", k:"habit" });
+    items.push({ id:"skillPm", time:"15:30", t:"Умения / AI проекти · следобеден блок", s:"докато детето спи", k:"habit" });
   }
   if (meals) {
     const times = ["08:00","13:00","16:30",workday?"20:00":"19:30"];
@@ -521,7 +525,7 @@ function viewToday() {
       if (i===0 && workday) items.push({ id:"__leave", time:"09:10", t:"Тръгване за работа", k:"info" });
       if (i===2 && workday) {
         items.push({ id:"__home", time:"19:30", t:"Прибиране", k:"info" });
-        items.push({ id:"__family", time:"19:35", t:"Готвене / време с детето", k:"info" });
+        items.push({ id:"family", time:"19:35", t:"Готвене / време с детето", k:"habit" });
       }
     });
   }
