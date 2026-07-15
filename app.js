@@ -81,7 +81,7 @@ let pendingScroll = null;       // id (data-scroll) към който да се 
 let lastTab = "today";          // за плавния преход между табове
 let toastTimer = null;
 let saveTimer = null, syncLbl = "локално";
-let prevPct = 0;
+let statShown = null;           // последно показаните стойности в лентата със статистики (за да не се превъртат наново)
 
 // изчиства старото фиксирано „20 страници“ име, за да стане навикът брояч на страници
 function migrateReading(st) {
@@ -366,13 +366,15 @@ function bigCelebration() {
   for (let i=0;i<70;i++) setTimeout(() => burst(Math.random()*W, window.innerHeight*0.25+Math.random()*90), i*12);
 }
 
-/* ---------- count-up за статистики ---------- */
-function countUp(el, target) {
-  if (REDUCED) { el.textContent = String(target); return; }
+/* ---------- count-up за статистики ----------
+   Анимира от предишната стойност до новата. При еднакви стойности не се
+   анимира нищо — така лентата не се "превърта" при всяко опресняване. */
+function countUp(el, target, from = 0) {
+  if (REDUCED || from === target) { el.textContent = String(target); return; }
   const dur = 600, t0 = performance.now();
   (function step(t) {
     const k = Math.min(1,(t-t0)/dur), e = 1-Math.pow(1-k,3);
-    el.textContent = String(Math.round(target*e));
+    el.textContent = String(Math.round(from + (target-from)*e));
     if (k<1) requestAnimationFrame(step);
   })(t0);
 }
@@ -432,14 +434,13 @@ function setReadPages(key, val) {
 }
 function toggleCheck(id) {
   const key = dk(cur);
+  const before = dayScore(cur);
   const t = { ...dayChecks(key) };
   if (t[id]) delete t[id]; else t[id] = true;
   state.checks = { ...state.checks, [key]: t };
   save();
-  const pct = dayScore(cur);
-  render();
-  if (pct >= 0.999 && prevPct < 0.999) bigCelebration();
-  prevPct = pct;
+  refreshView(); // само текущата секция + процентът горе — не цялата страница
+  if (dayScore(cur) >= 0.999 && before < 0.999) bigCelebration();
 }
 function setRefl(patch) {
   const key = dk(cur);
@@ -541,13 +542,13 @@ function viewToday() {
   const icoMap = { habit:"habit", food:"bowl", train:"train", cam:"cam", info:"chev" };
 
   const statEls = [];
-  const stat = (val,lbl) => { const b = h("b",null,"0"); statEls.push([b,val]); return h("div",{class:"stat"},b,h("span",null,lbl)); };
+  const stat = (id,val,lbl) => { const b = h("b",null,statShown?String(val):"0"); statEls.push([b,id,val]); return h("div",{class:"stat"},b,h("span",null,lbl)); };
 
   const sec = h("section", null,
     h("div",{class:"quoteBan"}, h("b",null,"ЦИТАТ НА СЕДМИЦАТА"),
       h("p",{class:"quoteTxt"},`„${quote.t}“`),
       h("span",{class:"quoteAuthor"},"— "+quote.a)),
-    h("div",{class:"stats"}, stat(tot.workouts,"тренировки"), stat(tot.meals,"хранения"), stat(totalPages(),"прочетени стр"), stat(tot.refls,"рефлексии")),
+    h("div",{class:"stats"}, stat("w",tot.workouts,"тренировки"), stat("m",tot.meals,"хранения"), stat("p",totalPages(),"прочетени стр"), stat("r",tot.refls,"рефлексии")),
     h("h2",{class:"secT"},"Планът за деня"),
     h("div",{class:"tl"},
       items.map((e) => {
@@ -571,7 +572,7 @@ function viewToday() {
             h("button",{class:"tlBody","aria-label":"Редактирай задача",onclick:()=>{ editingTask=tk.id; addingTask=false; render(); }},
               h("span",{class:"tlT"},tk.t),h("span",{class:"tlS"},e.s)),
             h("button",{class:"del","aria-label":"Редактирай задача",onclick:()=>{ editingTask=tk.id; addingTask=false; render(); }},icon("edit",14)),
-            checkBtn(tk.done,()=>{ state.tasks[key]=tasks.map((t)=>t.id===tk.id?{...t,done:!t.done}:t); save(); render(); }),
+            checkBtn(tk.done,()=>{ state.tasks[key]=tasks.map((t)=>t.id===tk.id?{...t,done:!t.done}:t); save(); refreshView(); }),
             h("button",{class:"del","aria-label":"Изтрий задача",onclick:()=>{
               const removed = tk;
               state.tasks[key]=tasks.filter((t)=>t.id!==tk.id); save(); render();
@@ -602,7 +603,11 @@ function viewToday() {
       reflArea("Какво не проработи",k.minus,"Без извинения — какво се разпадна…",(v)=>setRefl({minus:v})),
       reflArea("Бележка към бъдещия ти",k.note,"Мисъл, идея за контент, каквото и да е…",(v)=>setRefl({note:v}))));
 
-  requestAnimationFrame(()=>statEls.forEach(([el,v])=>countUp(el,v)));
+  requestAnimationFrame(()=>{
+    const prev = statShown;
+    statEls.forEach(([el,id,v])=>countUp(el, v, prev ? (prev[id]||0) : 0));
+    statShown = {}; statEls.forEach(([,id,v])=>{ statShown[id]=v; });
+  });
   return sec;
 }
 // редакция на вграден елемент от плана за деня (текст + час, само за този ден)
@@ -982,8 +987,8 @@ function viewHabits() {
     const inp = h("input",{class:"pageInp",type:"number",inputmode:"numeric",min:"0",placeholder:"0",value:pages||"","aria-label":"Прочетени страници днес"});
     const refresh = ()=>{ totalNode.textContent = `днес ${readPages(key)} стр · общо ${totalPages()} страници`; };
     inp.addEventListener("input",()=>{ setReadPages(key, parseInt(inp.value,10)||0); refresh(); });
-    inp.addEventListener("change",()=>render());
-    const step = (d)=>{ const nv=Math.max(0,(parseInt(inp.value,10)||0)+d); inp.value=nv||""; setReadPages(key,nv); render(); };
+    inp.addEventListener("change",()=>refreshView());
+    const step = (d)=>{ const nv=Math.max(0,(parseInt(inp.value,10)||0)+d); inp.value=nv||""; setReadPages(key,nv); refreshView(); };
     return h("div",{class:`card habitRow reading ${kind==="bad"?"bad":""} ${pages>0?"done":""}`},
       h("div",{class:"habL"},
         h("span",{class:"habN"},e.name),
@@ -1084,7 +1089,7 @@ function viewShop() {
   const shopChecks = state.shopping[shopKey]||{};
   const toggleShop = (id) => {
     const t={...shopChecks}; if(t[id])delete t[id]; else t[id]=true;
-    state.shopping={...state.shopping,[shopKey]:t}; save(); render();
+    state.shopping={...state.shopping,[shopKey]:t}; save(); refreshView();
   };
   const extra = state.shopExtra[shopKey]||[];
 
@@ -1134,7 +1139,7 @@ function shopExtraSection(shopKey, extra) {
   who.addEventListener("keydown",(e)=>e.key==="Enter"&&add());
   const toggleExtra = (id) => {
     state.shopExtra = { ...state.shopExtra, [shopKey]: (state.shopExtra[shopKey]||[]).map((x)=>x.id===id?{...x,done:!x.done}:x) };
-    save(); render();
+    save(); refreshView();
   };
   const delExtra = (id) => {
     const removed = extra.find((x)=>x.id===id);
@@ -1180,7 +1185,7 @@ function ring(pct,day) {
   const wrap = h("div",{class:"ring"});
   const sv = svgEl("svg",{width:72,height:72,viewBox:"0 0 72 72"});
   sv.appendChild(svgEl("circle",{cx:36,cy:36,r:26,fill:"none",stroke:"var(--line)","stroke-width":5}));
-  const arc = svgEl("circle",{cx:36,cy:36,r:26,fill:"none",stroke:"url(#emberGrad)","stroke-width":5,"stroke-linecap":"round",
+  const arc = svgEl("circle",{class:"ringArc",cx:36,cy:36,r:26,fill:"none",stroke:"url(#emberGrad)","stroke-width":5,"stroke-linecap":"round",
     "stroke-dasharray":C,"stroke-dashoffset":C*(1-pct),transform:"rotate(-90 36 36)"});
   arc.style.transition="stroke-dashoffset .6s cubic-bezier(.22,1,.36,1)";
   if(pct>0)arc.style.filter="drop-shadow(0 0 5px rgba(255,77,20,.55))";
@@ -1203,6 +1208,29 @@ function goToPlan(sub, itemId) {
 function navDay(delta) {
   const a = addDays(cur,delta);
   if (a>=START&&a<=END){cur=a;openMeal=null;openEx=null;editPlan=false;editingTask=null;addingTask=false;editingPlanItem=null;render();}
+}
+
+const VIEWS = { today:viewToday, plan:viewPlan, shop:viewShop, calendar:viewCalendar, habits:viewHabits, progress:viewProgress };
+
+/* Частично опресняване: престроява само съдържанието на текущия таб и
+   обновява прогреса в заглавката. Заглавката, навигацията и другите
+   секции не се пипат — така отметките не "рефрешват" цялата страница. */
+function refreshView() {
+  const main = document.querySelector("main.main");
+  if (!main) { render(); return; }
+  main.replaceChildren(VIEWS[tab]());
+  updateHeaderProgress();
+}
+function updateHeaderProgress() {
+  const pct = dayScore(cur);
+  document.documentElement.style.setProperty("--glow",pct.toFixed(2));
+  const arc = document.querySelector(".ringArc");
+  if (arc) {
+    arc.setAttribute("stroke-dashoffset", 2*Math.PI*26*(1-Math.max(pct,0.02)));
+    if (pct>0) arc.style.filter = "drop-shadow(0 0 5px rgba(255,77,20,.55))";
+  }
+  const p = document.querySelector(".pct");
+  if (p) p.textContent = `${Math.round(pct*100)}% от деня`;
 }
 
 function render() {
@@ -1234,8 +1262,7 @@ function render() {
           h("span",{class:"pct"},`${Math.round(pct*100)}% от деня`),
           !isToday?h("button",{class:"todayBtn",onclick:()=>{cur=clampDate(new Date());scrollToNow=true;render();}},"към днес"):null))));
 
-  const views = { today:viewToday, plan:viewPlan, shop:viewShop, calendar:viewCalendar, habits:viewHabits, progress:viewProgress };
-  const main = h("main",{class:`main ${tab!==lastTab?"viewIn":""}`},views[tab]());
+  const main = h("main",{class:`main ${tab!==lastTab?"viewIn":""}`},VIEWS[tab]());
   lastTab = tab;
   const nav = h("nav",{class:"nav"},
     [["today","flame","Днес"],["plan","bowl","План"],["shop","cart","Пазар"],["calendar","cal","Календар"],["habits","habit","Навици"],["progress","chart","Прогрес"]]
@@ -1352,7 +1379,6 @@ function initCloud() {
       if (changedLocal) {
         state = merged;
         try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {}
-        prevPct = dayScore(cur);
         render();
       }
       if (changedRemote) { state.updatedAt = Date.now(); cloudPush(true); } // върни в облака записи, които имаше само тук
@@ -1362,7 +1388,6 @@ function initCloud() {
 }
 
 setSync("запазено");
-prevPct = dayScore(cur);
 initEmbers();
 render();
 initCloud();
