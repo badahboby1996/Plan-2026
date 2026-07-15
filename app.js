@@ -1247,7 +1247,7 @@ function render() {
   const chevLeft = h("span",{style:"transform:rotate(180deg);display:inline-flex"},icon("chev",16));
   const header = h("header",{class:"hdr"},
     h("div",{class:"hdrTop"},
-      h("div",{class:"brand"},h("img",{class:"brandLogo",src:"logo-fist.png",alt:"",width:26,height:26}),h("span",{class:"brandTxt"},"ХЪСЪЛ")),
+      h("div",{class:"brand"},h("img",{class:"brandLogo",src:"logo-mark.png",alt:"",width:26,height:26}),h("span",{class:"brandTxt"},"ХЪСЪЛ")),
       h("span",{class:`sync ${syncLbl.indexOf("грешка")===0?"err":""}`},syncLbl)),
     h("div",{class:"hdrMain"},
       ring(Math.max(pct,0.02),day),
