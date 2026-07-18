@@ -1097,6 +1097,44 @@ function viewHabits() {
     editHabits?addRow("bad","Нов навик за премахване"):null);
 }
 
+/* ---------- иконки за продуктите в пазарския списък (декоративни) ---------- */
+const SHOP_ICONS = [
+  ["🍗", ["пилешко","бутчета","пуешко","пиле"]],
+  ["🥩", ["телешк","кюфте"]],
+  ["🐟", ["риба","сьомга","тон","скумрия"]],
+  ["🥚", ["яйца"]],
+  ["🥛", ["мляко","айрян","извара","сирене"]],
+  ["🍞", ["хляб","филии","филия"]],
+  ["🥬", ["зелен боб"]],
+  ["🍅", ["домати","чери"]],
+  ["🥒", ["краставиц"]],
+  ["🫑", ["чушки"]],
+  ["🥔", ["картоф"]],
+  ["🍆", ["патладжан","тиквич"]],
+  ["🍄", ["гъби"]],
+  ["🧅", ["лук","чесън","магданоз"]],
+  ["🍑", ["праскови","кайси","нектарин"]],
+  ["🍌", ["банан"]],
+  ["🥑", ["авокадо"]],
+  ["🍓", ["ягоди","боровинки","горски"]],
+  ["🍉", ["диня","пъпеш"]],
+  ["🍎", ["ябълк"]],
+  ["🍋", ["лимон"]],
+  ["🥜", ["орехи","бадеми","кашу","фъстъч","ядки"]],
+  ["🥣", ["овесени","киноа","булгур","оризовки","ориз"]],
+  ["🫘", ["боб"]],
+  ["🫒", ["маслини","зехтин"]],
+  ["🍯", ["мед"]],
+  ["🍫", ["шоколад"]],
+  ["🍦", ["сладолед","бисквит"]],
+  ["🌿", ["подправки","канела","риган","паприка","кимион","чили"]],
+];
+function shopIcon(text) {
+  const t = (text||"").toLowerCase();
+  for (const [e,kws] of SHOP_ICONS) for (const k of kws) if (t.includes(k)) return e;
+  return "🛒";
+}
+
 /* ---------- ПАЗАР (интерактивен списък, разделен на 2 пазарувания в седмицата) ---------- */
 const SHOP_TRIPS = [
   { id:1, label:"Пазаруване 1 · началото на седмицата", hint:"трайни продукти + прясно за първите дни" },
@@ -1114,6 +1152,7 @@ function shopCard(groups, shopChecks, toggleShop, mKey) {
         if (editingShopItem === id) return shopItemForm(mKey, id, text, it);
         return h("div",{class:`shopItem ${shopChecks[id]?"on":""}`},
           checkBtn(!!shopChecks[id],()=>toggleShop(id),true),
+          h("span",{class:"shopIco","aria-hidden":"true"},shopIcon(text)),
           h("span",null,text),
           h("button",{class:"del","aria-label":"Редактирай продукт",onclick:()=>{editingShopItem=id;editingExtra=null;render();}},icon("edit",14)));
       })]));
@@ -1214,6 +1253,7 @@ function shopExtraSection(shopKey, extra) {
         if (editingExtra === it.id) return extraForm(shopKey, it);
         return h("div",{class:`shopItem extra ${it.done?"on":""}`},
           checkBtn(!!it.done,()=>toggleExtra(it.id),true),
+          h("span",{class:"shopIco","aria-hidden":"true"},shopIcon(it.t)),
           h("span",null, it.t, it.who?h("i",{class:"shopWho"},` · ${it.who}`):null),
           h("button",{class:"del","aria-label":"Редактирай артикул",onclick:()=>{editingExtra=it.id;render();}},icon("edit",14)),
           h("button",{class:"del","aria-label":"Изтрий артикул",onclick:()=>delExtra(it.id)},icon("x",13)));
