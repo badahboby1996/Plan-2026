@@ -314,6 +314,12 @@ button{font-family:inherit;color:inherit;background:none;border:none;cursor:poin
 .wDelta{font-size:12px;color:var(--amber);font-weight:700;margin-top:6px}
 
 /* пазарски списък */
+/* "Сготви и за нея" — превключвател в общите хранения */
+.bothRow{display:flex;align-items:center;gap:10px;background:rgba(255,184,107,.06);border:1px solid rgba(255,184,107,.28);border-radius:12px;padding:8px 10px;margin:10px 0 4px}
+.bothRow .bothTxt{display:flex;flex-direction:column;gap:1px;min-width:0}
+.bothRow strong{font-size:12.5px;color:var(--amber)}
+.bothRow span{font-size:11px;color:var(--mut);line-height:1.35}
+.ing.her{color:var(--amber)}
 .wifeToggle{display:flex;align-items:center;gap:12px;margin-top:10px}
 .wifeToggle .wifeTxt{display:flex;flex-direction:column;gap:2px;min-width:0}
 .wifeToggle strong{font-size:13px;color:var(--amber)}

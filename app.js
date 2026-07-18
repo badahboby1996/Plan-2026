@@ -697,24 +697,32 @@ function planFood() {
       h("h2",{class:"secT"},`Меню · ${DOW[cur.getDay()].toLowerCase()}`),
       h("button",{class:"editToggle",onclick:()=>{editPlan=!editPlan;render();}},editPlan?"Готово":"Редактирай")),
     m&&m.macros ? h("p",{class:"secS"},m.macros) : null,
-    meals.map((e,a)=>
-      h("div",{class:`card meal ${o[`meal${a}`]?"done":""}`,"data-scroll":`meal${a}`},
+    meals.map((e,a)=>{
+      const bothOn = !!(e.her && o[`both${a}`]); // готвя и за нея това хранене (само за общите)
+      return h("div",{class:`card meal ${o[`meal${a}`]?"done":""}`,"data-scroll":`meal${a}`},
         h("button",{class:"mealHead",onclick:()=>{openMeal=openMeal===a?null:a;render();}},
           h("div",{class:"mealHeadL"},
             h("span",{class:"eyebrow"},names[a]),
             h("span",{class:"mealN"},e.n),
-            h("div",{class:"chips"},e.dev.map((t)=>h("span",{class:"chip"},t))),
+            h("div",{class:"chips"},e.dev.map((t)=>h("span",{class:"chip"},t)),bothOn?h("span",{class:"chip hot"},"за двамата 👩"):null),
             h("div",{class:"fuel"},"🔥 ",mealBenefit(e))),
           h("span",{class:`car ${openMeal===a?"up":""}`},icon("chev",16))),
         openMeal===a ? h("div",{class:"mealBody"},
           editPlan ? mealEditForm(key,a,e) : [
-            h("span",{class:"lbl"},"Продукти"),
-            h("p",{class:"ing"},e.ing),
+            e.her ? h("div",{class:"bothRow"},
+              checkBtn(bothOn,()=>toggleCheck(`both${a}`),true),
+              h("div",{class:"bothTxt"},
+                h("strong",null,"Сготви и за нея"),
+                h("span",null,bothOn?"Показани са количествата за двамата":"Общо хранене — отметни за количествата за двамата"))) : null,
+            h("span",{class:"lbl"},bothOn?"Продукти · за двамата":"Продукти"),
+            h("p",{class:"ing"},bothOn&&e.ingBoth?e.ingBoth:e.ing),
+            bothOn?[h("span",{class:"lbl"},"Нейната порция при сервиране"),h("p",{class:"ing her"},e.her)]:null,
             h("span",{class:"lbl"},"Приготвяне"),
             h("ol",{class:"steps"},e.steps.map((t)=>h("li",null,t)))]) : null,
         h("div",{class:"mealFoot"},
           h("span",null,o[`meal${a}`]?"Изядено ✓":"Отметни, когато е изядено"),
-          checkBtn(!!o[`meal${a}`],()=>toggleCheck(`meal${a}`))))),
+          checkBtn(!!o[`meal${a}`],()=>toggleCheck(`meal${a}`))));
+    }),
     m&&m.mealRotations ? h("div",{class:"card hint"},h("strong",null,"Ротации:"),h("p",null,m.mealRotations)) : null];
 }
 function mealEditForm(key,idx,meal) {
