@@ -604,7 +604,7 @@ function viewToday() {
         return h("div",{class:`tlItem ${(e.id==="__workout"?e.done:o[e.id])?"done":""}`,"data-time":e.time},
             h("span",{class:"tlTime"},e.time),
             e.img
-              ? h("img",{class:"tlThumb",src:e.img,alt:"",width:52,height:52,loading:"lazy"})
+              ? h("img",{class:"tlThumb",src:e.img,alt:"",width:52,height:52,decoding:"sync"})
               : h("div",{class:"tlIco"},icon(icoMap[e.k],17)),
             h("button",{class:"tlBody",onclick:()=>{ if(e.nav) goToPlan(e.nav[1], e.id); }},
               h("span",{class:"tlT"},e.t),
@@ -719,7 +719,7 @@ function planFood() {
       const bothOn = !!(e.her && o[`both${a}`]); // готвя и за нея това хранене (само за общите)
       return h("div",{class:`card meal ${o[`meal${a}`]?"done":""}`,"data-scroll":`meal${a}`},
         h("button",{class:"mealVisual","aria-label":`${openMeal===a?"Затвори":"Отвори"} рецептата за ${e.n}`,"aria-expanded":openMeal===a?"true":"false",onclick:()=>{openMeal=openMeal===a?null:a;render();}},
-          h("img",{class:"mealImg",src:mealImage(e),alt:e.n,width:900,height:600,loading:"lazy"}),
+          h("img",{class:"mealImg",src:mealImage(e),alt:e.n,width:900,height:600,decoding:"sync"}),
           h("span",{class:"mealNo"},String(a+1).padStart(2,"0"))),
         h("button",{class:"mealHead","aria-expanded":openMeal===a?"true":"false",onclick:()=>{openMeal=openMeal===a?null:a;render();}},
           h("div",{class:"mealHeadL"},
@@ -960,6 +960,7 @@ function viewProgress() {
     h("h2",{class:"secT"},"Навици · общо"),
     [...state.habitsGood,...state.habitsBad].map((e)=>
       h("div",{class:"card streakRow"},
+        h("div",{class:"habIco sm","aria-hidden":"true"},habitIcon(e.name)),
         h("span",{class:"habN"},e.name),
         h("span",{class:"streakVal"},icon("flame",14),
           e.id===READING_ID?`${totalPages()} страници`:`${habitCount(e.id)} пъти`))),
@@ -1009,6 +1010,27 @@ function importData() {
   document.body.appendChild(inp); inp.click(); inp.remove();
 }
 
+/* ---------- икони за навиците (декоративни, по ключови думи) ---------- */
+const HABIT_ICONS = [
+  ["☀️", ["ставане","събужд"]],
+  ["📖", ["чете","книга","страниц"]],
+  ["🏃", ["спорт","движени","трениров","кардио","бяга"]],
+  ["🍳", ["готвене","готвя"]],
+  ["🧠", ["умение","умения","проект","уча","курс"]],
+  ["📵", ["скрол"]],
+  ["📱", ["телефон"]],
+  ["🍔", ["нездравослов"]],
+  ["🌙", ["ядене"]],
+  ["🐢", ["мързел","отлаган"]],
+  ["🛌", ["лягане","сън"]],
+  ["💧", ["вода"]],
+];
+function habitIcon(name) {
+  const t = (name||"").toLowerCase();
+  for (const [e,kws] of HABIT_ICONS) for (const k of kws) if (t.includes(k)) return e;
+  return "✦";
+}
+
 /* ---------- НАВИЦИ ---------- */
 function viewHabits() {
   const key = dk(cur);
@@ -1023,6 +1045,7 @@ function viewHabits() {
     inp.addEventListener("change",()=>refreshView());
     const step = (d)=>{ const nv=Math.max(0,(parseInt(inp.value,10)||0)+d); inp.value=nv||""; setReadPages(key,nv); refreshView(); };
     return h("div",{class:`card habitRow reading ${kind==="bad"?"bad":""} ${pages>0?"done":""}`},
+      h("div",{class:"habIco","aria-hidden":"true"},habitIcon(e.name)),
       h("div",{class:"habL"},
         h("span",{class:"habN"},e.name),
         totalNode),
@@ -1035,6 +1058,7 @@ function viewHabits() {
     (e.id===READING_ID && kind==="good" && !editHabits)
     ? readingRow(e,kind)
     : h("div",{class:`card habitRow ${kind==="bad"?"bad":""} ${o[e.id]?"done":""}`},
+      h("div",{class:"habIco","aria-hidden":"true"},habitIcon(e.name)),
       h("div",{class:"habL"},
         h("span",{class:"habN"},e.name),
         h("span",{class:"habS"},e.id===READING_ID?`${totalPages()} страници`:`${habitCount(e.id)} ${suffix}`)),
@@ -1245,15 +1269,10 @@ function navDay(delta) {
 
 const VIEWS = { today:viewToday, plan:viewPlan, shop:viewShop, calendar:viewCalendar, habits:viewHabits, progress:viewProgress };
 
-/* Частично опресняване: престроява само съдържанието на текущия таб и
-   обновява прогреса в заглавката. Заглавката, навигацията и другите
-   секции не се пипат — така отметките не "рефрешват" цялата страница. */
-function refreshView() {
-  const main = document.querySelector("main.main");
-  if (!main) { render(); return; }
-  main.replaceChildren(VIEWS[tab]());
-  updateHeaderProgress();
-}
+/* Частично опресняване при отметка: render() вече пази заглавката и
+   навигацията като постоянни възли, така че престроява само съдържанието
+   на текущия таб + прогреса — без премигване на лого и снимки. */
+function refreshView() { render(); }
 function updateHeaderProgress() {
   const pct = dayScore(cur);
   document.documentElement.style.setProperty("--glow",pct.toFixed(2));
@@ -1266,15 +1285,16 @@ function updateHeaderProgress() {
   if (p) p.textContent = `${Math.round(pct*100)}% от деня`;
 }
 
-function render() {
-  const root = document.getElementById("root");
+/* Постоянни DOM възли: заглавката и навигацията се строят веднъж и само се
+   обновяват — така логото и снимките не премигват при всяко действие. */
+let elHeader = null, elMain = null, elNav = null, navBtns = [], headerKey = null;
+
+function buildHeader() {
   const key = dk(cur), day = challengeDay(cur), workday = isWorkday(cur);
   const pct = dayScore(cur);
   const isToday = key===dk(clampDate(new Date()));
-  document.documentElement.style.setProperty("--glow",pct.toFixed(2));
-
   const chevLeft = h("span",{style:"transform:rotate(180deg);display:inline-flex"},icon("chev",16));
-  const header = h("header",{class:"hdr"},
+  return h("header",{class:"hdr"},
     h("div",{class:"hdrTop"},
       h("div",{class:"brand"},
         h("img",{class:"brandLogo",src:"logo-mark.png",alt:"",width:48,height:48}),
@@ -1298,19 +1318,55 @@ function render() {
         h("div",{class:"hdrMeta"},
           h("span",{class:"pct"},`${Math.round(pct*100)}% от деня`),
           !isToday?h("button",{class:"todayBtn",onclick:()=>{cur=clampDate(new Date());scrollToNow=true;render();}},"към днес"):null))));
-
-  const main = h("main",{class:`main ${tab!==lastTab?"viewIn":""}`},VIEWS[tab]());
-  lastTab = tab;
-  const nav = h("nav",{class:"nav","aria-label":"Основна навигация"},
+}
+function buildNav() {
+  navBtns = [];
+  return h("nav",{class:"nav","aria-label":"Основна навигация"},
     [["today","flame","Днес"],["plan","bowl","План"],["shop","cart","Пазар"],["calendar","cal","Календар"],["habits","habit","Навици"],["progress","chart","Прогрес"]]
-      .map(([id,ic,lbl])=>h("button",{class:`navTab ${tab===id?"act":""}`,"data-tab":id,"aria-label":lbl,"aria-current":tab===id?"page":null,
-        onclick:()=>{tab=id;editPlan=false;editingTask=null;addingTask=false;editingExtra=null;editingShopItem=null;editingPlanItem=null;
-          if(id==="calendar")calMonth=mk(cur);
-          if(id==="today")scrollToNow=true;
-          render();window.scrollTo(0,0);}},
-        h("span",{class:"navIcon"},icon(ic,20)),h("span",{class:"navLabel"},lbl))));
+      .map(([id,ic,lbl])=>{
+        const b = h("button",{class:`navTab ${tab===id?"act":""}`,"data-tab":id,"aria-label":lbl,"aria-current":tab===id?"page":null,
+          onclick:()=>{tab=id;editPlan=false;editingTask=null;addingTask=false;editingExtra=null;editingShopItem=null;editingPlanItem=null;
+            if(id==="calendar")calMonth=mk(cur);
+            if(id==="today")scrollToNow=true;
+            render();window.scrollTo(0,0);}},
+          h("span",{class:"navIcon"},icon(ic,20)),h("span",{class:"navLabel"},lbl));
+        navBtns.push([id,b]);
+        return b;
+      }));
+}
 
-  root.replaceChildren(header,main,nav);
+function render() {
+  const root = document.getElementById("root");
+  const key = dk(cur);
+  const isToday = key===dk(clampDate(new Date()));
+  document.documentElement.style.setProperty("--glow",dayScore(cur).toFixed(2));
+
+  if (!elMain) {
+    // първо рендиране: строим всичко веднъж
+    elHeader = buildHeader(); headerKey = key;
+    elMain = h("main",{class:"main"});
+    elNav = buildNav();
+    root.replaceChildren(elHeader, elMain, elNav);
+  } else if (headerKey !== key) {
+    // сменен ден -> нова заглавка (датата, пръстенът и бутонът "към днес")
+    const nh = buildHeader(); headerKey = key;
+    root.replaceChild(nh, elHeader); elHeader = nh;
+  }
+  // навигация: обновяваме само активния таб, без да я строим наново
+  for (const [id,b] of navBtns) {
+    b.classList.toggle("act", id===tab);
+    if (id===tab) b.setAttribute("aria-current","page");
+    else if (b.removeAttribute) b.removeAttribute("aria-current");
+  }
+  // съдържанието на текущия таб
+  elMain.replaceChildren(VIEWS[tab]());
+  if (tab!==lastTab && !REDUCED && elMain.classList) {
+    elMain.classList.remove("viewIn");
+    if (typeof elMain.offsetWidth === "number") void elMain.offsetWidth; // рестартира анимацията
+    elMain.classList.add("viewIn");
+  }
+  lastTab = tab;
+  updateHeaderProgress();
 
   // дошли сме от "Днес" по конкретна задача -> скролваме право до нея, не отгоре
   if (pendingScroll) {
@@ -1428,6 +1484,10 @@ setSync("запазено");
 initEmbers();
 render();
 initCloud();
+// предварително зареждане на снимките на ястията — без премигване при първо показване
+if (typeof Image !== "undefined")
+  ["yogurt-fruit","oats-fruit","omelette-avocado","meatballs-potatoes","tuna-salad","chicken-stew","fruit-nuts","chicken-grain"]
+    .forEach((n)=>{ const im = new Image(); im.src = "assets/meals/"+n+".webp"; });
 // приложението е рендирано -> splash екранът избледнява и се маха
 (function hideSplash() {
   const sp = document.getElementById("splash");

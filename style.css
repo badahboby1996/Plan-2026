@@ -399,17 +399,15 @@ body{min-height:100vh;overscroll-behavior-y:none}
     linear-gradient(135deg,#FAF8F3 0%,#F5F2EC 48%,#F9F7F2 100%);
 }
 .bgImg::before{
-  inset:auto -150px auto auto;
-  top:-150px;
-  width:470px;
-  height:470px;
-  border:27px solid rgba(26,25,22,.075);
-  border-right-color:transparent;
-  border-bottom-color:transparent;
-  border-radius:50%;
-  background:none;
-  opacity:1;
-  transform:rotate(23deg);
+  inset:auto -95px auto auto;
+  top:-70px;
+  width:460px;
+  height:460px;
+  border:none;
+  border-radius:0;
+  background:url("logo-mark.png") center/contain no-repeat;
+  opacity:.07;
+  transform:rotate(14deg);
   animation:none;
 }
 .bgImg::after{
@@ -444,12 +442,12 @@ body{min-height:100vh;overscroll-behavior-y:none}
   z-index:10;
   margin:0 0 14px;
   padding:16px 20px;
-  border:1px solid rgba(255,255,255,.45);
+  border:1px solid rgba(255,255,255,.55);
   border-radius:26px;
-  background:linear-gradient(rgba(255,253,249,.34),rgba(255,253,249,.12));
-  -webkit-backdrop-filter:blur(10px) saturate(1.2);
-  backdrop-filter:blur(10px) saturate(1.2);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.5);
+  background:linear-gradient(rgba(255,253,249,.42),rgba(255,253,249,.16));
+  -webkit-backdrop-filter:blur(22px) saturate(1.5);
+  backdrop-filter:blur(22px) saturate(1.5);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65), 0 10px 34px rgba(32,27,21,.05);
 }
 .hdrTop{margin:0 0 12px;align-items:center}
 .brand{display:flex;align-items:center;gap:11px;min-width:0}
@@ -665,14 +663,14 @@ body{min-height:100vh;overscroll-behavior-y:none}
 
 @media (max-width:820px){
   .app{display:block;width:100%;max-width:540px;margin:0 auto;padding:0 0 98px}
-  .hdr{position:sticky;top:0;margin:0;padding:12px 16px 13px;border-width:0 0 1px;border-color:rgba(27,27,25,.07);border-radius:0 0 24px 24px;background:linear-gradient(rgba(250,248,243,.4),rgba(250,248,243,.14));-webkit-backdrop-filter:blur(12px) saturate(1.2);backdrop-filter:blur(12px) saturate(1.2);box-shadow:none}
+  .hdr{position:sticky;top:0;margin:0;padding:calc(14px + env(safe-area-inset-top,0px)) 16px 13px;border-width:0 0 1px;border-color:rgba(255,255,255,.5);border-radius:0 0 24px 24px;background:linear-gradient(rgba(250,248,243,.5),rgba(250,248,243,.2));-webkit-backdrop-filter:blur(24px) saturate(1.55);backdrop-filter:blur(24px) saturate(1.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
   .hdrTop{margin-bottom:9px}
   .brandLogo{width:40px;height:40px}
   .brandTxt{font-size:14px}
   .brandSub{font-size:7.5px}
   .hdrMain{gap:12px}
   .main{padding:16px 15px 26px}
-  .nav{position:fixed;left:50%;right:auto;bottom:0;top:auto;transform:translateX(-50%);width:min(100%,540px);min-height:0;height:auto;margin:0;padding:7px 5px calc(9px + env(safe-area-inset-bottom));display:flex;flex-direction:row;gap:2px;border-width:1px 0 0;border-radius:22px 22px 0 0;background:rgba(250,248,243,.94);box-shadow:0 -10px 32px rgba(32,27,21,.08);backdrop-filter:blur(18px)}
+  .nav{position:fixed;left:50%;right:auto;bottom:0;top:auto;transform:translateX(-50%);width:min(100%,540px);min-height:0;height:auto;margin:0;padding:7px 5px calc(9px + env(safe-area-inset-bottom));display:flex;flex-direction:row;gap:2px;border-width:1px 0 0;border-radius:22px 22px 0 0;background:linear-gradient(rgba(250,248,243,.42),rgba(250,248,243,.62));box-shadow:0 -10px 32px rgba(32,27,21,.06), inset 0 1px 0 rgba(255,255,255,.6);-webkit-backdrop-filter:blur(26px) saturate(1.55);backdrop-filter:blur(26px) saturate(1.55)}
   .nav::before,.nav::after{display:none}
   .navTab{flex:1;width:auto;min-height:56px;padding:5px 1px;display:flex;flex-direction:column;gap:2px;border-radius:12px;text-align:center}
   .navTab.act{background:rgba(240,68,30,.08);box-shadow:none;color:var(--ember)}
@@ -715,3 +713,20 @@ body{min-height:100vh;overscroll-behavior-y:none}
 .bothRow span{font-size:11px;color:var(--mut);line-height:1.35}
 .ing.her{color:var(--amber);font-weight:600}
 .brandSub{white-space:nowrap}
+
+/* емблемата като лек воден знак долу вляво (декорация от новия концепт) */
+body::after{content:"";position:fixed;left:-110px;bottom:-120px;width:400px;height:400px;
+  background:url("logo-mark.png") center/contain no-repeat;opacity:.055;transform:rotate(-9deg);
+  pointer-events:none;z-index:1}
+
+/* икони на навиците — декоративни плочки в стила на приложението */
+.habIco{width:36px;height:36px;flex:0 0 36px;border:1px solid var(--line);border-radius:11px;
+  background:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;
+  box-shadow:var(--shadow-soft);margin-right:11px}
+.habIco.sm{width:30px;height:30px;flex-basis:30px;font-size:14px;border-radius:9px;margin-right:9px}
+.habitRow{justify-content:flex-start}
+.habitRow .habL{flex:1;min-width:0}
+.habitRow .chk,.habitRow .del{margin-left:auto}
+.habitRow .pageStep{margin-left:auto}
+.streakRow{justify-content:flex-start}
+.streakRow .habN{flex:1;min-width:0}
