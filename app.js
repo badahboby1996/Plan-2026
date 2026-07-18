@@ -182,6 +182,22 @@ const FUEL_RULES = [
   ["краставиц","фибри и микроелементи"],["салата","фибри и микроелементи"],
   ["зеленчуц","фибри и микроелементи"],["зелен боб","фибри и микроелементи"],
 ];
+/* ---------- визуална библиотека за храната ----------
+   Едно изображение за всеки реално различен тип ястие. Близките варианти
+   нарочно преизползват един и същ asset, за да остане PWA-то леко и офлайн. */
+function mealImage(meal) {
+  const txt = ((meal.n || "") + " " + (meal.ing || "")).toLowerCase();
+  const base = "assets/meals/";
+  if (/кисело мляко|цедено/.test(txt)) return base + "yogurt-fruit.webp";
+  if (/овес|палачин/.test(txt)) return base + "oats-fruit.webp";
+  if (/омлет|скрамбъл/.test(txt)) return base + "omelette-avocado.webp";
+  if (/кюфте/.test(txt)) return base + "meatballs-potatoes.webp";
+  if (/туна|тон|скумрия|голяма салата/.test(txt)) return base + "tuna-salad.webp";
+  if (/яхния|чили|свободен слот/.test(txt)) return base + "chicken-stew.webp";
+  if (/банан и|диня|пъпеш|кашу|ядки/.test(txt)) return base + "fruit-nuts.webp";
+  return base + "chicken-grain.webp";
+}
+
 function mealBenefit(meal) {
   const txt = ((meal.n||"") + " " + (meal.ing||"")).toLowerCase();
   const out = [];
@@ -521,7 +537,7 @@ function viewToday() {
     const times = ["08:00","13:00","16:30",workday?"20:00":"19:30"];
     const names = (m && m.mealTypes) || ["Закуска","Обяд","Следобед","Вечеря"];
     meals.forEach((meal,i) => {
-      items.push({ id:`meal${i}`, time:times[i], t:`${names[i]} · ${meal.n}`, s:mealBenefit(meal), k:"food", nav:["plan","food"] });
+      items.push({ id:`meal${i}`, time:times[i], t:`${names[i]} · ${meal.n}`, s:mealBenefit(meal), img:mealImage(meal), k:"food", nav:["plan","food"] });
       if (i===0 && workday) items.push({ id:"__leave", time:"09:10", t:"Тръгване за работа", k:"info" });
       if (i===2 && workday) {
         items.push({ id:"__home", time:"19:30", t:"Прибиране", k:"info" });
@@ -587,7 +603,9 @@ function viewToday() {
         }
         return h("div",{class:`tlItem ${(e.id==="__workout"?e.done:o[e.id])?"done":""}`,"data-time":e.time},
             h("span",{class:"tlTime"},e.time),
-            h("div",{class:"tlIco"},icon(icoMap[e.k],17)),
+            e.img
+              ? h("img",{class:"tlThumb",src:e.img,alt:"",width:52,height:52,loading:"lazy"})
+              : h("div",{class:"tlIco"},icon(icoMap[e.k],17)),
             h("button",{class:"tlBody",onclick:()=>{ if(e.nav) goToPlan(e.nav[1], e.id); }},
               h("span",{class:"tlT"},e.t),
               e.s ? h("span",{class:"tlS"},e.s) : null),
@@ -700,7 +718,10 @@ function planFood() {
     meals.map((e,a)=>{
       const bothOn = !!(e.her && o[`both${a}`]); // готвя и за нея това хранене (само за общите)
       return h("div",{class:`card meal ${o[`meal${a}`]?"done":""}`,"data-scroll":`meal${a}`},
-        h("button",{class:"mealHead",onclick:()=>{openMeal=openMeal===a?null:a;render();}},
+        h("button",{class:"mealVisual","aria-label":`${openMeal===a?"Затвори":"Отвори"} рецептата за ${e.n}`,"aria-expanded":openMeal===a?"true":"false",onclick:()=>{openMeal=openMeal===a?null:a;render();}},
+          h("img",{class:"mealImg",src:mealImage(e),alt:e.n,width:900,height:600,loading:"lazy"}),
+          h("span",{class:"mealNo"},String(a+1).padStart(2,"0"))),
+        h("button",{class:"mealHead","aria-expanded":openMeal===a?"true":"false",onclick:()=>{openMeal=openMeal===a?null:a;render();}},
           h("div",{class:"mealHeadL"},
             h("span",{class:"eyebrow"},names[a]),
             h("span",{class:"mealN"},e.n),
@@ -1255,7 +1276,11 @@ function render() {
   const chevLeft = h("span",{style:"transform:rotate(180deg);display:inline-flex"},icon("chev",16));
   const header = h("header",{class:"hdr"},
     h("div",{class:"hdrTop"},
-      h("div",{class:"brand"},h("img",{class:"brandLogo",src:"logo-mark.png",alt:"",width:26,height:26}),h("span",{class:"brandTxt"},"ХЪСЪЛ")),
+      h("div",{class:"brand"},
+        h("img",{class:"brandLogo",src:"logo-mark.png",alt:"",width:48,height:48}),
+        h("div",{class:"brandCopy"},
+          h("span",{class:"brandTxt"},"ХЪСЪЛ"),
+          h("span",{class:"brandSub"},"Дисциплина · Фокус · Напредък"))),
       h("span",{class:`sync ${syncLbl.indexOf("грешка")===0?"err":""}`},syncLbl)),
     h("div",{class:"hdrMain"},
       ring(Math.max(pct,0.02),day),
@@ -1276,14 +1301,14 @@ function render() {
 
   const main = h("main",{class:`main ${tab!==lastTab?"viewIn":""}`},VIEWS[tab]());
   lastTab = tab;
-  const nav = h("nav",{class:"nav"},
+  const nav = h("nav",{class:"nav","aria-label":"Основна навигация"},
     [["today","flame","Днес"],["plan","bowl","План"],["shop","cart","Пазар"],["calendar","cal","Календар"],["habits","habit","Навици"],["progress","chart","Прогрес"]]
-      .map(([id,ic,lbl])=>h("button",{class:`navTab ${tab===id?"act":""}`,
+      .map(([id,ic,lbl])=>h("button",{class:`navTab ${tab===id?"act":""}`,"data-tab":id,"aria-label":lbl,"aria-current":tab===id?"page":null,
         onclick:()=>{tab=id;editPlan=false;editingTask=null;addingTask=false;editingExtra=null;editingShopItem=null;editingPlanItem=null;
           if(id==="calendar")calMonth=mk(cur);
           if(id==="today")scrollToNow=true;
           render();window.scrollTo(0,0);}},
-        icon(ic,20),h("span",null,lbl))));
+        h("span",{class:"navIcon"},icon(ic,20)),h("span",{class:"navLabel"},lbl))));
 
   root.replaceChildren(header,main,nav);
 

@@ -1,10 +1,14 @@
 /* Жарава v2 · Service Worker — първо мрежа (винаги пресни файлове), кеш само офлайн */
-const CACHE = "zharava-v31";
+const CACHE = "zharava-v32";
 const ASSETS = [
   "./", "./index.html", "./style.css", "./app.js",
-  "./data-2026-07.js", "./bg-embers.webp",
+  "./data-2026-07.js",
   "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png",
   "./logo-mark.png", "./manifest.webmanifest",
+  "./assets/meals/omelette-avocado.webp", "./assets/meals/oats-fruit.webp",
+  "./assets/meals/chicken-grain.webp", "./assets/meals/chicken-stew.webp",
+  "./assets/meals/meatballs-potatoes.webp", "./assets/meals/yogurt-fruit.webp",
+  "./assets/meals/tuna-salad.webp", "./assets/meals/fruit-nuts.webp",
 ];
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
