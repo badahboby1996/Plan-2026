@@ -735,3 +735,6 @@ body::after{content:"";position:fixed;left:-110px;bottom:-120px;width:400px;heig
 .shopItem>.shopIco{flex:0 0 26px;width:26px;height:26px;min-width:0;display:flex;align-items:center;justify-content:center;
   font-size:14px;border:1px solid var(--line);border-radius:8px;background:#fff;box-shadow:var(--shadow-soft)}
 .shopItem.on .shopIco{opacity:.45;filter:grayscale(.6)}
+
+/* чип с калориите и протеина на храненето */
+.chip.mac{color:var(--ember);border-color:rgba(240,68,30,.3);background:rgba(240,68,30,.06);font-weight:800}
