@@ -259,6 +259,19 @@ function quoteOfWeek(dateObj) {
 }
 
 /* ---------- DOM помощници ---------- */
+/* Снимките се пазят като постоянни DOM възли и се преизползват при всяко
+   рендиране. Ако създадем нов <img> със същия src, браузърът го декодира
+   наново и картинката примигва; преместването на вече зареден възел не мига. */
+const imgNodes = new Map();
+function cachedImg(key, attrs) {
+  let el = imgNodes.get(key);
+  if (!el) { el = h("img", attrs); imgNodes.set(key, el); return el; }
+  if (attrs.src && el.getAttribute("src") !== attrs.src) el.setAttribute("src", attrs.src);
+  if (attrs.alt != null && el.getAttribute("alt") !== attrs.alt) el.setAttribute("alt", attrs.alt);
+  if (attrs.class && el.className !== attrs.class) el.className = attrs.class;
+  return el;
+}
+
 function h(tag, attrs, ...kids) {
   const el = document.createElement(tag);
   if (attrs) for (const k in attrs) {
@@ -585,10 +598,10 @@ function viewToday() {
             h("button",{class:"tlBody","aria-label":"Редактирай задача",onclick:()=>{ editingTask=tk.id; addingTask=false; render(); }},
               h("span",{class:"tlT"},tk.t),h("span",{class:"tlS"},e.s)),
             h("button",{class:"del","aria-label":"Редактирай задача",onclick:()=>{ editingTask=tk.id; addingTask=false; render(); }},icon("edit",14)),
-            checkBtn(tk.done,()=>{ state.tasks[key]=tasks.map((t)=>t.id===tk.id?{...t,done:!t.done}:t); save(); refreshView(); }),
+            checkBtn(tk.done,()=>{ state.tasks[key]=(state.tasks[key]||[]).map((t)=>t.id===tk.id?{...t,done:!t.done}:t); save(); refreshView(); }),
             h("button",{class:"del","aria-label":"Изтрий задача",onclick:()=>{
               const removed = tk;
-              state.tasks[key]=tasks.filter((t)=>t.id!==tk.id); save(); render();
+              state.tasks[key]=(state.tasks[key]||[]).filter((t)=>t.id!==tk.id); save(); render();
               showToast(`Изтрито: ${removed.t}`, ()=>{
                 state.tasks[key]=[...(state.tasks[key]||[]),removed]; save(); render();
               });
@@ -597,7 +610,7 @@ function viewToday() {
         return h("div",{class:`tlItem ${(e.id==="__workout"?e.done:o[e.id])?"done":""}`,"data-time":e.time},
             h("span",{class:"tlTime"},e.time),
             e.img
-              ? h("img",{class:"tlThumb",src:e.img,alt:"",width:52,height:52,decoding:"sync"})
+              ? cachedImg("tl-"+e.id,{class:"tlThumb",src:e.img,alt:"",width:52,height:52,decoding:"sync"})
               : h("div",{class:"tlIco"},icon(icoMap[e.k],17)),
             h("button",{class:"tlBody",onclick:()=>{ if(e.nav) goToPlan(e.nav[1], e.id); }},
               h("span",{class:"tlT"},e.t),
@@ -712,7 +725,7 @@ function planFood() {
       const bothOn = !!(e.her && o[`both${a}`]); // готвя и за нея това хранене (само за общите)
       return h("div",{class:`card meal ${o[`meal${a}`]?"done":""}`,"data-scroll":`meal${a}`},
         h("button",{class:"mealVisual","aria-label":`${openMeal===a?"Затвори":"Отвори"} рецептата за ${e.n}`,"aria-expanded":openMeal===a?"true":"false",onclick:()=>{openMeal=openMeal===a?null:a;render();}},
-          h("img",{class:"mealImg",src:mealImage(e),alt:e.n,width:900,height:600,decoding:"sync"}),
+          cachedImg("meal-"+a,{class:"mealImg",src:mealImage(e),alt:e.n,width:900,height:600,decoding:"sync"}),
           h("span",{class:"mealNo"},String(a+1).padStart(2,"0"))),
         h("button",{class:"mealHead","aria-expanded":openMeal===a?"true":"false",onclick:()=>{openMeal=openMeal===a?null:a;render();}},
           h("div",{class:"mealHeadL"},
@@ -807,14 +820,21 @@ function techCard(w) {
       h("span",{class:`car ${openTech?"up":""}`},icon("chev",16))),
     openTech ? h("button",{class:"techImgWrap","aria-label":"Отвори на цял екран",
       onclick:()=>lightbox(src)},
-      h("img",{class:"techImg",src:src,alt:"Техника на упражненията за деня",loading:"lazy"}),
+      cachedImg("tech",{class:"techImg",src:src,alt:"Техника на упражненията за деня"}),
       h("span",{class:"techHint"},"Докосни за цял екран")) : null);
 }
 function lightbox(src) {
-  const ov = h("div",{class:"lightbox",role:"dialog","aria-label":"Снимка на цял екран",
-    onclick:()=>ov.remove()},
+  const close = () => {
+    ov.remove();
+    document.body.style.overflow = "";
+    document.removeEventListener("keydown", onKey);
+  };
+  const onKey = (e) => { if (e.key === "Escape") close(); };
+  const ov = h("div",{class:"lightbox",role:"dialog","aria-label":"Снимка на цял екран",onclick:close},
     h("img",{src:src,alt:""}),
     h("button",{class:"lbClose","aria-label":"Затвори"},icon("x",20)));
+  document.body.style.overflow = "hidden";
+  document.addEventListener("keydown", onKey);
   document.body.appendChild(ov);
 }
 
@@ -1226,7 +1246,7 @@ function viewShop() {
   const shopKey = dk(monday);
   const shopChecks = state.shopping[shopKey]||{};
   const toggleShop = (id) => {
-    const t={...shopChecks}; if(t[id])delete t[id]; else t[id]=true;
+    const t={...(state.shopping[shopKey]||{})}; if(t[id])delete t[id]; else t[id]=true;
     state.shopping={...state.shopping,[shopKey]:t}; save(); refreshView();
   };
   const extra = state.shopExtra[shopKey]||[];
@@ -1280,8 +1300,9 @@ function shopExtraSection(shopKey, extra) {
     save(); refreshView();
   };
   const delExtra = (id) => {
-    const removed = extra.find((x)=>x.id===id);
-    state.shopExtra = { ...state.shopExtra, [shopKey]: extra.filter((x)=>x.id!==id) };
+    const cur = state.shopExtra[shopKey]||[];
+    const removed = cur.find((x)=>x.id===id);
+    state.shopExtra = { ...state.shopExtra, [shopKey]: cur.filter((x)=>x.id!==id) };
     save(); render();
     if (removed) showToast(`Изтрито: ${removed.t}`, ()=>{
       state.shopExtra = { ...state.shopExtra, [shopKey]: [...(state.shopExtra[shopKey]||[]), removed] };
@@ -1379,7 +1400,7 @@ function buildHeader() {
   return h("header",{class:"hdr"},
     h("div",{class:"hdrTop"},
       h("div",{class:"brand"},
-        h("img",{class:"brandLogo",src:"logo-mark.png",alt:"",width:48,height:48}),
+        cachedImg("brand",{class:"brandLogo",src:"logo-mark.png",alt:"",width:48,height:48}),
         h("div",{class:"brandCopy"},
           h("span",{class:"brandTxt"},"ХЪСЪЛ"),
           h("span",{class:"brandSub"},"Дисциплина · Фокус · Напредък"))),
@@ -1415,6 +1436,11 @@ function buildNav() {
         navBtns.push([id,b]);
         return b;
       }));
+}
+
+function isTyping() {
+  const a = typeof document !== "undefined" && document.activeElement;
+  return !!a && (a.tagName === "TEXTAREA" || (a.tagName === "INPUT" && a.type !== "date"));
 }
 
 function render() {
@@ -1554,7 +1580,7 @@ function initCloud() {
       if (changedLocal) {
         state = merged;
         try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {}
-        render();
+        if (!isTyping()) render();   // не пренаписваме екрана, докато пишеш
       }
       if (changedRemote) { state.updatedAt = Date.now(); cloudPush(true); } // върни в облака записи, които имаше само тук
       setSync("облак ✓");
