@@ -1,5 +1,5 @@
 /* Жарава v2 · Service Worker — първо мрежа (винаги пресни файлове), кеш само офлайн */
-const CACHE = "zharava-v39";
+const CACHE = "zharava-v40";
 const ASSETS = [
   "./", "./index.html", "./style.css", "./app.js",
   "./data-2026-07.js", "./data-2026-08.js",
