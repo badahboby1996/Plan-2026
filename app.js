@@ -72,6 +72,7 @@ let tab = "today";
 let planSub = "food";            // под-таб на План: food | train | content
 let calMonth = mk(cur);          // показван месец в календара
 let openMeal = null, openEx = null, addingTask = false, editHabits = false, editPlan = false;
+let openTech = false;            // разгънато ръководство за техниката на тренировката
 let editingTask = null;         // id на ръчна задача в режим редакция
 let editingExtra = null;        // id на допълнителен артикул от пазара в режим редакция
 let editingShopItem = null;     // id на продукт от месечния пазарски списък в режим редакция
@@ -186,8 +187,9 @@ const FUEL_RULES = [
    Едно изображение за всеки реално различен тип ястие. Близките варианти
    нарочно преизползват един и същ asset, за да остане PWA-то леко и офлайн. */
 function mealImage(meal) {
-  const txt = ((meal.n || "") + " " + (meal.ing || "")).toLowerCase();
   const base = "assets/meals/";
+  if (meal.img) return base + meal.img;   // изрична снимка от месечния файл
+  const txt = ((meal.n || "") + " " + (meal.ing || "")).toLowerCase();
   if (/кисело мляко|цедено/.test(txt)) return base + "yogurt-fruit.webp";
   if (/овес|палачин/.test(txt)) return base + "oats-fruit.webp";
   if (/омлет|скрамбъл|яйца на очи|препечени филии/.test(txt)) return base + "omelette-avocado.webp";
@@ -787,11 +789,35 @@ function planTrain() {
                  h("span",{class:"exN"},name),h("span",{class:"exR"},reps)),
                checkBtn(!!o[`ex${t}`],()=>toggleCheck(`ex${t}`))),
              openEx===t&&EX_DESC[name] ? h("p",{class:"exDesc"},EX_DESC[name]) : null)),
+         w.img ? techCard(w) : null,
          done ? h("div",{class:"doneBanner"},"Тренировката е завършена. Жаравата гори. 🔥") : null),
     h("div",{class:"card hint"},
       h("strong",null,"Внимавай за:"),
       h("p",null,"Остра/режеща болка в кръста (не мускулна умора) — спри упражнението веднага и мини на по-лека вариация. Постоянна умора или лош сън — намали интензивността 2–3 дни. Загрявка ВИНАГИ: 5 мин — ставни кръгове, cat-cow ×8, glute bridge ×10, bird-dog ×6/страна."))];
 }
+/* Ръководство за техниката: снимка старт/финал на всички упражнения за деня.
+   Свито по подразбиране; докосване на снимката я отваря на цял екран за четене. */
+function techCard(w) {
+  const src = "assets/workouts/" + w.img;
+  return h("div",{class:"card techCard"},
+    h("button",{class:"techHead","aria-expanded":openTech?"true":"false",
+      onclick:()=>{ openTech=!openTech; render(); }},
+      h("span",{class:"techIco","aria-hidden":"true"},"📋"),
+      h("span",{class:"techT"},"Как се прави · техника на упражненията"),
+      h("span",{class:`car ${openTech?"up":""}`},icon("chev",16))),
+    openTech ? h("button",{class:"techImgWrap","aria-label":"Отвори на цял екран",
+      onclick:()=>lightbox(src)},
+      h("img",{class:"techImg",src:src,alt:"Техника на упражненията за деня",loading:"lazy"}),
+      h("span",{class:"techHint"},"Докосни за цял екран")) : null);
+}
+function lightbox(src) {
+  const ov = h("div",{class:"lightbox",role:"dialog","aria-label":"Снимка на цял екран",
+    onclick:()=>ov.remove()},
+    h("img",{src:src,alt:""}),
+    h("button",{class:"lbClose","aria-label":"Затвори"},icon("x",20)));
+  document.body.appendChild(ov);
+}
+
 function workoutEditForm(key,w) {
   const tInp = h("input",{class:"inp",value:w?w.t:"",placeholder:"Име на тренировката"});
   const dInp = h("input",{class:"inp time",value:w?String(w.dur):"40",placeholder:"мин"});
@@ -1540,10 +1566,15 @@ setSync("запазено");
 initEmbers();
 render();
 initCloud();
-// предварително зареждане на снимките на ястията — без премигване при първо показване
-if (typeof Image !== "undefined")
-  ["yogurt-fruit","oats-fruit","omelette-avocado","meatballs-potatoes","tuna-salad","chicken-stew","fruit-nuts","chicken-grain"]
-    .forEach((n)=>{ const im = new Image(); im.src = "assets/meals/"+n+".webp"; });
+// предварително зареждане на снимките за днес и утре — без премигване при първо показване
+if (typeof Image !== "undefined") {
+  const pre = new Set();
+  [cur, addDays(cur,1)].forEach((d) => {
+    if (d > END) return;
+    (mealsFor(d) || []).forEach((meal) => pre.add(mealImage(meal)));
+  });
+  pre.forEach((src) => { const im = new Image(); im.src = src; });
+}
 // приложението е рендирано -> splash екранът избледнява и се маха
 (function hideSplash() {
   const sp = document.getElementById("splash");
