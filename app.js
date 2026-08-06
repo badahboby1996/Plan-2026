@@ -133,10 +133,23 @@ function workoutFor(dateObj) {
   return m.workouts[dateObj.getDate()] || null;
 }
 // Меню за конкретна дата
+/* Планът за дадена дата. Месечният файл може да съдържа няколко плана,
+   които се сменят на определено число от месеца:
+     plans: [{ from: 1, meals, shopping, ... }, { from: 10, ... }]
+   Полетата на активния план имат превес над месечните. Файл без "plans"
+   работи както досега — месецът е един план. */
+function planFor(dateObj) {
+  const m = monthData(dateObj);
+  if (!m || !m.plans || !m.plans.length) return m;
+  const d = dateObj.getDate();
+  let act = m.plans[0];
+  for (const p of m.plans) if (d >= (p.from || 1)) act = p;
+  return { ...m, ...act };
+}
 function mealsFor(dateObj) {
   const key = dk(dateObj), ed = dayEdits(key);
-  const m = monthData(dateObj);
-  const base = m ? m.meals[mealIdx(dateObj)] : null;
+  const m = planFor(dateObj);
+  const base = m && m.meals ? m.meals[mealIdx(dateObj)] : null;
   if (!base) return null;
   if (!ed.meals) return base;
   return base.map((meal, i) => ed.meals[i] ? { ...meal, ...ed.meals[i] } : meal);
@@ -522,7 +535,7 @@ function viewToday() {
   const quote = quoteOfWeek(cur);
   const tasks = state.tasks[key]||[];
   const tot = totals();
-  const m = monthData(cur);
+  const m = planFor(cur);
 
   const P = w ? w.ex.filter((_,i)=>o[`ex${i}`]).length : 0;
   const N = w ? w.ex.length : 0;
@@ -540,7 +553,7 @@ function viewToday() {
   // почивен ден (неделя/понеделник): и следобеден блок, докато детето спи
   if (!workday) items.push({ id:"skillPm", time:"15:30", t:"Умения / AI проекти · следобеден блок", s:"докато детето спи", k:"habit" });
   if (meals) {
-    const times = ["08:00","13:00","16:30",workday?"20:00":"19:30"];
+    const times = (m && m.mealTimes) || ["08:00","13:00","16:30",workday?"20:00":"19:30"];
     const names = (m && m.mealTypes) || ["Закуска","Обяд","Следобед","Вечеря"];
     meals.forEach((meal,i) => {
       items.push({ id:`meal${i}`, time:times[i], t:`${names[i]} · ${meal.n}`, s:mealBenefit(meal), img:mealImage(meal), k:"food", nav:["plan","food"] });
@@ -712,7 +725,7 @@ function viewPlan() {
 
 function planFood() {
   const key = dk(cur), o = dayChecks(key);
-  const m = monthData(cur);
+  const m = planFor(cur);
   const meals = mealsFor(cur);
   if (!meals) return h("div",{class:"card hint"},h("p",null,"Няма меню за този месец. Добави data файл (виж README)."));
   const names = (m&&m.mealTypes)||["Закуска","Обяд","Следобед","Вечеря"];
@@ -1240,7 +1253,7 @@ function shopItemForm(mKey, id, text, orig) {
     h("button",{class:"btnGhost",onclick:()=>{editingShopItem=null;render();}},"Откажи"));
 }
 function viewShop() {
-  const m = monthData(cur);
+  const m = planFor(cur);
   const mKey = mk(cur);
   const monday = addDays(cur,-((cur.getDay()+6)%7));
   const shopKey = dk(monday);
