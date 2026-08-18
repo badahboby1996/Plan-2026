@@ -1,4 +1,4 @@
-const CACHE = 'hustle-family-panel-fix-v8-2026-08-18';
+const CACHE = 'hustle-family-viewport-fix-v9-2026-08-18';
 const CORE = [
   './',
   './index.html',
