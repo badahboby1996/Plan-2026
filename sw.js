@@ -1,4 +1,4 @@
-const CACHE = 'hustle-family-safe-area-v10-2026-08-18';
+const CACHE = 'hustle-family-static-bottom-v11-2026-08-18';
 const CORE = [
   './',
   './index.html',
