@@ -1,4 +1,4 @@
-const CACHE = 'hustle-family-tonight-card-v15-2026-08-18';
+const CACHE = 'hustle-family-launch-align-v16-2026-08-18';
 const CORE = [
   './',
   './index.html',
