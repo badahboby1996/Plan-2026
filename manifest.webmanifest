@@ -1,15 +1,27 @@
 {
   "name": "ХЪСЪЛ · Семейство Бадах",
   "short_name": "ХЪСЪЛ",
-  "description": "Хранителните планове на Боби и Ширин, тренировките на Боби и общият пазар.",
+  "description": "Хранителните планове на Боби и Ширин, 8-седмичният тренировъчен цикъл, рецептите и общият пазар.",
+  "lang": "bg",
+  "dir": "ltr",
   "start_url": "./",
   "scope": "./",
+  "id": "/Plan-2026/",
   "display": "standalone",
-  "background_color": "#f4f1e8",
-  "theme_color": "#12140f",
-  "orientation": "portrait-primary",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#05070a",
+  "theme_color": "#05070a",
+  "orientation": "portrait",
+  "categories": ["health", "fitness", "food", "lifestyle"],
   "icons": [
-    {"src": "app-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
-    {"src": "app-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+    { "src": "app-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "app-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "app-icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Днешното хранене", "short_name": "Храна", "url": "./?go=food", "icons": [{ "src": "app-icon-192.png", "sizes": "192x192" }] },
+    { "name": "Тренировка", "short_name": "Фитнес", "url": "./?go=workout", "icons": [{ "src": "app-icon-192.png", "sizes": "192x192" }] },
+    { "name": "Списък за пазар", "short_name": "Пазар", "url": "./?go=shop", "icons": [{ "src": "app-icon-192.png", "sizes": "192x192" }] }
   ]
 }

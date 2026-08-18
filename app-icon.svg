@@ -1,6 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="118" fill="#12140f"/>
-  <circle cx="410" cy="96" r="124" fill="#c9f45b"/>
-  <path d="M119 120h82v105h110V120h82v272h-82V296H201v96h-82z" fill="#fffef9"/>
-  <path d="M311 296h82v96h-82z" fill="#ff8452"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="ХЪСЪЛ">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1016"/><stop offset="100%" stop-color="#040609"/>
+    </linearGradient>
+    <radialGradient id="g1" cx="80%" cy="10%" r="70%">
+      <stop offset="0%" stop-color="#8cbe3c" stop-opacity=".62"/><stop offset="100%" stop-color="#8cbe3c" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="g2" cx="8%" cy="94%" r="70%">
+      <stop offset="0%" stop-color="#1e6e96" stop-opacity=".5"/><stop offset="100%" stop-color="#1e6e96" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="114" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="114" fill="url(#g1)"/>
+  <rect width="512" height="512" rx="114" fill="url(#g2)"/>
+  <g stroke-linecap="round" stroke-width="45">
+    <path d="M146 141 366 371" stroke="#f3f5ef"/>
+    <path d="M366 141 146 371" stroke="#c8f45b"/>
+  </g>
+  <circle cx="410" cy="110" r="27" fill="#c8f45b"/>
 </svg>
