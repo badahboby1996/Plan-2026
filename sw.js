@@ -1,10 +1,14 @@
-const CACHE = 'hustle-family-v1-2026-08-18';
+const CACHE = 'hustle-family-v3-2026-08-18';
 const CORE = [
   './',
   './index.html',
   './manifest.webmanifest',
   './firebase-config.js',
   './firebase-sync.js',
+  './assets/workout-sunday.webp',
+  './assets/workout-monday.webp',
+  './assets/workout-wednesday.webp',
+  './assets/workout-friday.webp',
   './icons/app-icon.svg',
   './icons/app-icon-192.png',
   './icons/app-icon-512.png',

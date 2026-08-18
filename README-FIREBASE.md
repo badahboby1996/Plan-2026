@@ -4,11 +4,11 @@
 
 За общия пазар между двата телефона:
 
-1. От старите файлове на `Plan-2026` копирай стойностите от `firebaseConfig`.
-2. Постави ги във файла `firebase-config.js`, като замениш стойностите, започващи с `PASTE_`.
-3. Във Firebase Authentication включи **Anonymous** вход.
+1. Firebase конфигурацията от стария `Plan-2026` вече е поставена във `firebase-config.js`.
+2. Във Firebase Authentication включи **Anonymous** вход.
+3. В Authentication → Settings → Authorized domains добави `badahboby1996.github.io`, ако още го няма.
 4. Във Firestore публикувай правилата от `firestore.rules`.
-5. Качи всички файлове и папката `icons` в основната директория на GitHub хранилището.
+5. Качи всички 11 файла (включително съдържанието на папката `icons`) в основната директория на GitHub хранилището.
 
 Когато връзката е успешна, в раздел „Пазар“ ще пише **Firebase · синхронизирано**.
 

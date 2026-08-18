@@ -1,12 +1,9 @@
-/*
-  Постави тук firebaseConfig от старото приложение в Plan-2026.
-  Докато стойностите не бъдат попълнени, пазарът работи локално на телефона.
-*/
+/* Firebase Web конфигурацията от свързания проект Plan-2026. */
 window.HUSTLE_FIREBASE_CONFIG = {
-  apiKey: "PASTE_API_KEY_HERE",
-  authDomain: "PASTE_PROJECT_ID.firebaseapp.com",
-  projectId: "PASTE_PROJECT_ID",
-  storageBucket: "PASTE_PROJECT_ID.appspot.com",
-  messagingSenderId: "PASTE_MESSAGING_SENDER_ID",
-  appId: "PASTE_APP_ID"
+  apiKey: "AIzaSyDbNlAhKcToIYevZAXqMuEtgrcRem1Y0iE",
+  authDomain: "hustle-8134b.firebaseapp.com",
+  projectId: "hustle-8134b",
+  storageBucket: "hustle-8134b.firebasestorage.app",
+  messagingSenderId: "645064549363",
+  appId: "1:645064549363:web:c915071934186eb0efe886"
 };
