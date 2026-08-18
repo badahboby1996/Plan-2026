@@ -1,4 +1,4 @@
-const CACHE = 'hustle-family-native-safearea-nav-v18-2026-08-18';
+const CACHE = 'hustle-family-native-tabbar-v19-2026-08-18';
 const CORE = [
   './',
   './index.html',
