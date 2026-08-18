@@ -240,10 +240,10 @@ const exerciseArt={
 };
 exerciseArt.benchfri=exerciseArt.bench;
 const exercisePhotos={
-  goblet:['assets/workout-sunday.webp','0% 0%'],legpress:['assets/workout-sunday.webp','100% 0%'],rdl:['assets/workout-sunday.webp','0% 100%'],plank:['assets/workout-sunday.webp','100% 100%'],
-  bench:['assets/workout-monday.webp','0% 0%'],shoulder:['assets/workout-monday.webp','100% 0%'],pecdeck:['assets/workout-monday.webp','0% 100%'],triceps:['assets/workout-monday.webp','100% 100%'],
-  lat:['assets/workout-wednesday.webp','0% 0%'],chestrow:['assets/workout-wednesday.webp','100% 0%'],facepull:['assets/workout-wednesday.webp','0% 100%'],birddog:['assets/workout-wednesday.webp','100% 100%'],
-  lunge:['assets/workout-friday.webp','0% 0%'],benchfri:['assets/workout-friday.webp','100% 0%'],cablerow:['assets/workout-friday.webp','0% 100%'],deadbug:['assets/workout-friday.webp','100% 100%']
+  goblet:['workout-sunday.webp','0% 0%'],legpress:['workout-sunday.webp','100% 0%'],rdl:['workout-sunday.webp','0% 100%'],plank:['workout-sunday.webp','100% 100%'],
+  bench:['workout-monday.webp','0% 0%'],shoulder:['workout-monday.webp','100% 0%'],pecdeck:['workout-monday.webp','0% 100%'],triceps:['workout-monday.webp','100% 100%'],
+  lat:['workout-wednesday.webp','0% 0%'],chestrow:['workout-wednesday.webp','100% 0%'],facepull:['workout-wednesday.webp','0% 100%'],birddog:['workout-wednesday.webp','100% 100%'],
+  lunge:['workout-friday.webp','0% 0%'],benchfri:['workout-friday.webp','100% 0%'],cablerow:['workout-friday.webp','0% 100%'],deadbug:['workout-friday.webp','100% 100%']
 };
 function exerciseVisual(id){const [src,position]=exercisePhotos[id]||exercisePhotos.goblet;return `<span class="exercise-photo" aria-hidden="true" style="--exercise-photo:url('${src}');--exercise-position:${position}"></span>`}
 const progression=[['Техника','Базов обем · RPE 6–7 · 3–4 повторения в резерв'],['Повече обем','+1 серия на първите две упражнения всеки ден'],['Повече повторения','+1–2 повторения на всичко · планк 40 сек'],['Повече тежест','+5% само ако последната серия е лесна'],['DELOAD','2 серии на всичко · леки тежести · без интервали'],['Връщане','Тежестите от седмица 4 + 1 повторение'],['Ново покачване','+5% тежест · RPE 7–8'],['Пикова седмица','Горен край на повторенията · RPE 7–8']];
