@@ -1,4 +1,4 @@
-const CACHE = 'hustle-family-launch-home-nav-v16-2026-08-18';
+const CACHE = 'hustle-family-fullscreen-shell-v17-2026-08-18';
 const CORE = [
   './',
   './index.html',
