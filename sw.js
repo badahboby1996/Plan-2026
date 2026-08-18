@@ -1,4 +1,4 @@
-const CACHE = 'hustle-family-frozen-inset-v12-2026-08-18';
+const CACHE = 'hustle-family-bottom-locked-v13-2026-08-18';
 const CORE = [
   './',
   './index.html',
