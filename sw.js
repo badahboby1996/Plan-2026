@@ -1,7 +1,8 @@
-const CACHE = 'hustle-family-native-tabbar-v19-2026-08-18';
+const CACHE = 'hustle-family-sunny-v20-2026-08-19';
 const CORE = [
   './',
   './index.html',
+  './data.js',
   './manifest.webmanifest',
   './firebase-config.js',
   './firebase-sync.js',
