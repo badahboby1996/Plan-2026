@@ -135,6 +135,9 @@ function daySummary(iso, planned){
 /* --- еднократен внос на старата история, без да я изтриваме --- */
 function importLegacyHistory(){
   if(localStorage.getItem(TRAIN_LEGACY_FLAG) === '1') return;
+  /* Ако старите данни още не са налични (кеширан стар data.js), отлагаме вноса
+     за следващото зареждане, вместо да го запишем с непълни имена. */
+  if(typeof legacyWorkoutData === 'undefined') return;
   const log = loadTrainLog();
   Object.keys(localStorage).forEach(key=>{
     const m = key.match(/^hustle-set-(\d+)-(sun|mon|tue|wed|thu|fri|sat)-([a-z]+)-(\d+)$/);

@@ -394,7 +394,11 @@
 <script src="training-plan.js"></script>
 <script src="training-engine.js"></script>
 <script>
-importLegacyHistory();
+let launchFinished=false;
+function finishLaunch(){if(launchFinished)return;launchFinished=true;setTimeout(()=>document.body.classList.add('app-ready'),520)}
+if(document.readyState==='complete')finishLaunch();else window.addEventListener('load',finishLaunch,{once:true});
+setTimeout(finishLaunch,1800);
+try{importLegacyHistory()}catch(err){console.error('Внос на старата история:',err)}
 const browserDay=sofiaDayKey();
 let selectedDate=isoToLocalDate(sofiaToday());
 let weekSunday=new Date(selectedDate);weekSunday.setDate(weekSunday.getDate()-weekSunday.getDay());
@@ -597,10 +601,7 @@ document.querySelectorAll('.date-picker').forEach(picker=>picker.onchange=e=>{if
 document.querySelector('#resetShop').onclick=()=>{if(!confirm(`Да започнем ли нов ${state.shop==='monthly'?'месечен':'седмичен'} списък? Отметките в избрания пазар ще бъдат изчистени.`))return;Object.keys(localStorage).filter(k=>k.startsWith('hustle-'+state.shop)).forEach(k=>localStorage.removeItem(k));window.hustleShoppingSync?.resetList(state.shop)?.catch(err=>console.error('Shopping reset:',err));renderShop()};
 document.querySelector('#installBtn').onclick=()=>{openSheet(`<div class="sheet-head"><div><span class="tag">IPHONE PWA</span><h2>Добави ХЪСЪЛ на началния екран</h2></div><button class="close" data-close>×</button></div><div class="detail-block"><ol class="steps"><li><span>Отвори приложението в Safari.</span></li><li><span>Натисни бутона <b>Споделяне</b> в долната лента.</span></li><li><span>Избери <b>Добавяне към Начален екран</b>.</span></li><li><span>Потвърди с <b>Добави</b>.</span></li></ol></div><div class="tip">💛 След това ХЪСЪЛ ще се отваря като истинско приложение, без адресна лента.</div>`)};
 renderToday();renderFood();renderWorkout();renderShop();
-let launchFinished=false;
-function finishLaunch(){if(launchFinished)return;launchFinished=true;setTimeout(()=>document.body.classList.add('app-ready'),520)}
-if(document.readyState==='complete')finishLaunch();else window.addEventListener('load',finishLaunch,{once:true});
-setTimeout(finishLaunch,1800);
+finishLaunch();
 setTimeout(()=>{const st=document.querySelector('#syncStatus');if(st&&st.textContent.trim()==='Проверка на синхронизацията…')st.textContent='Локален режим · отметките се пазят на това устройство'},6000);
 window.addEventListener('hustle-shopping-sync',renderShop);
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'));

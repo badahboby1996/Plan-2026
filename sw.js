@@ -1,4 +1,4 @@
-const CACHE = 'hustle-family-sunny-v21-2026-09-04';
+const CACHE = 'hustle-family-sunny-v22-2026-09-04';
 const CORE = [
   './',
   './index.html',
@@ -48,7 +48,11 @@ const CORE = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting()));
+  event.waitUntil(
+    caches.open(CACHE)
+      .then(cache => cache.addAll(CORE.map(url => new Request(url, { cache: 'reload' }))))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', event => {
@@ -62,17 +66,19 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET' || new URL(event.request.url).origin !== self.location.origin) return;
   const request = event.request;
-  const isPage = request.mode === 'navigate' || new URL(request.url).pathname.endsWith('/index.html');
+  const path = new URL(request.url).pathname;
+  const isPage = request.mode === 'navigate' || path.endsWith('/index.html');
+  const isCode = /\.(js|json|css|webmanifest)$/.test(path);
 
-  if (isPage) {
+  if (isPage || isCode) {
     event.respondWith(
       fetch(request)
         .then(response => {
           const copy = response.clone();
-          caches.open(CACHE).then(cache => cache.put('./index.html', copy));
+          caches.open(CACHE).then(cache => cache.put(isPage ? './index.html' : request, copy));
           return response;
         })
-        .catch(() => caches.match('./index.html'))
+        .catch(() => caches.match(isPage ? './index.html' : request))
     );
     return;
   }
