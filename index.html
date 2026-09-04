@@ -364,7 +364,7 @@
     </section>
 
     <section class="view" id="workoutView">
-      <div class="page-head"><div class="eyebrow">8 СЕДМИЦИ · РЕКОМПОЗИЦИЯ</div><h1>Силен ум.<br>Силно тяло.</h1><p>4 тренировки в залата · 3 кратки Core сесии вкъщи · двойна прогресия и техника преди тежест.</p></div>
+      <div class="page-head"><div class="eyebrow" id="workoutEyebrow">8 СЕДМИЦИ · РЕКОМПОЗИЦИЯ</div><h1>Силен ум.<br>Силно тяло.</h1><p>4 тренировки в залата · 3 кратки Core сесии вкъщи · двойна прогресия и техника преди тежест.</p></div>
       <div class="calendar-nav"><button class="cal-arrow" data-week="-1" aria-label="Предишна седмица">‹</button><button class="cal-month" data-calendar></button><button class="cal-arrow" data-week="1" aria-label="Следваща седмица">›</button><input class="date-picker" id="workoutDatePicker" type="date"></div>
       <div class="date-strip" id="workoutDays"></div>
       <div id="workoutContent"></div>
@@ -443,20 +443,12 @@ function trainContext(){const iso=localISO(selectedDate),day=state.workoutDay,ph
 function trainMeta(ctx){const s=ctx.gym||ctx.core;return {planVersion:trainingPlan.planVersion,week:ctx.week,sessionKey:s?s.key:'rest',title:s?s.title:'Почивен ден',snapshot:daySnapshot(ctx.day,ctx.week)}}
 function loggedCount(iso,exId,sets){let n=0;for(let i=0;i<sets;i++){const e=getSet(iso,exId,i);if(e&&e.done)n++}return n}
 function trainCard(p,attr,ctx){const done=loggedCount(ctx.iso,p.id,p.sets);return `<button class="exercise-card" ${attr}><div class="exercise-img">${trainPhoto(p.photo)}</div><div><h3>${p.name}</h3><small>${p.muscle} · почивка ${p.rest}</small><span class="sets">СЕДМИЦА ${ctx.week} · ${p.sets} × ${p.reps}${p.rir?` · RIR ${p.rir}`:''}</span>${done?`<span class="logged">✓ ${done} / ${p.sets} записани серии</span>`:''}</div><div class="arrow">›</div></button>`}
-function weekCard(ctx){
-  if(ctx.phase.phase==='before')return `<div class="week-card" data-num="0"><span class="week-badge">ПРЕДИ ЦИКЪЛА</span><h3>Новата програма стартира в неделя, ${formatDateBG(trainingPlan.start)}</h3><p>Тази дата е преди старта. По-долу е историята от старата програма, ако има записана за деня.</p></div>`;
-  const w=trainingPlan.weeks[ctx.week-1];
-  const badge=ctx.phase.phase==='after'?`СЛЕД ЦИКЪЛА · ОРИЕНТИР СЕДМИЦА ${ctx.week}`:`СЕДМИЦА ${ctx.week} / ${trainingPlan.weeksTotal}`;
-  const tail=ctx.phase.phase==='after'?'<p>8-те седмици приключиха. Показаното е ориентир по последната прогресивна седмица — направи оценка и започни нов цикъл.</p>':'';
-  return `<div class="week-card" data-num="${ctx.week}"><span class="week-badge">${badge}</span><h3>${w.title}</h3><p>${w.what}</p><p><b>Целеви RIR:</b> ${w.rir}${ctx.week>=8?` · ${trainingPlan.deloadWeight}`:''}</p>${tail}</div>`;
-}
-function dayLogCard(ctx){
-  const planned=daySnapshot(ctx.day,ctx.week).reduce((a,x)=>a+x.sets,0),sum=daySummary(ctx.iso,planned);
-  const note=ctx.future?'Бъдеща дата · показано е предварителното предписание. Записване е възможно от деня на тренировката нататък.':(sum.done?'Записите се пазят по дата и остават непроменени, дори когато планът се обнови.':'Отбележи всяка работна серия в детайла на упражнението. Загряващите серии не се броят.');
-  return `<div class="day-log"><small>ДНЕВНИК · ${dayNames[ctx.day].toUpperCase()}, ${formatDateBG(ctx.iso)}</small><b>${sum.done} / ${planned} работни серии</b><p>${note}</p></div>`;
-}
-function prepCardHTML(){
-  return `<div class="prep-sets"><h3>Подготвителни серии · преди първото тежко упражнение</h3>${trainingPlan.prepSets.map(([n,load,reps,goal])=>`<div class="prep-line"><i>${n}</i><span>${load} · ${reps} повторения — ${goal}</span><b></b></div>`).join('')}<p>За следващото базово упражнение стигат 1–2 подготвителни серии. При изолациите — само ако ставата го изисква. Загряващите серии не се броят за работни.</p></div>`;
+function workoutEyebrow(ctx){
+  const el=document.querySelector('#workoutEyebrow');if(!el)return;
+  const session=ctx.gym||ctx.core;
+  if(ctx.phase.phase==='before')el.textContent=`ПРЕДИ ЦИКЪЛА · СТАРТ ${formatDateBG(trainingPlan.start).toUpperCase()}`;
+  else if(ctx.phase.phase==='after')el.textContent=`СЛЕД ЦИКЪЛА · ОРИЕНТИР СЕДМИЦА ${ctx.week}`;
+  else el.textContent=`СЕДМИЦА ${ctx.week} / ${trainingPlan.weeksTotal}${session?' · '+session.title.toUpperCase():''}`;
 }
 function archiveCard(ctx){
   const day=trainDay(ctx.iso);
@@ -478,9 +470,7 @@ function renderGym(ctx){
   const hasExtra=g.blocks.some(b=>b.items.some(x=>x.week5Extra));
   const extra=ctx.week===5&&hasExtra?'<div class="block-note">Седмица 5: само ако възстановяването е добро и се побираш в обичайното време — +1 работна серия за бицепс и трицепс в петък. Други серии не се добавят.</div>':'';
   const deload=ctx.week>=8?`<div class="block-note">Седмица 8 · разтоварване: работните серии са намалени приблизително наполовина, тежестта е ${trainingPlan.deloadWeight}, без отказ и без добавяне на повторения.</div>`:'';
-  return `<div class="workout-hero"><div class="eyebrow">${dayNames[ctx.day].toUpperCase()} · ${g.duration.toUpperCase()}</div><h2>${g.title}</h2><p>${g.focus}</p><div class="workout-meta"><span>🔥 Загрявка 4–5 мин</span><span>🎯 RIR ${trainingPlan.weeks[ctx.week-1].rir}</span><span>🧱 ${g.blocks.length} блока</span></div></div>
-  <div class="warmup"><h3>Обща загрявка · 4–5 мин</h3><ol>${g.warmup.map(x=>`<li>${x}</li>`).join('')}</ol></div>
-  ${prepCardHTML()}
+  return `<div class="warmup"><h3>Обща загрявка · 4–5 мин</h3><ol>${g.warmup.map(x=>`<li>${x}</li>`).join('')}</ol></div>
   <div class="section-head"><div><h2>Ред на изпълнение</h2><p>${g.intro}</p></div></div>
   ${blocks}${extra}${deload}
   <div class="warmup cool"><h3>Времеви лимит</h3><ol><li>${g.duration} — не режи почивките на тежките упражнения.</li><li>Ако времето свърши, отпада последната изолираща суперсерия.</li><li>Пропуснатото не се наваксва в друг ден.</li></ol></div>
@@ -489,17 +479,16 @@ function renderGym(ctx){
 function renderCore(ctx){
   const c=ctx.core,rounds=coreRounds(ctx.week);
   const items=c.items.map((x,i)=>trainCard(corePrescribe(x,ctx.week),`data-core="${i}"`,ctx)).join('');
-  return `<div class="workout-hero"><div class="eyebrow">${dayNames[ctx.day].toUpperCase()} · ${c.duration.toUpperCase()}</div><h2>${c.title}</h2><p>${c.focus}</p><div class="workout-meta"><span>🏠 Вкъщи</span><span>🔁 ${rounds===1?'един кръг':'два кръга'}</span><span>⏱ 8–12 мин</span></div></div>
-  <div class="section-head"><div><h2>Ред на изпълнение</h2><p>Изпълняват се като ${rounds===1?'един кръг':'два кръга'}, без отказ и без бързане.</p></div></div>
+  return `<div class="section-head"><div><h2>Ред на изпълнение</h2><p>Изпълняват се като ${rounds===1?'един кръг':'два кръга'}, без отказ и без бързане.</p></div></div>
   <div class="train-block single"><div class="block-head"><span class="block-tag">${rounds===1?'1 КРЪГ':'2 КРЪГА'}</span><span class="block-time">МАКС 15 МИН</span></div><div class="block-list">${items}</div><div class="block-note"><b>Седмица ${ctx.week}:</b> ${trainingPlan.coreWeeks[ctx.week-1]}</div></div>
   <div class="warmup cool"><h3>Правила</h3><ol><li>Ако сесията надхвърли 15 минути, не добавяй серии — прекрати след последния кръг.</li><li>При дискомфорт в кръста спри упражнението и мини на безболезнената по-лесна версия.</li><li>Коремът се тренира за сила и мускул; мазнините не падат само от една зона.</li></ol></div>`;
 }
 function renderWorkout(){
   renderDays(document.querySelector('#workoutDays'),state.workoutDay,'workout');
   const ctx=trainContext(),el=document.querySelector('#workoutContent');
-  if(ctx.phase.phase==='before'){el.innerHTML=weekCard(ctx)+archiveCard(ctx);return}
-  const body=ctx.gym?renderGym(ctx):ctx.core?renderCore(ctx):`<div class="rest-card"><div class="big">🌿</div><h3>Почивен ден</h3><p>Разходка, вода, храна по план и добър сън. Мускулите растат в почивката.</p></div>`;
-  el.innerHTML=weekCard(ctx)+dayLogCard(ctx)+body;
+  workoutEyebrow(ctx);
+  if(ctx.phase.phase==='before'){el.innerHTML=archiveCard(ctx);return}
+  el.innerHTML=ctx.gym?renderGym(ctx):ctx.core?renderCore(ctx):`<div class="rest-card"><div class="big">🌿</div><h3>Почивен ден</h3><p>Разходка, вода, храна по план и добър сън. Мускулите растат в почивката.</p></div>`;
 }
 function escAttr(v){return String(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function logSetsHTML(ctx,p){
