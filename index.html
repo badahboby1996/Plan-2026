@@ -184,6 +184,56 @@
     .rest-card .big{font-size:44px;line-height:1}
     .rest-card h3{margin-top:12px;font-size:19px}
     .rest-card p{margin:8px auto 0;color:#4f6a44;font-size:12.5px;line-height:1.5;max-width:85%;font-weight:600}
+    .photo-full{background-size:cover;background-position:center}
+    .train-block{border:1px solid var(--line);background:var(--card);border-radius:26px;padding:11px;margin-bottom:11px;box-shadow:var(--shadow-soft)}
+    .train-block.superset{background:linear-gradient(150deg,#fff8e4,var(--card))}
+    .block-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:3px 6px 9px}
+    .block-tag{display:inline-flex;align-items:center;gap:5px;background:var(--ink);color:#fff;border-radius:999px;font-size:9px;font-weight:950;letter-spacing:.08em;padding:6px 10px}
+    .train-block.single .block-tag{background:var(--butter);color:var(--ink)}
+    .block-time{font-size:9.5px;font-weight:900;color:var(--muted);letter-spacing:.05em}
+    .block-scheme{font-size:10.5px;line-height:1.5;font-weight:700;color:var(--muted);padding:0 6px 9px}
+    .block-note{font-size:10.5px;line-height:1.5;font-weight:600;color:var(--muted);background:var(--butter);border-radius:15px;padding:9px 11px;margin-top:9px}
+    .block-list{display:grid;gap:9px}
+    .train-block .exercise-card{background:var(--card)}
+    .superset-link{display:flex;align-items:center;gap:7px;font-size:9.5px;font-weight:950;color:var(--sun-deep);letter-spacing:.06em;padding:1px 6px}
+    .superset-link:before,.superset-link:after{content:"";height:1px;flex:1;background:var(--line)}
+    .logged{display:inline-flex;background:var(--mint);border-radius:999px;padding:5px 9px;font-size:9px;font-weight:950;margin-top:6px;color:#33591f}
+    .day-log{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow-soft)}
+    .day-log b{font-size:16px}
+    .day-log small{display:block;color:var(--muted);font-size:10px;font-weight:900;letter-spacing:.1em;margin-bottom:4px}
+    .day-log p{margin:6px 0 0;font-size:11.5px;line-height:1.5;color:var(--muted);font-weight:600}
+    .prep-sets{margin:12px 0;background:var(--sky);border-radius:24px;padding:16px 18px;box-shadow:var(--shadow-soft)}
+    .prep-sets h3{font-size:14px}
+    .prep-sets .prep-line{display:grid;grid-template-columns:20px 1fr auto;gap:9px;align-items:center;font-size:11.5px;font-weight:600;line-height:1.45;margin-top:8px}
+    .prep-sets .prep-line i{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.75);display:grid;place-items:center;font-style:normal;font-weight:950;font-size:10px}
+    .prep-sets .prep-line b{font-size:10.5px;font-weight:950;white-space:nowrap}
+    .prep-sets>p{margin:10px 0 0;font-size:10.5px;line-height:1.5;font-weight:600;opacity:.75}
+    .spec-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
+    .spec-box{background:var(--butter);border-radius:18px;padding:11px 12px}
+    .spec-box b{display:block;font-size:14px}
+    .spec-box small{display:block;color:var(--muted);font-size:9px;font-weight:900;letter-spacing:.08em;margin-top:3px}
+    .alt-note{background:var(--sky);border-radius:20px;padding:13px 15px;font-size:12px;line-height:1.5;font-weight:600;margin-top:12px}
+    .log-set{border:1px solid var(--line);border-radius:20px;padding:11px;margin-top:9px;background:#fffdf6}
+    .log-set.done{background:#f2fae9;border-color:#bcdda6}
+    .log-head{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:9px}
+    .log-head b{font-size:12px}
+    .log-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+    .log-field{display:flex;flex-direction:column;gap:3px}
+    .log-field span{font-size:8.5px;font-weight:950;letter-spacing:.06em;color:var(--muted)}
+    .log-field input{border:1px solid var(--line);border-radius:13px;background:#faf6ea;padding:9px 8px;font:inherit;font-size:13px;font-weight:800;width:100%;text-align:center;color:var(--ink)}
+    .log-note{margin-top:7px}
+    .log-note input{text-align:left;font-size:12px;font-weight:600}
+    .log-check{appearance:none;width:34px;height:34px;flex:none;border-radius:12px;border:1.5px solid #dcd4bd;background:#faf6ea;display:grid;place-items:center;margin:0;transition:.15s}
+    .log-check:checked{background:var(--sun);border-color:var(--sun-deep)}
+    .log-check:checked:after{content:"\2713";font-size:16px;font-weight:950}
+    .warm-note{background:var(--butter);border-radius:16px;padding:10px 12px;font-size:11px;line-height:1.45;font-weight:700;margin-top:10px}
+    .archive-card{background:var(--sky);border-radius:26px;padding:18px 19px;box-shadow:var(--shadow-soft);margin-bottom:12px}
+    .archive-card h3{font-size:16px;margin-top:8px}
+    .archive-card p{margin:7px 0 0;font-size:11.5px;line-height:1.5;font-weight:600;opacity:.8}
+    .archive-list{display:grid;gap:6px;margin-top:11px}
+    .archive-row{display:flex;justify-content:space-between;gap:10px;background:rgba(255,255,255,.6);border-radius:14px;padding:9px 11px;font-size:11.5px;font-weight:700}
+    .date-chip .tdot.core{background:#7fb15f}
+    .date-chip.active .tdot.core{background:var(--mint)}
 
     /* ── Shopping ──────────────────────────────────── */
     .shop-progress{background:linear-gradient(125deg,#ffe08a,var(--sun));padding:18px 19px;border-radius:27px;margin-bottom:13px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
@@ -314,8 +364,8 @@
     </section>
 
     <section class="view" id="workoutView">
-      <div class="page-head"><div class="eyebrow">8 СЕДМИЦИ · RECOMPOSITION</div><h1>Силен ум.<br>Силно тяло.</h1><p>4 сесии седмично · 45 минути · техника преди тежест.</p></div>
-      <div class="calendar-nav"><button class="cal-arrow" data-week="-1" aria-label="Предишна седмица">‹</button><button class="cal-month" data-calendar></button><button class="cal-arrow" data-week="1" aria-label="Следваща седмица">›</button></div>
+      <div class="page-head"><div class="eyebrow">8 СЕДМИЦИ · РЕКОМПОЗИЦИЯ</div><h1>Силен ум.<br>Силно тяло.</h1><p>4 тренировки в залата · 3 кратки Core сесии вкъщи · двойна прогресия и техника преди тежест.</p></div>
+      <div class="calendar-nav"><button class="cal-arrow" data-week="-1" aria-label="Предишна седмица">‹</button><button class="cal-month" data-calendar></button><button class="cal-arrow" data-week="1" aria-label="Следваща седмица">›</button><input class="date-picker" id="workoutDatePicker" type="date"></div>
       <div class="date-strip" id="workoutDays"></div>
       <div id="workoutContent"></div>
     </section>
@@ -341,9 +391,12 @@
 
 <script src="firebase-config.js"></script>
 <script src="data.js"></script>
+<script src="training-plan.js"></script>
+<script src="training-engine.js"></script>
 <script>
-const browserDay=dayKeys[new Date().getDay()];
-let selectedDate=new Date();selectedDate.setHours(12,0,0,0);
+importLegacyHistory();
+const browserDay=sofiaDayKey();
+let selectedDate=isoToLocalDate(sofiaToday());
 let weekSunday=new Date(selectedDate);weekSunday.setDate(weekSunday.getDate()-weekSunday.getDay());
 const state={day:browserDay,workoutDay:browserDay,shop:'market1',partner:true,profile:localStorage.getItem('hustle-last-profile')||'boby'};
 const monthNames=['ЯНУАРИ','ФЕВРУАРИ','МАРТ','АПРИЛ','МАЙ','ЮНИ','ЮЛИ','АВГУСТ','СЕПТЕМВРИ','ОКТОМВРИ','НОЕМВРИ','ДЕКЕМВРИ'];
@@ -374,17 +427,123 @@ const weeklyQuotes=[
  ['„Заедно сме по-силни от всяка трудност.“','Семейство Бадах']
 ];
 function recipeSteps(m,forTwo){const prep=`Измери всички продукти предварително и ги подреди до ${m.device.toLowerCase()}. Подготви зеленчуците, преди да включиш уреда.`;const source=forTwo&&m.coupleSteps?m.coupleSteps:m.steps;const result=[prep,...source];if(m.shared&&forTwo&&m.batchLabel)result.push(`Финално разпределяне: ${m.batchLabel}. Не смяташ допълнително — общите грамажи са показани по-горе.`);return result}
-function effectiveSets(ex,index){const week=getProgramWeek();if(week===5)return 2;if(week===2&&index<2)return ex.sets+1;return ex.sets}
-function effectiveReps(ex,week=getProgramWeek()){if(ex.id==='plank'){if(week===3||week===6||week===8)return '40 сек';return ex.reps}const range=ex.reps.match(/^(\d+)–(\d+)$/),side=ex.reps.match(/^(\d+)\/(страна|крак)$/),fixed=ex.reps.match(/^(\d+)$/);if(week===3){if(range)return `${+range[1]+1}–${+range[2]+2}`;if(side)return `${+side[1]+1}–${+side[1]+2}/${side[2]}`;if(fixed)return `${+fixed[1]+1}–${+fixed[1]+2}`}if(week===6){if(range)return `${+range[1]+1}–${+range[2]+1}`;if(side)return `${+side[1]+1}/${side[2]}`;if(fixed)return `${+fixed[1]+1}`}if(week===8){if(range)return `${range[2]}`;if(side)return `${+side[1]+2}/${side[2]}`;if(fixed)return `${+fixed[1]+2}`}return ex.reps}
-function exercisePrescription(ex,index){const week=getProgramWeek();return {week,sets:effectiveSets(ex,index),reps:effectiveReps(ex,week)}}
 
 function mealCard(m,i){return `<button class="meal-card" data-meal="${i}"><div class="meal-art" style="--meal:${m.color}">${m.icon}</div><div><div class="meal-type">${m.time} · ${m.type}${m.fromPreviousDinner?' · от предната вечер':''}</div><div class="meal-name">${m.name}</div><div class="meal-meta"><span>${m.kcal} ккал</span><span>${m.macros.split(' · ')[0]}</span></div></div><div class="arrow">›</div>${m.shared?'<span class="shared-pill">ЗА ДВАМА</span>':''}</button>`}
-function syncCalendarLabels(){document.querySelectorAll('[data-calendar]').forEach(x=>x.textContent=`${monthNames[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`);const p=document.querySelector('#datePicker');if(p)p.value=`${selectedDate.getFullYear()}-${String(selectedDate.getMonth()+1).padStart(2,'0')}-${String(selectedDate.getDate()).padStart(2,'0')}`}
-function renderDays(target,selected,mode){target.innerHTML=dayKeys.map((k,i)=>{const d=new Date(weekSunday);d.setDate(d.getDate()+i);const training=mode==='workout'&&workoutData[k];return `<button class="date-chip ${k===selected?'active':''}" data-${mode}day="${k}" data-date="${d.toISOString().slice(0,10)}"><span>${shortDays[k]}</span><b>${d.getDate()}</b>${training?'<i class="tdot"></i>':''}</button>`}).join('');syncCalendarLabels()}
+function syncCalendarLabels(){document.querySelectorAll('[data-calendar]').forEach(x=>x.textContent=`${monthNames[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`);document.querySelectorAll('.date-picker').forEach(p=>p.value=localISO(selectedDate))}
+function renderDays(target,selected,mode){target.innerHTML=dayKeys.map((k,i)=>{const d=new Date(weekSunday);d.setDate(d.getDate()+i);const gym=mode==='workout'&&sessionFor(k),core=mode==='workout'&&coreSessionFor(k);return `<button class="date-chip ${k===selected?'active':''}" data-${mode}day="${k}" data-date="${localISO(d)}"><span>${shortDays[k]}</span><b>${d.getDate()}</b>${gym?'<i class="tdot"></i>':core?'<i class="tdot core"></i>':''}</button>`}).join('');syncCalendarLabels()}
 function setProfile(profile){state.profile=profile;localStorage.setItem('hustle-last-profile',profile);document.querySelectorAll('[data-profile]').forEach(x=>x.classList.toggle('active',x.dataset.profile===profile))}
 function renderFood(){setProfile(state.profile);renderDays(document.querySelector('#foodDays'),state.day,'food');const data=state.profile==='boby'?meals:shirinMeals,d=data[state.day],schedule=state.profile==='boby'?prepSchedule:shirinPrepSchedule;document.querySelector('#dayKcal').textContent=`≈${d.kcal}`;document.querySelector('#dayProtein').textContent=`${d.protein} г`;document.querySelector('#prepCard').innerHTML=`<small>ПОДГОТОВКА · ${dayNames[state.day].toUpperCase()}</small><p>${schedule[state.day]}</p>`;document.querySelector('#foodMeals').innerHTML=d.items.map(mealCard).join('')}
-function renderToday(){const now=new Date(),hour=now.getHours(),week=Math.floor((now-new Date(now.getFullYear(),0,1))/604800000),quote=weeklyQuotes[week%weeklyQuotes.length],dinner=meals[browserDay].items[3],w=workoutData[browserDay];document.querySelector('#todayLabel').textContent=`${dayNames[browserDay].toUpperCase()} · ${now.getDate()} ${monthNames[now.getMonth()]}`;document.querySelector('#todayGreeting').innerHTML=hour<12?'Добро утро,<br>семейство Бадах.':hour<18?'Добър ден,<br>семейство Бадах.':'Добър вечер,<br>семейство Бадах.';document.querySelector('#weeklyQuote').textContent=quote[0];document.querySelector('#quoteAuthor').textContent=quote[1];document.querySelector('#tonightIcon').textContent=dinner.icon;document.querySelector('#tonightName').textContent=dinner.name;document.querySelector('#tonightMeta').textContent=`${dinner.cook} · ${dinner.device}`;document.querySelector('#prepTonight').textContent=prepSchedule[browserDay];document.querySelector('#todayWorkout').textContent=w?`${w.title} · 45 мин`:'Почивен ден · разходка и сън'}
-function renderWorkout(){renderDays(document.querySelector('#workoutDays'),state.workoutDay,'workout');const w=workoutData[state.workoutDay],el=document.querySelector('#workoutContent'),week=getProgramWeek(),plan=progression[week-1];if(!w){el.innerHTML=`<div class="week-card" data-num="${week}"><span class="week-badge">СЕДМИЦА ${week} / 8</span><h3>${plan[0]}</h3><p>${plan[1]}</p></div><div class="rest-card"><div class="big">🌿</div><h3>Почивен ден</h3><p>Разходка, вода, храна по план и добър сън. Мускулите растат в почивката.</p></div>`;return}el.innerHTML=`<div class="week-card" data-num="${week}"><span class="week-badge">СЕДМИЦА ${week} / 8</span><h3>${plan[0]}</h3><p>${plan[1]}</p></div><div class="workout-hero"><div class="eyebrow">${dayNames[state.workoutDay].toUpperCase()} · 45 МИН</div><h2>${w.title}</h2><p>${w.focus}</p><div class="workout-meta"><span>🔥 8 мин загрявка</span><span>🏁 ${w.finisher}</span></div></div><div class="warmup"><h3>Загрявка · 8 мин</h3><ol>${w.warmup.map(x=>`<li>${x}</li>`).join('')}</ol></div><div class="section-head"><div><h2>Упражнения</h2><p>Точната цел за седмица ${week}, техника и таймер</p></div></div><div class="exercise-list">${w.exercises.map((x,i)=>{const p=exercisePrescription(x,i);return `<button class="exercise-card" data-exercise="${i}"><div class="exercise-img">${exerciseVisual(x.id)}</div><div><h3>${x.name}</h3><small>Почивка ${x.rest} сек</small><span class="sets">СЕДМИЦА ${p.week} · ${p.sets} серии × ${p.reps}</span></div><div class="arrow">›</div></button>`}).join('')}</div><div class="warmup cool"><h3>Охлаждане · 5 мин</h3><ol><li>Разтягане на натоварените групи</li><li>Cat-camel за гърба</li><li>5 цикъла дълбоко дишане</li></ol></div>`}
+function renderToday(){const now=new Date(),hour=now.getHours(),week=Math.floor((now-new Date(now.getFullYear(),0,1))/604800000),quote=weeklyQuotes[week%weeklyQuotes.length],dinner=meals[browserDay].items[3],w=sessionFor(browserDay)||coreSessionFor(browserDay),todayPhase=planPhaseFor(sofiaToday());document.querySelector('#todayLabel').textContent=`${dayNames[browserDay].toUpperCase()} · ${now.getDate()} ${monthNames[now.getMonth()]}`;document.querySelector('#todayGreeting').innerHTML=hour<12?'Добро утро,<br>семейство Бадах.':hour<18?'Добър ден,<br>семейство Бадах.':'Добър вечер,<br>семейство Бадах.';document.querySelector('#weeklyQuote').textContent=quote[0];document.querySelector('#quoteAuthor').textContent=quote[1];document.querySelector('#tonightIcon').textContent=dinner.icon;document.querySelector('#tonightName').textContent=dinner.name;document.querySelector('#tonightMeta').textContent=`${dinner.cook} · ${dinner.device}`;document.querySelector('#prepTonight').textContent=prepSchedule[browserDay];document.querySelector('#todayWorkout').textContent=todayPhase.phase==='before'?`Нов цикъл от ${formatDateBG(trainingPlan.start)}`:w?`${w.title} · ${w.durationShort} · седмица ${todayPhase.week}`:'Почивен ден · разходка и сън'}
+function trainPhoto(file){return `<span class="exercise-photo photo-full" aria-hidden="true" style="--exercise-photo:url('${file}')"></span>`}
+function trainContext(){const iso=localISO(selectedDate),day=state.workoutDay,phase=planPhaseFor(iso);return {iso,day,phase,week:prescriptionWeek(phase),gym:sessionFor(day),core:coreSessionFor(day),future:iso>sofiaToday()}}
+function trainMeta(ctx){const s=ctx.gym||ctx.core;return {planVersion:trainingPlan.planVersion,week:ctx.week,sessionKey:s?s.key:'rest',title:s?s.title:'Почивен ден',snapshot:daySnapshot(ctx.day,ctx.week)}}
+function loggedCount(iso,exId,sets){let n=0;for(let i=0;i<sets;i++){const e=getSet(iso,exId,i);if(e&&e.done)n++}return n}
+function trainCard(p,attr,ctx){const done=loggedCount(ctx.iso,p.id,p.sets);return `<button class="exercise-card" ${attr}><div class="exercise-img">${trainPhoto(p.photo)}</div><div><h3>${p.name}</h3><small>${p.muscle} · почивка ${p.rest}</small><span class="sets">СЕДМИЦА ${ctx.week} · ${p.sets} × ${p.reps}${p.rir?` · RIR ${p.rir}`:''}</span>${done?`<span class="logged">✓ ${done} / ${p.sets} записани серии</span>`:''}</div><div class="arrow">›</div></button>`}
+function weekCard(ctx){
+  if(ctx.phase.phase==='before')return `<div class="week-card" data-num="0"><span class="week-badge">ПРЕДИ ЦИКЪЛА</span><h3>Новата програма стартира в неделя, ${formatDateBG(trainingPlan.start)}</h3><p>Тази дата е преди старта. По-долу е историята от старата програма, ако има записана за деня.</p></div>`;
+  const w=trainingPlan.weeks[ctx.week-1];
+  const badge=ctx.phase.phase==='after'?`СЛЕД ЦИКЪЛА · ОРИЕНТИР СЕДМИЦА ${ctx.week}`:`СЕДМИЦА ${ctx.week} / ${trainingPlan.weeksTotal}`;
+  const tail=ctx.phase.phase==='after'?'<p>8-те седмици приключиха. Показаното е ориентир по последната прогресивна седмица — направи оценка и започни нов цикъл.</p>':'';
+  return `<div class="week-card" data-num="${ctx.week}"><span class="week-badge">${badge}</span><h3>${w.title}</h3><p>${w.what}</p><p><b>Целеви RIR:</b> ${w.rir}${ctx.week>=8?` · ${trainingPlan.deloadWeight}`:''}</p>${tail}</div>`;
+}
+function dayLogCard(ctx){
+  const planned=daySnapshot(ctx.day,ctx.week).reduce((a,x)=>a+x.sets,0),sum=daySummary(ctx.iso,planned);
+  const note=ctx.future?'Бъдеща дата · показано е предварителното предписание. Записване е възможно от деня на тренировката нататък.':(sum.done?'Записите се пазят по дата и остават непроменени, дори когато планът се обнови.':'Отбележи всяка работна серия в детайла на упражнението. Загряващите серии не се броят.');
+  return `<div class="day-log"><small>ДНЕВНИК · ${dayNames[ctx.day].toUpperCase()}, ${formatDateBG(ctx.iso)}</small><b>${sum.done} / ${planned} работни серии</b><p>${note}</p></div>`;
+}
+function prepCardHTML(){
+  return `<div class="prep-sets"><h3>Подготвителни серии · преди първото тежко упражнение</h3>${trainingPlan.prepSets.map(([n,load,reps,goal])=>`<div class="prep-line"><i>${n}</i><span>${load} · ${reps} повторения — ${goal}</span><b></b></div>`).join('')}<p>За следващото базово упражнение стигат 1–2 подготвителни серии. При изолациите — само ако ставата го изисква. Загряващите серии не се броят за работни.</p></div>`;
+}
+function archiveCard(ctx){
+  const day=trainDay(ctx.iso);
+  if(!day)return `<div class="rest-card"><div class="big">🌿</div><h3>Няма записана тренировка</h3><p>За тази дата няма запис. Новият цикъл започва в неделя, ${formatDateBG(trainingPlan.start)}.</p></div>`;
+  const rows=Object.entries(day.sets).reduce((acc,[k,v])=>{const exId=k.split('#')[0];acc[exId]=(acc[exId]||0)+(v&&v.done?1:0);return acc},{});
+  const nameOf=id=>(day.snapshot||[]).find(x=>x.exId===id)?.name||(trainingPlan.library[id]&&trainingPlan.library[id].name)||id;
+  return `<div class="archive-card"><span class="week-badge">АРХИВ · ${day.legacy?'СТАРА ПРОГРАМА':'ЗАПИС'} · СЕДМИЦА ${day.week}</span><h3>${day.title}</h3><p>${formatDateBG(ctx.iso)} · записите отпреди новата програма се запазват непроменени.</p><div class="archive-list">${Object.entries(rows).map(([id,n])=>`<div class="archive-row"><span>${nameOf(id)}</span><b>${n} серии ✓</b></div>`).join('')}</div></div>`;
+}
+function renderGym(ctx){
+  const g=ctx.gym;
+  const blocks=g.blocks.map((b,bi)=>{
+    const items=b.items.map(x=>prescribe(x,ctx.week));
+    if(b.type==='superset'){
+      const scheme=`${items[0].name} → ${b.transition} преход → ${items[1].name} → почивка ${items[1].rest} → повтори блока`;
+      return `<div class="train-block superset"><div class="block-head"><span class="block-tag">⚡ ${b.label.toUpperCase()}</span><span class="block-time">ПОЧИВКА ${items[1].rest.toUpperCase()}</span></div><div class="block-scheme">${scheme}</div><div class="block-list">${trainCard(items[0],`data-train="${bi}-0"`,ctx)}<div class="superset-link">${b.transition} ПРЕХОД</div>${trainCard(items[1],`data-train="${bi}-1"`,ctx)}</div>${b.note?`<div class="block-note">${b.note}</div>`:''}</div>`;
+    }
+    return `<div class="train-block single"><div class="block-head"><span class="block-tag">САМОСТОЯТЕЛНО</span><span class="block-time">ПОЧИВКА ${items[0].rest.toUpperCase()}</span></div><div class="block-list">${trainCard(items[0],`data-train="${bi}-0"`,ctx)}</div>${b.note?`<div class="block-note">${b.note}</div>`:''}</div>`;
+  }).join('');
+  const extra=ctx.week===5?'<div class="block-note">Седмица 5: само ако възстановяването е добро и се побираш в обичайното време — +1 работна серия за бицепс и трицепс в сряда. Други серии не се добавят.</div>':'';
+  const deload=ctx.week>=8?`<div class="block-note">Седмица 8 · разтоварване: работните серии са намалени приблизително наполовина, тежестта е ${trainingPlan.deloadWeight}, без отказ и без добавяне на повторения.</div>`:'';
+  return `<div class="workout-hero"><div class="eyebrow">${dayNames[ctx.day].toUpperCase()} · ${g.duration.toUpperCase()}</div><h2>${g.title}</h2><p>${g.focus}</p><div class="workout-meta"><span>🔥 Загрявка 4–5 мин</span><span>🎯 RIR ${trainingPlan.weeks[ctx.week-1].rir}</span><span>🧱 ${g.blocks.length} блока</span></div></div>
+  <div class="warmup"><h3>Обща загрявка · 4–5 мин</h3><ol>${g.warmup.map(x=>`<li>${x}</li>`).join('')}</ol></div>
+  ${prepCardHTML()}
+  <div class="section-head"><div><h2>Ред на изпълнение</h2><p>${g.intro}</p></div></div>
+  ${blocks}${extra}${deload}
+  <div class="warmup cool"><h3>Времеви лимит</h3><ol><li>${g.duration} — не режи почивките на тежките упражнения.</li><li>Ако времето свърши, отпада последната изолираща суперсерия.</li><li>Пропуснатото не се наваксва в друг ден.</li></ol></div>
+  <div class="danger"><b>Внимание:</b> ${trainingPlan.safety}</div>`;
+}
+function renderCore(ctx){
+  const c=ctx.core,rounds=coreRounds(ctx.week);
+  const items=c.items.map((x,i)=>trainCard(corePrescribe(x,ctx.week),`data-core="${i}"`,ctx)).join('');
+  return `<div class="workout-hero"><div class="eyebrow">${dayNames[ctx.day].toUpperCase()} · ${c.duration.toUpperCase()}</div><h2>${c.title}</h2><p>${c.focus}</p><div class="workout-meta"><span>🏠 Вкъщи</span><span>🔁 ${rounds===1?'един кръг':'два кръга'}</span><span>⏱ 8–12 мин</span></div></div>
+  <div class="section-head"><div><h2>Ред на изпълнение</h2><p>Изпълняват се като ${rounds===1?'един кръг':'два кръга'}, без отказ и без бързане.</p></div></div>
+  <div class="train-block single"><div class="block-head"><span class="block-tag">${rounds===1?'1 КРЪГ':'2 КРЪГА'}</span><span class="block-time">МАКС 15 МИН</span></div><div class="block-list">${items}</div><div class="block-note"><b>Седмица ${ctx.week}:</b> ${trainingPlan.coreWeeks[ctx.week-1]}</div></div>
+  <div class="warmup cool"><h3>Правила</h3><ol><li>Ако сесията надхвърли 15 минути, не добавяй серии — прекрати след последния кръг.</li><li>При дискомфорт в кръста спри упражнението и мини на безболезнената по-лесна версия.</li><li>Коремът се тренира за сила и мускул; мазнините не падат само от една зона.</li></ol></div>`;
+}
+function renderWorkout(){
+  renderDays(document.querySelector('#workoutDays'),state.workoutDay,'workout');
+  const ctx=trainContext(),el=document.querySelector('#workoutContent');
+  if(ctx.phase.phase==='before'){el.innerHTML=weekCard(ctx)+archiveCard(ctx);return}
+  const body=ctx.gym?renderGym(ctx):ctx.core?renderCore(ctx):`<div class="rest-card"><div class="big">🌿</div><h3>Почивен ден</h3><p>Разходка, вода, храна по план и добър сън. Мускулите растат в почивката.</p></div>`;
+  el.innerHTML=weekCard(ctx)+dayLogCard(ctx)+body;
+}
+function escAttr(v){return String(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function logSetsHTML(ctx,p){
+  if(ctx.future)return '<div class="warm-note">Бъдеща тренировка · показано е предварителното предписание за седмица '+ctx.week+'. Записването се отключва в деня на тренировката.</div>';
+  return Array.from({length:p.sets},(_,i)=>{
+    const e=getSet(ctx.iso,p.id,i)||{},v=k=>(e[k]===undefined||e[k]===null)?'':e[k];
+    return `<div class="log-set${e.done?' done':''}"><div class="log-head"><b>Работна серия ${i+1}${p.extraSet&&i===p.sets-1?' · по преценка (седмица 5)':''}</b><input class="log-check" type="checkbox" data-log="${p.id}|${i}|done" data-rest="${p.restSec}" ${e.done?'checked':''} aria-label="Завършена серия ${i+1}"></div><div class="log-grid"><label class="log-field"><span>ТЕЖЕСТ КГ</span><input type="number" inputmode="decimal" step="0.5" data-log="${p.id}|${i}|weight" value="${v('weight')}"></label><label class="log-field"><span>ПОВТОРЕНИЯ</span><input type="number" inputmode="numeric" data-log="${p.id}|${i}|reps" value="${v('reps')}"></label><label class="log-field"><span>RIR</span><input type="number" inputmode="numeric" data-log="${p.id}|${i}|rir" value="${v('rir')}"></label><label class="log-field"><span>БОЛКА 0–10</span><input type="number" inputmode="numeric" min="0" max="10" data-log="${p.id}|${i}|pain" value="${v('pain')}"></label></div><label class="log-field log-note"><span>БЕЛЕЖКА</span><input type="text" data-log="${p.id}|${i}|note" value="${escAttr(v('note'))}" placeholder="напр. 10/9/8 · усещане · техника"></label></div>`;
+  }).join('');
+}
+function exerciseSheet(ctx,p,opts){
+  const o=opts||{},partner=o.partner;
+  const blockLine=partner
+    ? `<div class="block-note"><b>⚡ ${o.blockLabel.toUpperCase()}</b><br>${o.first.name} → ${o.transition} преход → ${o.second.name} → почивка ${o.second.rest} → повтори блока.</div><div class="section-head"><div><h2>Второто упражнение в блока</h2><p>И двете упражнения имат собствена снимка и собствено предписание.</p></div></div>${trainCard(partner,`data-train="${o.partnerAttr}"`,ctx)}`
+    : `<div class="block-note"><b>САМОСТОЯТЕЛНО</b><br>След всяка работна серия започва собствената почивка на упражнението: ${p.rest}.</div>`;
+  return `<div class="sheet-head"><div><span class="tag">${p.muscle}</span><h2>${p.name}</h2></div><button class="close" data-close>×</button></div>
+  <p class="sheet-sub"><b>Седмица ${ctx.week} · ${formatDateBG(ctx.iso)}:</b> ${p.sets} работни серии × ${p.reps}${p.rir?` · RIR ${p.rir}`:''} · почивка ${p.rest}</p>
+  <div class="exercise-visual">${trainPhoto(p.photo)}</div>
+  ${blockLine}
+  <div class="spec-grid"><div class="spec-box"><b>${p.warm}</b><small>ЗАГРЯВАЩИ СЕРИИ</small></div><div class="spec-box"><b>${p.sets}</b><small>РАБОТНИ СЕРИИ</small></div><div class="spec-box"><b>${p.reps}</b><small>ПОВТОРЕНИЯ</small></div><div class="spec-box"><b>${p.rir||'—'}</b><small>ЦЕЛЕВИ RIR</small></div></div>
+  <div class="warm-note">Загряващите серии не се броят за работни и не влизат в дневника.${p.deload?' Седмица 8: сериите са наполовина и тежестта е '+trainingPlan.deloadWeight+'.':''}</div>
+  <div class="detail-block"><h3>Технически насоки</h3><div class="form-list">${p.tips.map((t,n)=>`<div class="form-tip"><i>${n+1}</i><span>${t}</span></div>`).join('')}</div></div>
+  ${p.alt?`<div class="alt-note"><b>Допустима алтернатива:</b> ${p.alt}</div>`:''}
+  ${p.key?`<div class="alt-note"><b>Ключ:</b> ${p.key}</div>`:''}
+  <div class="danger"><b>Внимавай:</b> ${trainingPlan.safety}</div>
+  <div class="detail-block"><h3>Отчитане на работните серии</h3><span class="block-sub">Всяка серия се пази отделно за ${formatDateBG(ctx.iso)}: завършено, тежест, повторения, RIR, болка и бележка.</span>${logSetsHTML(ctx,p)}
+  <div class="timer-panel"><div><small>ПОЧИВКА</small><br><b id="timerDisplay">${String(Math.floor(p.restSec/60)).padStart(2,'0')}:${String(p.restSec%60).padStart(2,'0')}</b></div><button class="timer-btn" data-timer="${p.restSec}">СТАРТ</button></div></div>`;
+}
+function openTrainExercise(bi,ii){
+  const ctx=trainContext();if(!ctx.gym)return;
+  const block=ctx.gym.blocks[bi];if(!block)return;
+  const items=block.items.map(x=>prescribe(x,ctx.week)),p=items[ii];if(!p)return;
+  const opts=block.type==='superset'?{partner:items[1-ii],partnerAttr:`${bi}-${1-ii}`,blockLabel:block.label,transition:block.transition,first:items[0],second:items[1]}:{};
+  openSheet(exerciseSheet(ctx,p,opts));
+}
+function openCoreExercise(i){
+  const ctx=trainContext();if(!ctx.core)return;
+  const item=ctx.core.items[i];if(!item)return;
+  openSheet(exerciseSheet(ctx,corePrescribe(item,ctx.week),{}));
+}
+function handleTrainLog(el){
+  const ctx=trainContext();if(ctx.future)return;
+  const [exId,idx,field]=el.dataset.log.split('|'),meta=trainMeta(ctx),patch={};
+  if(field==='done')patch.done=el.checked;
+  else if(field==='note')patch.note=el.value;
+  else patch[field]=el.value===''?null:Number(el.value);
+  logSet(ctx.iso,meta,exId,Number(idx),patch);
+  if(field==='done'){const box=el.closest('.log-set');if(box)box.classList.toggle('done',el.checked);if(el.checked)startTimer(Number(el.dataset.rest||60))}
+}
+
 function renderShop(){const data=shopping[state.shop],groups=document.querySelector('#shopGroups');if(!data){groups.innerHTML='<div class="empty">Списъкът се подготвя.</div>';document.querySelector('#shopCount').textContent='0 / 0';return}let total=0,done=0;const scope=`<div class="shop-note"><small>${data.label}</small><p>${data.note}</p></div>`;groups.innerHTML=scope+Object.entries(data.groups).map(([name,items])=>{total+=items.length;return `<section class="shop-group"><h3>${name}<span>${items.length} продукта</span></h3>${items.map(([n,q],i)=>{const id=`${state.shop}-${name}-${i}`,remote=window.hustleShoppingReady,checked=remote?window.hustleShoppingState?.[id]===true:localStorage.getItem('hustle-'+id)==='1';if(checked)done++;return `<label class="check-row"><input type="checkbox" data-check="${id}" ${checked?'checked':''}><span class="item-name">${n}</span><span class="qty">${q}</span></label>`}).join('')}</section>`}).join('');document.querySelector('#shopCount').textContent=`${done} / ${total}`;document.querySelector('#shopProgressBar').style.width=`${total?done/total*100:0}%`}
 
 function openMeal(i,sourceDay,keepScroll){
@@ -409,7 +568,7 @@ function openMeal(i,sourceDay,keepScroll){
   const t=document.querySelector('#partnerToggle');if(t)t.onchange=e=>{state.partner=e.target.checked;openMeal(i,sourceDay,true)}
 }
 let timerInterval=null;
-function openExercise(i){const w=workoutData[state.workoutDay],ex=w.exercises[i],d=exerciseDetails[ex.id],p=exercisePrescription(ex,i),week=p.week;const checks=Array.from({length:p.sets},(_,s)=>{const k=`set-${week}-${state.workoutDay}-${ex.id}-${s}`;return `<input class="set-dot" type="checkbox" data-setcheck="${k}" aria-label="Серия ${s+1}" ${localStorage.getItem('hustle-'+k)==='1'?'checked':''}>`}).join('');openSheet(`<div class="sheet-head"><div><span class="tag">${d.muscle}</span><h2>${ex.name}</h2></div><button class="close" data-close>×</button></div><p class="sheet-sub"><b>Седмица ${week}:</b> ${p.sets} серии × ${p.reps} · почивка ${ex.rest} сек</p><div class="exercise-visual">${exerciseVisual(ex.id)}</div><div class="detail-block"><h3>Правилна техника</h3><div class="form-list">${d.tips.map((t,n)=>`<div class="form-tip"><i>${n+1}</i><span>${t}</span></div>`).join('')}</div></div><div class="danger"><b>Внимавай:</b> ${d.avoid}<br><br>Остра, сецваща болка в кръста = спираш веднага.</div><div class="detail-block"><h3>Отбележи ${p.sets}-те серии</h3><div class="set-checks">${checks}</div><div class="timer-panel"><div><small>ПОЧИВКА</small><br><b id="timerDisplay">${String(Math.floor(ex.rest/60)).padStart(2,'0')}:${String(ex.rest%60).padStart(2,'0')}</b></div><button class="timer-btn" data-timer="${ex.rest}">СТАРТ</button></div></div>`)}
+
 function startTimer(seconds){clearInterval(timerInterval);let left=seconds;const d=document.querySelector('#timerDisplay'),b=document.querySelector('[data-timer]');if(b)b.textContent='РАБОТИ';const tick=()=>{if(!d)return clearInterval(timerInterval);d.textContent=`${String(Math.floor(left/60)).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`;if(left<=0){clearInterval(timerInterval);d.textContent='ГОТОВО';if(b)b.textContent='ПАК';if(navigator.vibrate)navigator.vibrate([120,80,120]);return}left--};tick();timerInterval=setInterval(tick,1000)}
 function closeSheet(){clearInterval(timerInterval);document.querySelector('#detailSheet').classList.remove('open')}
 function openSheet(html,preserveScroll){const wrap=document.querySelector('#detailSheet'),panel=wrap.querySelector('.sheet'),keep=preserveScroll?panel.scrollTop:0;document.querySelector('#sheetBody').innerHTML=html;wrap.classList.add('open');panel.scrollTop=keep}
@@ -421,18 +580,20 @@ document.addEventListener('click',e=>{
   const tonight=e.target.closest('[data-tonight]');if(tonight){setProfile('boby');state.partner=true;openMeal(3,browserDay)}
   const quick=e.target.closest('[data-go]');if(quick)go(quick.dataset.go);
   const shift=e.target.closest('[data-week]');if(shift){selectedDate.setDate(selectedDate.getDate()+(+shift.dataset.week*7));weekSunday.setDate(weekSunday.getDate()+(+shift.dataset.week*7));state.day=dayKeys[selectedDate.getDay()];state.workoutDay=state.day;renderFood();renderWorkout()}
-  const cal=e.target.closest('[data-calendar]');if(cal){const p=document.querySelector('#datePicker');if(p.showPicker)p.showPicker();else p.click()}
+  const cal=e.target.closest('[data-calendar]');if(cal){const p=cal.parentElement.querySelector('.date-picker');if(!p)return;try{if(p.showPicker)p.showPicker();else p.click()}catch(err){p.click()}}
   const fd=e.target.closest('[data-foodday]');if(fd){selectedDate=new Date(fd.dataset.date+'T12:00:00');state.day=fd.dataset.foodday;state.workoutDay=state.day;renderFood()}
   const wd=e.target.closest('[data-workoutday]');if(wd){selectedDate=new Date(wd.dataset.date+'T12:00:00');state.day=wd.dataset.workoutday;state.workoutDay=wd.dataset.workoutday;renderWorkout()}
   const meal=e.target.closest('[data-meal]');if(meal)openMeal(+meal.dataset.meal,meal.dataset.sourceDay||state.day);
-  const ex=e.target.closest('[data-exercise]');if(ex)openExercise(+ex.dataset.exercise);
+  const tex=e.target.closest('[data-train]');if(tex){const [bi,ii]=tex.dataset.train.split('-').map(Number);openTrainExercise(bi,ii)}
+  const cex=e.target.closest('[data-core]');if(cex)openCoreExercise(+cex.dataset.core);
   const timer=e.target.closest('[data-timer]');if(timer)startTimer(+timer.dataset.timer);
   const st=e.target.closest('[data-shop]');if(st){state.shop=st.dataset.shop;document.querySelectorAll('[data-shop]').forEach(x=>x.classList.toggle('active',x===st));renderShop()}
   if(e.target.closest('[data-close]'))closeSheet();
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.querySelector('#detailSheet').classList.contains('open'))closeSheet()});
-document.addEventListener('change',e=>{if(e.target.matches('[data-check]')){const id=e.target.dataset.check,checked=e.target.checked;localStorage.setItem('hustle-'+id,checked?'1':'0');window.hustleShoppingSync?.setItem(id,checked)?.catch(err=>console.error('Shopping sync:',err));renderShop()}if(e.target.matches('[data-setcheck]'))localStorage.setItem('hustle-'+e.target.dataset.setcheck,e.target.checked?'1':'0')});
-document.querySelector('#datePicker').onchange=e=>{if(!e.target.value)return;selectedDate=new Date(e.target.value+'T12:00:00');weekSunday=new Date(selectedDate);weekSunday.setDate(weekSunday.getDate()-weekSunday.getDay());state.day=dayKeys[selectedDate.getDay()];state.workoutDay=state.day;renderFood();renderWorkout()};
+document.addEventListener('change',e=>{if(e.target.matches('[data-check]')){const id=e.target.dataset.check,checked=e.target.checked;localStorage.setItem('hustle-'+id,checked?'1':'0');window.hustleShoppingSync?.setItem(id,checked)?.catch(err=>console.error('Shopping sync:',err));renderShop()}if(e.target.matches('[data-log]')){handleTrainLog(e.target);renderWorkout()}});
+document.addEventListener('input',e=>{if(e.target.matches('input[type="text"][data-log],input[type="number"][data-log]'))handleTrainLog(e.target)});
+document.querySelectorAll('.date-picker').forEach(picker=>picker.onchange=e=>{if(!e.target.value)return;selectedDate=isoToLocalDate(e.target.value);weekSunday=new Date(selectedDate);weekSunday.setDate(weekSunday.getDate()-weekSunday.getDay());state.day=dayKeys[selectedDate.getDay()];state.workoutDay=state.day;renderFood();renderWorkout()});
 document.querySelector('#resetShop').onclick=()=>{if(!confirm(`Да започнем ли нов ${state.shop==='monthly'?'месечен':'седмичен'} списък? Отметките в избрания пазар ще бъдат изчистени.`))return;Object.keys(localStorage).filter(k=>k.startsWith('hustle-'+state.shop)).forEach(k=>localStorage.removeItem(k));window.hustleShoppingSync?.resetList(state.shop)?.catch(err=>console.error('Shopping reset:',err));renderShop()};
 document.querySelector('#installBtn').onclick=()=>{openSheet(`<div class="sheet-head"><div><span class="tag">IPHONE PWA</span><h2>Добави ХЪСЪЛ на началния екран</h2></div><button class="close" data-close>×</button></div><div class="detail-block"><ol class="steps"><li><span>Отвори приложението в Safari.</span></li><li><span>Натисни бутона <b>Споделяне</b> в долната лента.</span></li><li><span>Избери <b>Добавяне към Начален екран</b>.</span></li><li><span>Потвърди с <b>Добави</b>.</span></li></ol></div><div class="tip">💛 След това ХЪСЪЛ ще се отваря като истинско приложение, без адресна лента.</div>`)};
 renderToday();renderFood();renderWorkout();renderShop();
