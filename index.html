@@ -475,7 +475,8 @@ function renderGym(ctx){
     }
     return `<div class="train-block single"><div class="block-head"><span class="block-tag">САМОСТОЯТЕЛНО</span><span class="block-time">ПОЧИВКА ${items[0].rest.toUpperCase()}</span></div><div class="block-list">${trainCard(items[0],`data-train="${bi}-0"`,ctx)}</div>${b.note?`<div class="block-note">${b.note}</div>`:''}</div>`;
   }).join('');
-  const extra=ctx.week===5?'<div class="block-note">Седмица 5: само ако възстановяването е добро и се побираш в обичайното време — +1 работна серия за бицепс и трицепс в сряда. Други серии не се добавят.</div>':'';
+  const hasExtra=g.blocks.some(b=>b.items.some(x=>x.week5Extra));
+  const extra=ctx.week===5&&hasExtra?'<div class="block-note">Седмица 5: само ако възстановяването е добро и се побираш в обичайното време — +1 работна серия за бицепс и трицепс в петък. Други серии не се добавят.</div>':'';
   const deload=ctx.week>=8?`<div class="block-note">Седмица 8 · разтоварване: работните серии са намалени приблизително наполовина, тежестта е ${trainingPlan.deloadWeight}, без отказ и без добавяне на повторения.</div>`:'';
   return `<div class="workout-hero"><div class="eyebrow">${dayNames[ctx.day].toUpperCase()} · ${g.duration.toUpperCase()}</div><h2>${g.title}</h2><p>${g.focus}</p><div class="workout-meta"><span>🔥 Загрявка 4–5 мин</span><span>🎯 RIR ${trainingPlan.weeks[ctx.week-1].rir}</span><span>🧱 ${g.blocks.length} блока</span></div></div>
   <div class="warmup"><h3>Обща загрявка · 4–5 мин</h3><ol>${g.warmup.map(x=>`<li>${x}</li>`).join('')}</ol></div>
