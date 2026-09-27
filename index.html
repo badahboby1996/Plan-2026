@@ -146,6 +146,8 @@
     @keyframes pop{from{opacity:0;transform:translateY(12px)}}
     .meal-card:active{transform:scale(.98)}
     .meal-art{width:58px;height:58px;border-radius:19px;display:grid;place-items:center;font-size:29px;background:var(--meal,#eee)}
+    .meal-art.has-photo{background-image:var(--photo);background-size:cover;background-position:center;font-size:0;color:transparent}
+    .meal-visual{width:100%;aspect-ratio:4/3;height:auto;border-radius:26px;margin:14px 0;background:var(--line);box-shadow:var(--shadow);overflow:hidden}
     .meal-type{font-size:9px;text-transform:uppercase;letter-spacing:.12em;font-weight:900;color:var(--muted);margin-bottom:4px}
     .meal-name{font-weight:850;font-size:14.5px;line-height:1.18;letter-spacing:-.01em}
     .meal-meta{margin-top:7px;display:flex;gap:6px;flex-wrap:wrap}
@@ -434,7 +436,7 @@ function recipeSteps(m,forTwo){const prep=`Измери всички проду�
 
 function mealKcal(m,forBoby){return !forBoby&&m.shirinKcal?m.shirinKcal:m.kcal}
 function mealMacros(m,forBoby){return !forBoby&&m.shirinMacros?m.shirinMacros:m.macros}
-function mealCard(m,i){const forBoby=state.profile==='boby';return `<button class="meal-card" data-meal="${i}"><div class="meal-art" style="--meal:${m.color}">${m.icon}</div><div><div class="meal-type">${m.time} · ${m.type}${m.fromPreviousDinner?' · от предната вечер':''}</div><div class="meal-name">${m.name}</div><div class="meal-meta"><span>${mealKcal(m,forBoby)} ккал</span><span>${mealMacros(m,forBoby).split(' · ')[0]}</span></div></div><div class="arrow">›</div>${m.shared?'<span class="shared-pill">4 ПОРЦИИ</span>':''}</button>`}
+function mealCard(m,i){const forBoby=state.profile==='boby';return `<button class="meal-card" data-meal="${i}"><div class="meal-art${m.photo?' has-photo':''}" style="--meal:${m.color}${m.photo?`;--photo:url('${m.photo}')`:''}">${m.icon}</div><div><div class="meal-type">${m.time} · ${m.type}${m.fromPreviousDinner?' · от предната вечер':''}</div><div class="meal-name">${m.name}</div><div class="meal-meta"><span>${mealKcal(m,forBoby)} ккал</span><span>${mealMacros(m,forBoby).split(' · ')[0]}</span></div></div><div class="arrow">›</div>${m.shared?'<span class="shared-pill">4 ПОРЦИИ</span>':''}</button>`}
 function syncCalendarLabels(){document.querySelectorAll('[data-calendar]').forEach(x=>x.textContent=`${monthNames[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`);document.querySelectorAll('.date-picker').forEach(p=>p.value=localISO(selectedDate))}
 const mondayFirst=['mon','tue','wed','thu','fri','sat','sun'];
 function mondayOf(date){const d=new Date(date);d.setDate(d.getDate()-((d.getDay()+6)%7));return d}
@@ -558,6 +560,7 @@ function openMeal(i,sourceDay,keepScroll){
   const kcalLabel=m.shared?`ккал · една порция на ${person}`:`ккал · ориентир за ${person}`;
   openSheet(`<div class="sheet-head"><div><span class="tag">${m.type}${m.shared?' · семейно готвене':''}</span><h2>${m.name}</h2></div><button class="close" data-close>×</button></div>
   <p class="sheet-sub">${macros} · сурови/сухи грамажи, освен ако е уточнено друго</p>
+  ${m.photo?`<div class="meal-visual">${trainPhoto(m.photo)}</div>`:''}
   ${m.fromPreviousDinner?`<span class="lunch-badge">РЕЦЕПТА САМО ЗА ТАЗИ ОБЕДНА ПОРЦИЯ</span><div class="source-note"><b>Може и без вечерята от предния ден</b>${m.sourceLabel}. По-долу са точните грамажи и пълното готвене само за този обяд, плюс съхранението и претоплянето.</div>`:''}
   <div class="info-row"><div class="info-box"><b>${kcal}</b><small>${kcalLabel}</small></div><div class="info-box"><b>${m.cook}</b><small>общо време</small></div><div class="info-box"><b>${m.device}</b><small>уред</small></div></div>
   ${canToggle?`<label class="people-toggle"><span><b>Включи порцията на ${other}</b><small>${forTwo?(m.batchLabel||'Показани са общите количества за семейството'):`Показана е само частта на ${person}`}</small></span><input class="switch" id="partnerToggle" type="checkbox" ${forTwo?'checked':''}></label>`:''}
