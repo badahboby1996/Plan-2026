@@ -432,7 +432,9 @@ const weeklyQuotes=[
 ];
 function recipeSteps(m,forTwo){const prep=`Измери всички продукти предварително и ги подреди до ${m.device.toLowerCase()}. Подготви зеленчуците, преди да включиш уреда.`;const source=forTwo&&m.coupleSteps?m.coupleSteps:m.steps;const result=[prep,...source];if(m.shared&&forTwo&&m.batchLabel)result.push(`Финално разпределяне: ${m.batchLabel}. Не смяташ допълнително — общите грамажи са показани по-горе.`);return result}
 
-function mealCard(m,i){return `<button class="meal-card" data-meal="${i}"><div class="meal-art" style="--meal:${m.color}">${m.icon}</div><div><div class="meal-type">${m.time} · ${m.type}${m.fromPreviousDinner?' · от предната вечер':''}</div><div class="meal-name">${m.name}</div><div class="meal-meta"><span>${m.kcal} ккал</span><span>${m.macros.split(' · ')[0]}</span></div></div><div class="arrow">›</div>${m.shared?'<span class="shared-pill">ЗА ДВАМА</span>':''}</button>`}
+function mealKcal(m,forBoby){return !forBoby&&m.shirinKcal?m.shirinKcal:m.kcal}
+function mealMacros(m,forBoby){return !forBoby&&m.shirinMacros?m.shirinMacros:m.macros}
+function mealCard(m,i){const forBoby=state.profile==='boby';return `<button class="meal-card" data-meal="${i}"><div class="meal-art" style="--meal:${m.color}">${m.icon}</div><div><div class="meal-type">${m.time} · ${m.type}${m.fromPreviousDinner?' · от предната вечер':''}</div><div class="meal-name">${m.name}</div><div class="meal-meta"><span>${mealKcal(m,forBoby)} ккал</span><span>${mealMacros(m,forBoby).split(' · ')[0]}</span></div></div><div class="arrow">›</div>${m.shared?'<span class="shared-pill">4 ПОРЦИИ</span>':''}</button>`}
 function syncCalendarLabels(){document.querySelectorAll('[data-calendar]').forEach(x=>x.textContent=`${monthNames[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`);document.querySelectorAll('.date-picker').forEach(p=>p.value=localISO(selectedDate))}
 const mondayFirst=['mon','tue','wed','thu','fri','sat','sun'];
 function mondayOf(date){const d=new Date(date);d.setDate(d.getDate()-((d.getDay()+6)%7));return d}
@@ -547,16 +549,17 @@ function openMeal(i,sourceDay,keepScroll){
   const isBoby=state.profile==='boby',person=isBoby?'Боби':'Ширин',other=isBoby?'Ширин':'Боби';
   const canToggle=!!(m.shared&&m.partnerIngredients),forTwo=state.partner&&canToggle;
   let ingredients,portionTitle,portionSub;
-  if(forTwo){ingredients=combinedIngredients(m);portionTitle='Общо количество за цялото готвене';portionSub='Приготви точно показаното количество — включени са всички описани порции.'}
-  else if(canToggle&&!isBoby){ingredients=m.partnerIngredients;portionTitle='Точна порция за Ширин';portionSub='Показани са само количествата на Ширин. Стъпките описват пълното семейно готвене — следвай тези грамажи за нейната част.'}
-  else if(canToggle){ingredients=m.ingredients;portionTitle='Количество само за Боби';portionSub='Порцията на Ширин не е включена.'}
-  else{ingredients=m.ingredients;portionTitle=`Точна порция за ${person}`;portionSub='Това е количеството за самото хранене, дори когато е приготвено предната вечер.'}
+  if(forTwo){ingredients=combinedIngredients(m);portionTitle=portionLabels.total.title;portionSub=portionLabels.total.sub}
+  else if(canToggle&&!isBoby){ingredients=m.partnerIngredients;portionTitle=portionLabels.shirin.title;portionSub=portionLabels.shirin.sub}
+  else if(canToggle){ingredients=m.ingredients;portionTitle=portionLabels.boby.title;portionSub=portionLabels.boby.sub}
+  else{ingredients=m.ingredients;portionTitle=m.portionTitle||`Точна порция за ${person}`;portionSub=m.portionSub||'Това е количеството за самото хранене, дори когато е приготвено предната вечер.'}
   const steps=recipeSteps(m,forTwo);
-  const kcalLabel=m.shared&&!isBoby?'ккал · ориентир за Боби':`ккал · ориентир за ${person}`;
+  const kcal=mealKcal(m,isBoby),macros=mealMacros(m,isBoby);
+  const kcalLabel=m.shared?`ккал · една порция на ${person}`:`ккал · ориентир за ${person}`;
   openSheet(`<div class="sheet-head"><div><span class="tag">${m.type}${m.shared?' · семейно готвене':''}</span><h2>${m.name}</h2></div><button class="close" data-close>×</button></div>
-  <p class="sheet-sub">${m.macros} · сурови/сухи грамажи, освен ако е уточнено друго</p>
+  <p class="sheet-sub">${macros} · сурови/сухи грамажи, освен ако е уточнено друго</p>
   ${m.fromPreviousDinner?`<span class="lunch-badge">РЕЦЕПТА САМО ЗА ТАЗИ ОБЕДНА ПОРЦИЯ</span><div class="source-note"><b>Може и без вечерята от предния ден</b>${m.sourceLabel}. По-долу са точните грамажи и пълното готвене само за този обяд, плюс съхранението и претоплянето.</div>`:''}
-  <div class="info-row"><div class="info-box"><b>${m.kcal}</b><small>${kcalLabel}</small></div><div class="info-box"><b>${m.cook}</b><small>общо време</small></div><div class="info-box"><b>${m.device}</b><small>уред</small></div></div>
+  <div class="info-row"><div class="info-box"><b>${kcal}</b><small>${kcalLabel}</small></div><div class="info-box"><b>${m.cook}</b><small>общо време</small></div><div class="info-box"><b>${m.device}</b><small>уред</small></div></div>
   ${canToggle?`<label class="people-toggle"><span><b>Включи порцията на ${other}</b><small>${forTwo?(m.batchLabel||'Показани са общите количества за семейството'):`Показана е само частта на ${person}`}</small></span><input class="switch" id="partnerToggle" type="checkbox" ${forTwo?'checked':''}></label>`:''}
   <div class="detail-block"><h3>${portionTitle}</h3><span class="block-sub">${portionSub}</span><div class="ingredient-list">${ingredients.map(x=>`<div class="ingredient"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('')}</div></div>
   <div class="detail-block"><h3>${m.fromPreviousDinner?'Самостоятелно готвене + съхранение':'Готвене стъпка по стъпка'}</h3><span class="block-sub">Редът е точен: подготовка → овкусяване → уред → разпределяне → съхранение.</span><ol class="steps">${steps.map(s=>`<li><span>${s}</span></li>`).join('')}</ol></div>
