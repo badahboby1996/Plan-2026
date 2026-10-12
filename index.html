@@ -96,10 +96,6 @@
     .tonight-copy b{display:block;font-size:15.5px;line-height:1.16}
     .tonight-copy span{display:block;color:var(--muted);font-size:10.5px;margin-top:5px}
     .tonight-arrow{width:37px;height:37px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:20px;font-style:normal}
-    .prep-note{margin-top:12px;background:var(--butter);border-radius:24px;padding:15px 17px;display:grid;grid-template-columns:34px 1fr;gap:11px;align-items:start;box-shadow:var(--shadow-soft)}
-    .prep-note .moon{font-size:23px;line-height:1.2}
-    .prep-note small{display:block;font-size:9px;font-weight:950;letter-spacing:.13em;text-transform:uppercase;opacity:.55;margin-bottom:4px}
-    .prep-note p{margin:0;font-size:12px;line-height:1.5;font-weight:600}
     .train-mini{width:100%;border:0;margin-top:12px;padding:14px 15px;border-radius:25px;background:var(--card);display:grid;grid-template-columns:48px 1fr 30px;gap:12px;align-items:center;text-align:left;border:1px solid var(--line);box-shadow:var(--shadow-soft);transition:transform .15s}
     .train-mini:active{transform:scale(.98)}
     .train-art{width:48px;height:48px;border-radius:16px;background:var(--mint);display:grid;place-items:center;font-size:24px}
@@ -135,9 +131,6 @@
     .stat{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:13px 15px;box-shadow:var(--shadow-soft)}
     .stat b{font-size:19px;letter-spacing:-.03em}
     .stat span{display:block;color:var(--muted);font-size:9px;font-weight:850;text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
-    .prep-card{background:var(--butter);border-radius:22px;padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow-soft)}
-    .prep-card small{display:block;font-weight:950;letter-spacing:.13em;font-size:9px;opacity:.55;text-transform:uppercase}
-    .prep-card p{margin:6px 0 0;font-size:12px;line-height:1.5;font-weight:600}
 
     /* ── Meal cards ────────────────────────────────── */
     .meal-list{display:grid;gap:10px}
@@ -296,9 +289,6 @@
     .steps li{counter-increment:recipe;display:grid;grid-template-columns:30px 1fr;gap:11px;font-size:12px;line-height:1.55;align-items:start;font-weight:500}
     .steps li:before{content:counter(recipe);width:28px;height:28px;border-radius:11px;background:var(--sun);color:var(--ink);display:grid;place-items:center;font-weight:950}
     .tip{background:var(--mint);border-radius:22px;padding:14px 16px;font-size:12px;line-height:1.5;font-weight:700}
-    .source-note{background:#f1ead6;border-radius:20px;padding:13px 15px;margin:10px 0;font-size:11px;line-height:1.5;font-weight:600}
-    .source-note b{display:block;margin-bottom:3px}
-    .lunch-badge{display:inline-flex;background:var(--peach);border-radius:999px;padding:6px 10px;font-size:9px;font-weight:900;margin:0 0 10px;letter-spacing:.04em}
     .exercise-visual{width:100%;aspect-ratio:3/2;height:auto;border-radius:26px;margin:14px 0;background:#1d211b;box-shadow:var(--shadow);overflow:hidden}
     .form-list{display:grid;gap:9px}
     .form-tip{display:grid;grid-template-columns:26px 1fr;gap:9px;font-size:12px;line-height:1.5;font-weight:500}
@@ -350,7 +340,6 @@
           <button class="person shirin" data-profile-go="shirin"><span class="ava">Ш</span><b>Ширин</b><span>Меню, рецепти и точни порции</span><i>›</i></button>
         </div>
         <button class="tonight" data-tonight><span class="tonight-art" id="tonightIcon">🍽️</span><span class="tonight-copy"><small>Вечеря довечера</small><b id="tonightName"></b><span id="tonightMeta"></span></span><i class="tonight-arrow">›</i></button>
-        <div class="prep-note"><span class="moon">🌙</span><div><small>Вечерна подготовка</small><p id="prepTonight"></p></div></div>
         <button class="train-mini" data-go="workout"><span class="train-art">🏋️</span><span><small>Тренировката на Боби днес</small><b id="todayWorkout"></b></span><span class="chev">›</span></button>
       </div>
     </section>
@@ -361,7 +350,6 @@
       <div class="calendar-nav"><button class="cal-arrow" data-week="-1" aria-label="Предишна седмица">‹</button><button class="cal-month" data-calendar></button><button class="cal-arrow" data-week="1" aria-label="Следваща седмица">›</button><input class="date-picker" id="datePicker" type="date"></div>
       <div class="date-strip" id="foodDays"></div>
       <div class="day-stats"><div class="stat"><b id="dayKcal">—</b><span>ккал · дневен ориентир</span></div><div class="stat"><b id="dayProtein">—</b><span>грама протеин</span></div></div>
-      <div class="prep-card" id="prepCard"></div>
       <div class="meal-list" id="foodMeals"></div>
     </section>
 
@@ -432,7 +420,7 @@ const weeklyQuotes=[
  ['„Мотивацията те кара да започнеш. Навикът те кара да продължиш.“','Джим Раян'],
  ['„Заедно сме по-силни от всяка трудност.“','Семейство Бадах']
 ];
-function recipeSteps(m,forTwo){const prep=`Измери всички продукти предварително и ги подреди до ${m.device.toLowerCase()}. Подготви зеленчуците, преди да включиш уреда.`;const source=forTwo&&m.coupleSteps?m.coupleSteps:m.steps;const result=[prep,...source];if(m.shared&&forTwo&&m.batchLabel)result.push(`Финално разпределяне: ${m.batchLabel}. Не смяташ допълнително — общите грамажи са показани по-горе.`);return result}
+function recipeSteps(m,forTwo){return forTwo&&m.coupleSteps?m.coupleSteps:m.steps}
 
 function mealKcal(m,forBoby){return !forBoby&&m.shirinKcal?m.shirinKcal:m.kcal}
 function mealMacros(m,forBoby){return !forBoby&&m.shirinMacros?m.shirinMacros:m.macros}
@@ -442,8 +430,8 @@ const mondayFirst=['mon','tue','wed','thu','fri','sat','sun'];
 function mondayOf(date){const d=new Date(date);d.setDate(d.getDate()-((d.getDay()+6)%7));return d}
 function renderDays(target,selected,mode){const workout=mode==='workout',order=workout?mondayFirst:dayKeys,base=workout?mondayOf(selectedDate):weekSunday;target.innerHTML=order.map((k,i)=>{const d=new Date(base);d.setDate(d.getDate()+i);const gym=workout&&sessionFor(k),core=workout&&coreSessionFor(k);return `<button class="date-chip ${k===selected?'active':''}" data-${mode}day="${k}" data-date="${localISO(d)}"><span>${shortDays[k]}</span><b>${d.getDate()}</b>${gym?'<i class="tdot"></i>':core?'<i class="tdot core"></i>':''}</button>`}).join('');syncCalendarLabels()}
 function setProfile(profile){state.profile=profile;localStorage.setItem('hustle-last-profile',profile);document.querySelectorAll('[data-profile]').forEach(x=>x.classList.toggle('active',x.dataset.profile===profile))}
-function renderFood(){setProfile(state.profile);renderDays(document.querySelector('#foodDays'),state.day,'food');const data=state.profile==='boby'?meals:shirinMeals,d=data[state.day],schedule=state.profile==='boby'?prepSchedule:shirinPrepSchedule;document.querySelector('#dayKcal').textContent=`≈${d.kcal}`;document.querySelector('#dayProtein').textContent=`${d.protein} г`;document.querySelector('#prepCard').innerHTML=`<small>ПОДГОТОВКА · ${dayNames[state.day].toUpperCase()}</small><p>${schedule[state.day]}</p>`;document.querySelector('#foodMeals').innerHTML=d.items.map(mealCard).join('')}
-function renderToday(){const now=new Date(),hour=now.getHours(),week=Math.floor((now-new Date(now.getFullYear(),0,1))/604800000),quote=weeklyQuotes[week%weeklyQuotes.length],dinner=meals[browserDay].items[3],w=sessionFor(browserDay)||coreSessionFor(browserDay),todayPhase=planPhaseFor(sofiaToday());document.querySelector('#todayLabel').textContent=`${dayNames[browserDay].toUpperCase()} · ${now.getDate()} ${monthNames[now.getMonth()]}`;document.querySelector('#todayGreeting').innerHTML=hour<12?'Добро утро,<br>семейство Бадах.':hour<18?'Добър ден,<br>семейство Бадах.':'Добър вечер,<br>семейство Бадах.';document.querySelector('#weeklyQuote').textContent=quote[0];document.querySelector('#quoteAuthor').textContent=quote[1];document.querySelector('#tonightIcon').textContent=dinner.icon;document.querySelector('#tonightName').textContent=dinner.name;document.querySelector('#tonightMeta').textContent=`${dinner.cook} · ${dinner.device}`;document.querySelector('#prepTonight').textContent=prepSchedule[browserDay];document.querySelector('#todayWorkout').textContent=todayPhase.phase==='before'?`Нов цикъл от ${formatDateBG(trainingPlan.start)}`:w?`${w.title} · ${w.durationShort} · седмица ${todayPhase.week}`:'Почивен ден · разходка и сън'}
+function renderFood(){setProfile(state.profile);renderDays(document.querySelector('#foodDays'),state.day,'food');const data=state.profile==='boby'?meals:shirinMeals,d=data[state.day];document.querySelector('#dayKcal').textContent=`≈${d.kcal}`;document.querySelector('#dayProtein').textContent=`${d.protein} г`;document.querySelector('#foodMeals').innerHTML=d.items.map(mealCard).join('')}
+function renderToday(){const now=new Date(),hour=now.getHours(),week=Math.floor((now-new Date(now.getFullYear(),0,1))/604800000),quote=weeklyQuotes[week%weeklyQuotes.length],dinner=meals[browserDay].items[3],w=sessionFor(browserDay)||coreSessionFor(browserDay),todayPhase=planPhaseFor(sofiaToday());document.querySelector('#todayLabel').textContent=`${dayNames[browserDay].toUpperCase()} · ${now.getDate()} ${monthNames[now.getMonth()]}`;document.querySelector('#todayGreeting').innerHTML=hour<12?'Добро утро,<br>семейство Бадах.':hour<18?'Добър ден,<br>семейство Бадах.':'Добър вечер,<br>семейство Бадах.';document.querySelector('#weeklyQuote').textContent=quote[0];document.querySelector('#quoteAuthor').textContent=quote[1];document.querySelector('#tonightIcon').textContent=dinner.icon;document.querySelector('#tonightName').textContent=dinner.name;document.querySelector('#tonightMeta').textContent=`${dinner.cook} · ${dinner.device}`;document.querySelector('#todayWorkout').textContent=todayPhase.phase==='before'?`Нов цикъл от ${formatDateBG(trainingPlan.start)}`:w?`${w.title} · ${w.durationShort} · седмица ${todayPhase.week}`:'Почивен ден · разходка и сън'}
 function trainPhoto(file){return `<span class="exercise-photo photo-full" aria-hidden="true" style="--exercise-photo:url('${file}')"></span>`}
 function trainContext(){const iso=localISO(selectedDate),day=state.workoutDay,phase=planPhaseFor(iso);return {iso,day,phase,week:prescriptionWeek(phase),gym:sessionFor(day),core:coreSessionFor(day),future:iso>sofiaToday()}}
 function trainMeta(ctx){const s=ctx.gym||ctx.core;return {planVersion:trainingPlan.planVersion,week:ctx.week,sessionKey:s?s.key:'rest',title:s?s.title:'Почивен ден',snapshot:daySnapshot(ctx.day,ctx.week)}}
@@ -544,29 +532,27 @@ function handleTrainLog(el){
   if(field==='done'){const box=el.closest('.log-set');if(box)box.classList.toggle('done',el.checked);if(el.checked)startTimer(Number(el.dataset.rest||60))}
 }
 
-function renderShop(){const data=shopping[state.shop],groups=document.querySelector('#shopGroups');if(!data){groups.innerHTML='<div class="empty">Списъкът се подготвя.</div>';document.querySelector('#shopCount').textContent='0 / 0';return}let total=0,done=0;const scope=`<div class="shop-note"><small>${data.label}</small><p>${data.note}</p></div>`;groups.innerHTML=scope+Object.entries(data.groups).map(([name,items])=>{total+=items.length;return `<section class="shop-group"><h3>${name}<span>${items.length} продукта</span></h3>${items.map(([n,q],i)=>{const id=`${state.shop}-${name}-${i}`,remote=window.hustleShoppingReady,checked=remote?window.hustleShoppingState?.[id]===true:localStorage.getItem('hustle-'+id)==='1';if(checked)done++;return `<label class="check-row"><input type="checkbox" data-check="${id}" ${checked?'checked':''}><span class="item-name">${n}</span><span class="qty">${q}</span></label>`}).join('')}</section>`}).join('');document.querySelector('#shopCount').textContent=`${done} / ${total}`;document.querySelector('#shopProgressBar').style.width=`${total?done/total*100:0}%`}
+function renderShop(){const data=shopping[state.shop],groups=document.querySelector('#shopGroups');if(!data){groups.innerHTML='<div class="empty">Списъкът се подготвя.</div>';document.querySelector('#shopCount').textContent='0 / 0';return}let total=0,done=0;const scope=`<div class="shop-note"><small>${data.label}</small>${data.note?`<p>${data.note}</p>`:''}</div>`;groups.innerHTML=scope+Object.entries(data.groups).map(([name,items])=>{total+=items.length;return `<section class="shop-group"><h3>${name}<span>${items.length} продукта</span></h3>${items.map(([n,q],i)=>{const id=`${state.shop}-${name}-${i}`,remote=window.hustleShoppingReady,checked=remote?window.hustleShoppingState?.[id]===true:localStorage.getItem('hustle-'+id)==='1';if(checked)done++;return `<label class="check-row"><input type="checkbox" data-check="${id}" ${checked?'checked':''}><span class="item-name">${n}</span><span class="qty">${q}</span></label>`}).join('')}</section>`}).join('');document.querySelector('#shopCount').textContent=`${done} / ${total}`;document.querySelector('#shopProgressBar').style.width=`${total?done/total*100:0}%`}
 
 function openMeal(i,sourceDay,keepScroll){
   const day=sourceDay||state.day,data=state.profile==='boby'?meals:shirinMeals,m=data[day].items[i];
   const isBoby=state.profile==='boby',person=isBoby?'Боби':'Ширин',other=isBoby?'Ширин':'Боби';
   const canToggle=!!(m.shared&&m.partnerIngredients),forTwo=state.partner&&canToggle;
-  let ingredients,portionTitle,portionSub;
-  if(forTwo){ingredients=combinedIngredients(m);portionTitle=portionLabels.total.title;portionSub=portionLabels.total.sub}
-  else if(canToggle&&!isBoby){ingredients=m.partnerIngredients;portionTitle=portionLabels.shirin.title;portionSub=portionLabels.shirin.sub}
-  else if(canToggle){ingredients=m.ingredients;portionTitle=portionLabels.boby.title;portionSub=portionLabels.boby.sub}
-  else{ingredients=m.ingredients;portionTitle=m.portionTitle||`Точна порция за ${person}`;portionSub=m.portionSub||'Това е количеството за самото хранене, дори когато е приготвено предната вечер.'}
+  let ingredients,portionTitle;
+  if(forTwo){ingredients=combinedIngredients(m);portionTitle=portionLabels.total.title}
+  else if(canToggle&&!isBoby){ingredients=m.partnerIngredients;portionTitle=portionLabels.shirin.title}
+  else if(canToggle){ingredients=m.ingredients;portionTitle=portionLabels.boby.title}
+  else{ingredients=m.ingredients;portionTitle=m.portionTitle||`Точна порция за ${person}`}
   const steps=recipeSteps(m,forTwo);
   const kcal=mealKcal(m,isBoby),macros=mealMacros(m,isBoby);
   const kcalLabel=m.shared?`ккал · една порция на ${person}`:`ккал · ориентир за ${person}`;
   openSheet(`<div class="sheet-head"><div><span class="tag">${m.type}${m.shared?' · семейно готвене':''}</span><h2>${m.name}</h2></div><button class="close" data-close>×</button></div>
-  <p class="sheet-sub">${macros} · сурови/сухи грамажи, освен ако е уточнено друго</p>
+  <p class="sheet-sub">${macros}</p>
   ${m.photo?`<div class="meal-visual">${trainPhoto(m.photo)}</div>`:''}
-  ${m.sourceNote?`<div class="source-note"><b>Бележка към оригиналното меню</b>${m.sourceNote}</div>`:''}
-  ${m.fromPreviousDinner?`<span class="lunch-badge">РЕЦЕПТА САМО ЗА ТАЗИ ОБЕДНА ПОРЦИЯ</span><div class="source-note"><b>Може и без вечерята от предния ден</b>${m.sourceLabel}. По-долу са точните грамажи и пълното готвене само за този обяд, плюс съхранението и претоплянето.</div>`:''}
   <div class="info-row"><div class="info-box"><b>${kcal}</b><small>${kcalLabel}</small></div><div class="info-box"><b>${m.cook}</b><small>общо време</small></div><div class="info-box"><b>${m.device}</b><small>уред</small></div></div>
   ${canToggle?`<label class="people-toggle"><span><b>Включи порцията на ${other}</b><small>${forTwo?(m.batchLabel||'Показани са общите количества за семейството'):`Показана е само частта на ${person}`}</small></span><input class="switch" id="partnerToggle" type="checkbox" ${forTwo?'checked':''}></label>`:''}
-  <div class="detail-block"><h3>${portionTitle}</h3><span class="block-sub">${portionSub}</span><div class="ingredient-list">${ingredients.map(x=>`<div class="ingredient"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('')}</div></div>
-  <div class="detail-block"><h3>${m.fromPreviousDinner?'Самостоятелно готвене + съхранение':'Готвене стъпка по стъпка'}</h3><span class="block-sub">Редът е точен: подготовка → овкусяване → уред → разпределяне → съхранение.</span><ol class="steps">${steps.map(s=>`<li><span>${s}</span></li>`).join('')}</ol></div>
+  <div class="detail-block"><h3>${portionTitle}</h3><div class="ingredient-list">${ingredients.map(x=>`<div class="ingredient"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('')}</div></div>
+  <div class="detail-block"><h3>${m.fromPreviousDinner?'Затопляне':'Приготвяне'}</h3><ol class="steps">${steps.map(s=>`<li><span>${s}</span></li>`).join('')}</ol></div>
   <div class="tip">💡 ${m.tip}</div>`,keepScroll);
   const t=document.querySelector('#partnerToggle');if(t)t.onchange=e=>{state.partner=e.target.checked;openMeal(i,sourceDay,true)}
 }
