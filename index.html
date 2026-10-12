@@ -364,7 +364,7 @@
 
     <section class="view" id="shopView">
       <div class="page-head"><div class="eyebrow">ЗА ДВАМАТА</div><h1>Купи точно.<br>Не разхищавай.</h1><p>Количествата са общи за Боби и Ширин. Отметките се синхронизират между двата телефона.</p></div>
-      <div class="subtabs" id="shopTabs"><button class="subtab active" data-shop="market1"><span class="dot">1</span>Пазар 1</button><button class="subtab" data-shop="market2"><span class="dot">2</span>Пазар 2</button><button class="subtab" data-shop="monthly"><span class="dot">М</span>Месечен</button></div>
+      <div class="subtabs" id="shopTabs"><button class="subtab active" data-shop="week"><span class="dot">7</span>Седмица</button><button class="subtab" data-shop="start"><span class="dot">С</span>Старт</button></div>
       <div class="shop-progress"><div class="shop-row"><div><small style="font-size:9px;font-weight:950;letter-spacing:.13em;opacity:.55">ГОТОВО</small><br><b id="shopCount">0 / 0</b><span class="sync-status" id="syncStatus">Проверка на синхронизацията…</span></div><button class="ghost" id="resetShop">Нова седмица</button></div><div class="progress"><i id="shopProgressBar"></i></div></div>
       <div class="shop-groups" id="shopGroups"></div>
     </section>
@@ -394,7 +394,7 @@ try{importLegacyHistory()}catch(err){console.error('Внос на старата
 const browserDay=sofiaDayKey();
 let selectedDate=isoToLocalDate(sofiaToday());
 let weekSunday=new Date(selectedDate);weekSunday.setDate(weekSunday.getDate()-weekSunday.getDay());
-const state={day:browserDay,workoutDay:browserDay,shop:'market1',solo:false,lunchMode:'ready',profile:localStorage.getItem('hustle-last-profile')||'boby'};
+const state={day:browserDay,workoutDay:browserDay,shop:'week',solo:false,lunchMode:'ready',profile:localStorage.getItem('hustle-last-profile')||'boby'};
 const monthNames=['ЯНУАРИ','ФЕВРУАРИ','МАРТ','АПРИЛ','МАЙ','ЮНИ','ЮЛИ','АВГУСТ','СЕПТЕМВРИ','ОКТОМВРИ','НОЕМВРИ','ДЕКЕМВРИ'];
 const weeklyQuotes=[
  ['„Първо си кажи какъв искаш да бъдеш; после направи необходимото.“','Епиктет'],
@@ -426,13 +426,17 @@ const weeklyQuotes=[
 function foodDateISO(day){const d=new Date(weekSunday);d.setDate(d.getDate()+dayKeys.indexOf(day));return localISO(d)}
 function mealKey(date,who,m,what){return `hustle-meal:${date}:${who}:${m.slot}:${m.code}:${what}`}
 function mealChecked(k){try{return localStorage.getItem(k)==='1'}catch(e){return false}}
-function mealCard(m,i){const eaten=mealChecked(mealKey(foodDateISO(state.day),state.profile,m,'eaten'));return `<button class="meal-card" data-meal="${i}"><div class="meal-art${m.photo?' has-photo':''}" style="--meal:${m.color}${m.photo?`;--photo:url('${m.photo}')`:''}">${m.icon}</div><div><div class="meal-type">${m.time} · ${m.type}${m.fromPreviousDinner?' · от предната вечер':''}</div><div class="meal-name">${m.name}</div><div class="meal-meta"><span>${m.kcal} ккал</span><span>${m.macros.split(' · ')[0]}</span></div></div><div class="arrow">›</div>${eaten?'<span class="shared-pill">✓ ИЗЯДЕНО</span>':m.family?'<span class="shared-pill">ОБЩО</span>':''}</button>`}
+function isoShift(iso,days){const d=isoToLocalDate(iso);d.setDate(d.getDate()+days);return localISO(d)}
+function noShirinKey(date,code){return `hustle-meal:${date}:family:dinner:${code}:noShirin`}
+function noShirinOn(date,code){return mealChecked(noShirinKey(date,code))}
+function shirinMissing(m,date){return m.slot==='dinner'?noShirinOn(date,m.code):m.slot==='lunch'?noShirinOn(isoShift(date,-1),m.code):false}
+function mealCard(m,i){const date=foodDateISO(state.day),miss=state.profile==='shirin'&&shirinMissing(m,date),eaten=mealChecked(mealKey(date,state.profile,m,'eaten'));return `<button class="meal-card" data-meal="${i}"><div class="meal-art${m.photo?' has-photo':''}" style="--meal:${m.color}${m.photo?`;--photo:url('${m.photo}')`:''}">${m.icon}</div><div><div class="meal-type">${m.time} · ${m.type}${m.fromPreviousDinner?' · от предната вечер':''}</div><div class="meal-name">${m.name}</div><div class="meal-meta">${miss?'<span>няма порция за Ширин</span>':`<span>${m.kcal} ккал</span><span>${m.macros.split(' · ')[0]}</span>`}</div></div><div class="arrow">›</div>${miss?'<span class="shared-pill">БЕЗ ШИРИН</span>':eaten?'<span class="shared-pill">✓ ИЗЯДЕНО</span>':m.family?'<span class="shared-pill">ОБЩО</span>':''}</button>`}
 function syncCalendarLabels(){document.querySelectorAll('[data-calendar]').forEach(x=>x.textContent=`${monthNames[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`);document.querySelectorAll('.date-picker').forEach(p=>p.value=localISO(selectedDate))}
 const mondayFirst=['mon','tue','wed','thu','fri','sat','sun'];
 function mondayOf(date){const d=new Date(date);d.setDate(d.getDate()-((d.getDay()+6)%7));return d}
 function renderDays(target,selected,mode){const workout=mode==='workout',order=workout?mondayFirst:dayKeys,base=workout?mondayOf(selectedDate):weekSunday;target.innerHTML=order.map((k,i)=>{const d=new Date(base);d.setDate(d.getDate()+i);const gym=workout&&sessionFor(k),core=workout&&coreSessionFor(k);return `<button class="date-chip ${k===selected?'active':''}" data-${mode}day="${k}" data-date="${localISO(d)}"><span>${shortDays[k]}</span><b>${d.getDate()}</b>${gym?'<i class="tdot"></i>':core?'<i class="tdot core"></i>':''}</button>`}).join('');syncCalendarLabels()}
 function setProfile(profile){state.profile=profile;localStorage.setItem('hustle-last-profile',profile);document.querySelectorAll('[data-profile]').forEach(x=>x.classList.toggle('active',x.dataset.profile===profile))}
-function renderFood(){setProfile(state.profile);renderDays(document.querySelector('#foodDays'),state.day,'food');const data=state.profile==='boby'?meals:shirinMeals,d=data[state.day];document.querySelector('#dayKcal').textContent=`≈${d.kcal}`;document.querySelector('#dayProtein').textContent=`${d.protein} г`;document.querySelector('#foodMeals').innerHTML=d.items.map(mealCard).join('')}
+function renderFood(){setProfile(state.profile);renderDays(document.querySelector('#foodDays'),state.day,'food');const data=state.profile==='boby'?meals:shirinMeals,d=data[state.day],date=foodDateISO(state.day),miss=state.profile==='shirin'?d.items.filter(m=>shirinMissing(m,date)):[];document.querySelector('#dayKcal').textContent=`≈${r1(d.kcal-miss.reduce((a,m)=>a+m.kcal,0))}`;document.querySelector('#dayProtein').textContent=`${r1(d.protein-miss.reduce((a,m)=>a+m.n[1],0))} г`;document.querySelector('#foodMeals').innerHTML=d.items.map(mealCard).join('')}
 function renderToday(){const now=new Date(),hour=now.getHours(),week=Math.floor((now-new Date(now.getFullYear(),0,1))/604800000),quote=weeklyQuotes[week%weeklyQuotes.length],dinner=meals[browserDay].items[3],w=sessionFor(browserDay)||coreSessionFor(browserDay),todayPhase=planPhaseFor(sofiaToday());document.querySelector('#todayLabel').textContent=`${dayNames[browserDay].toUpperCase()} · ${now.getDate()} ${monthNames[now.getMonth()]}`;document.querySelector('#todayGreeting').innerHTML=hour<12?'Добро утро,<br>семейство Бадах.':hour<18?'Добър ден,<br>семейство Бадах.':'Добър вечер,<br>семейство Бадах.';document.querySelector('#weeklyQuote').textContent=quote[0];document.querySelector('#quoteAuthor').textContent=quote[1];document.querySelector('#tonightIcon').textContent=dinner.icon;document.querySelector('#tonightName').textContent=dinner.name;document.querySelector('#tonightMeta').textContent=`${dinner.cook} · ${dinner.device}`;document.querySelector('#todayWorkout').textContent=todayPhase.phase==='before'?`Нов цикъл от ${formatDateBG(trainingPlan.start)}`:w?`${w.title} · ${w.durationShort} · седмица ${todayPhase.week}`:'Почивен ден · разходка и сън'}
 function trainPhoto(file){return `<span class="exercise-photo photo-full" aria-hidden="true" style="--exercise-photo:url('${file}')"></span>`}
 function trainContext(){const iso=localISO(selectedDate),day=state.workoutDay,phase=planPhaseFor(iso);return {iso,day,phase,week:prescriptionWeek(phase),gym:sessionFor(day),core:coreSessionFor(day),future:iso>sofiaToday()}}
@@ -534,35 +538,35 @@ function handleTrainLog(el){
   if(field==='done'){const box=el.closest('.log-set');if(box)box.classList.toggle('done',el.checked);if(el.checked)startTimer(Number(el.dataset.rest||60))}
 }
 
-function renderShop(){const data=shopping[state.shop],groups=document.querySelector('#shopGroups');if(!data){groups.innerHTML='<div class="empty">Списъкът се подготвя.</div>';document.querySelector('#shopCount').textContent='0 / 0';return}let total=0,done=0;const scope=`<div class="shop-note"><small>${data.label}</small>${data.note?`<p>${data.note}</p>`:''}</div>`;groups.innerHTML=scope+Object.entries(data.groups).map(([name,items])=>{total+=items.length;return `<section class="shop-group"><h3>${name}<span>${items.length} продукта</span></h3>${items.map(([n,q],i)=>{const id=`${state.shop}-${name}-${i}`,remote=window.hustleShoppingReady,checked=remote?window.hustleShoppingState?.[id]===true:localStorage.getItem('hustle-'+id)==='1';if(checked)done++;return `<label class="check-row"><input type="checkbox" data-check="${id}" ${checked?'checked':''}><span class="item-name">${n}</span><span class="qty">${q}</span></label>`}).join('')}</section>`}).join('');document.querySelector('#shopCount').textContent=`${done} / ${total}`;document.querySelector('#shopProgressBar').style.width=`${total?done/total*100:0}%`}
+function weekNoShirin(){const mon=mondayOf(selectedDate),out=[];for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(d.getDate()+i);const code=weekPlan[dayKeys[d.getDay()]].d;if(noShirinOn(localISO(d),code))out.push(code)}return out}
+function renderShop(){const data=shoppingFor(state.shop,weekNoShirin()),groups=document.querySelector('#shopGroups');if(!data){groups.innerHTML='<div class="empty">Списъкът се подготвя.</div>';document.querySelector('#shopCount').textContent='0 / 0';return}let total=0,done=0;const scope=`<div class="shop-note"><small>${data.label}</small>${data.note?`<p>${data.note}</p>`:''}</div>`;groups.innerHTML=scope+Object.entries(data.groups).map(([name,items])=>{total+=items.length;return `<section class="shop-group"><h3>${name}<span>${items.length} продукта</span></h3>${items.map(([n,q],i)=>{const id=`${state.shop}-${name}-${i}`,remote=window.hustleShoppingReady,checked=remote?window.hustleShoppingState?.[id]===true:localStorage.getItem('hustle-'+id)==='1';if(checked)done++;return `<label class="check-row"><input type="checkbox" data-check="${id}" ${checked?'checked':''}><span class="item-name">${n}</span><span class="qty">${q}</span></label>`}).join('')}</section>`}).join('');document.querySelector('#shopCount').textContent=`${done} / ${total}`;document.querySelector('#shopProgressBar').style.width=`${total?done/total*100:0}%`}
 
 function ingBlock(title,rows){return `<div class="detail-block"><h3>${title}</h3><div class="ingredient-list">${rows.map(x=>`<div class="ingredient"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('')}</div></div>`}
 function openMeal(i,sourceDay,keepScroll,dateISO){
   const day=sourceDay||state.day,who=state.profile,isBoby=who==='boby',m=(isBoby?meals:shirinMeals)[day].items[i],person=people[who];
   if(!keepScroll){state.solo=false;state.lunchMode='ready'}
-  const date=dateISO||foodDateISO(day),r=m.recipe,isLunch=m.slot==='lunch',cookNow=isLunch&&state.lunchMode==='cook',family=m.family&&!state.solo,each=m.slot==='dinner'?2:1;
-  let blocks,steps;
+  const date=dateISO||foodDateISO(day),r=m.recipe,isDinner=m.slot==='dinner',isLunch=m.slot==='lunch',cookNow=isLunch&&state.lunchMode==='cook';
+  const noSh=r?noShirinOn(isLunch?isoShift(date,-1):date,m.code):false,missing=!!r&&!isBoby&&noSh,own=isBoby?BOBY_DINNER:1;
+  let blocks,steps=null;
   if(!r){blocks=ingBlock(`${person} · 1 порция`,m.ingredients);steps=m.steps}
-  else if(family){
-    blocks=ingBlock(`Общо · ${each*2} порции`,recipeRows(r,each,each));
-    steps=isLunch?(cookNow?r.steps:readySteps(r,who)):[...r.steps,splitStep];
-  }else{
-    blocks=ingBlock(`${person} · 1 порция`,recipeRows(r,isBoby?1:0,isBoby?0:1));
-    steps=isLunch&&!cookNow?readySteps(r,who):r.solo[who];
-  }
+  else if(missing){blocks=`<div class="detail-block"><h3>Няма порция за Ширин</h3><span class="block-sub">${isDinner?'Тази вечеря':'Вчерашната вечеря'} е отбелязана „Без Ширин“ — от съда няма кутия за нея.</span></div>`}
+  else if(isDinner&&!state.solo){const f=noSh?BOBY_ONLY:FAMILY;blocks=ingBlock(noSh?'Общо · 2 порции · само Боби':'Общо · 4 порции',rowsScaled(r.ing,f));steps=[...dinnerSteps(r,f),...(noSh?[smallBatchNote,bobyOnlySplit]:[familySplit]),...storageSteps(r)]}
+  else{blocks=ingBlock(`${person} · 1 порция`,rowsScaled(r.ing,own));steps=isLunch&&!cookNow?storageSteps(r):[...dinnerSteps(r,own),smallBatchNote]}
   const reheat=isLunch&&!cookNow;
   const ck=(k,label)=>`<label class="check-row"><input type="checkbox" data-mealcheck="${k}" ${mealChecked(k)?'checked':''}><span class="item-name">${label}</span><span class="qty"></span></label>`;
-  const checks=m.family?ck(mealKey(date,'family',m,'prepared'),'Приготвено')+ck(mealKey(date,'boby',m,'eaten'),'Изядено · Боби')+ck(mealKey(date,'shirin',m,'eaten'),'Изядено · Ширин'):ck(mealKey(date,who,m,'eaten'),`Изядено · ${person}`);
+  const checks=missing?'':isDinner?ck(mealKey(date,'family',m,'prepared'),'Приготвено')+ck(mealKey(date,'boby',m,'eaten'),'Изядено · Боби')+(noSh?'':ck(mealKey(date,'shirin',m,'eaten'),'Изядено · Ширин')):ck(mealKey(date,who,m,'eaten'),`Изядено · ${person}`);
   openSheet(`<div class="sheet-head"><div><span class="tag">${m.type}${m.family?' · общо':''}</span><h2>${m.name}</h2></div><button class="close" data-close>×</button></div>
-  <p class="sheet-sub">${m.macros}</p>
+  <p class="sheet-sub">${missing?'Без порция за Ширин':m.macros}</p>
   ${m.photo?`<div class="meal-visual">${trainPhoto(m.photo)}</div>`:''}
-  <div class="info-row"><div class="info-box"><b>${m.kcal}</b><small>ккал · оценка · 1 порция ${person}</small></div><div class="info-box"><b>${reheat?'4–6 мин':m.cook}</b><small>общо време</small></div><div class="info-box"><b>${reheat?'Микровълнова':m.device}</b><small>уред</small></div></div>
-  ${isLunch?`<div class="subtabs"><button class="subtab ${cookNow?'':'active'}" data-lunchmode="ready">Имам готова порция от вчера</button><button class="subtab ${cookNow?'active':''}" data-lunchmode="cook">Готвя обяда сега</button></div>`:''}
-  ${m.family?`<label class="people-toggle"><span><b>Индивидуално</b><small>${state.solo?`Само ${person} · 1 порция`:`Общо за двамата · ${each*2} порции`}</small></span><input class="switch" id="soloToggle" type="checkbox" ${state.solo?'checked':''}></label>`:''}
+  ${missing?'':`<div class="info-row"><div class="info-box"><b>${m.kcal}</b><small>ккал · 1 порция ${person}</small></div><div class="info-box"><b>${reheat?'5–8 мин':m.cook}</b><small>общо време</small></div><div class="info-box"><b>${reheat?'Тиган или air fryer':m.device}</b><small>уред</small></div></div>`}
+  ${isLunch&&!missing?`<div class="subtabs"><button class="subtab ${cookNow?'':'active'}" data-lunchmode="ready">Имам готова порция от вчера</button><button class="subtab ${cookNow?'active':''}" data-lunchmode="cook">Готвя обяда сега</button></div>`:''}
+  ${isDinner?`<label class="people-toggle"><span><b>Без Ширин</b><small>${noSh?'Само за Боби · 2 кутии × 3.2':'Общо готвене · 4 кутии × 5.2'}</small></span><input class="switch" id="noShirinToggle" type="checkbox" ${noSh?'checked':''}></label>`:''}
+  ${isDinner&&!missing?`<label class="people-toggle"><span><b>Индивидуално</b><small>${state.solo?`Само ${person} · 1 порция`:`Общо · ${noSh?2:4} порции`}</small></span><input class="switch" id="soloToggle" type="checkbox" ${state.solo?'checked':''}></label>`:''}
   ${blocks}
-  <div class="detail-block"><h3>${reheat?'Съхранение и затопляне':'Приготвяне'}</h3><ol class="steps">${steps.map(s=>`<li><span>${s}</span></li>`).join('')}</ol></div>
-  <div class="detail-block meal-checks"><h3>Отметки</h3>${checks}</div>`,keepScroll);
+  ${steps?`<div class="detail-block"><h3>${reheat?'Съхранение и затопляне':'Приготвяне'}</h3><ol class="steps">${steps.map(s=>`<li><span>${s}</span></li>`).join('')}</ol></div>`:''}
+  ${checks?`<div class="detail-block meal-checks"><h3>Отметки</h3>${checks}</div>`:''}`,keepScroll);
   const t=document.querySelector('#soloToggle');if(t)t.onchange=e=>{state.solo=e.target.checked;openMeal(i,sourceDay,true,date)};
+  const ns=document.querySelector('#noShirinToggle');if(ns)ns.onchange=e=>{try{localStorage.setItem(noShirinKey(date,m.code),e.target.checked?'1':'0')}catch(err){}openMeal(i,sourceDay,true,date);if(document.querySelector('#foodView.active'))renderFood()};
   document.querySelectorAll('[data-lunchmode]').forEach(b=>b.onclick=()=>{state.lunchMode=b.dataset.lunchmode;openMeal(i,sourceDay,true,date)});
 }
 let timerInterval=null;
@@ -592,7 +596,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.querySelec
 document.addEventListener('change',e=>{if(e.target.matches('[data-check]')){const id=e.target.dataset.check,checked=e.target.checked;localStorage.setItem('hustle-'+id,checked?'1':'0');window.hustleShoppingSync?.setItem(id,checked)?.catch(err=>console.error('Shopping sync:',err));renderShop()}if(e.target.matches('[data-log]')){handleTrainLog(e.target);renderWorkout()}});
 document.addEventListener('input',e=>{if(e.target.matches('input[type="text"][data-log],input[type="number"][data-log]'))handleTrainLog(e.target)});
 document.querySelectorAll('.date-picker').forEach(picker=>picker.onchange=e=>{if(!e.target.value)return;selectedDate=isoToLocalDate(e.target.value);weekSunday=new Date(selectedDate);weekSunday.setDate(weekSunday.getDate()-weekSunday.getDay());state.day=dayKeys[selectedDate.getDay()];state.workoutDay=state.day;renderFood();renderWorkout()});
-document.querySelector('#resetShop').onclick=()=>{if(!confirm(`Да започнем ли нов ${state.shop==='monthly'?'месечен':'седмичен'} списък? Отметките в избрания пазар ще бъдат изчистени.`))return;Object.keys(localStorage).filter(k=>k.startsWith('hustle-'+state.shop)).forEach(k=>localStorage.removeItem(k));window.hustleShoppingSync?.resetList(state.shop)?.catch(err=>console.error('Shopping reset:',err));renderShop()};
+document.querySelector('#resetShop').onclick=()=>{if(!confirm(`Да започнем ли нов ${state.shop==='start'?'стартов':'седмичен'} списък? Отметките в избрания пазар ще бъдат изчистени.`))return;Object.keys(localStorage).filter(k=>k.startsWith('hustle-'+state.shop)).forEach(k=>localStorage.removeItem(k));window.hustleShoppingSync?.resetList(state.shop)?.catch(err=>console.error('Shopping reset:',err));renderShop()};
 document.querySelector('#installBtn').onclick=()=>{openSheet(`<div class="sheet-head"><div><span class="tag">IPHONE PWA</span><h2>Добави ХЪСЪЛ на началния екран</h2></div><button class="close" data-close>×</button></div><div class="detail-block"><ol class="steps"><li><span>Отвори приложението в Safari.</span></li><li><span>Натисни бутона <b>Споделяне</b> в долната лента.</span></li><li><span>Избери <b>Добавяне към Начален екран</b>.</span></li><li><span>Потвърди с <b>Добави</b>.</span></li></ol></div><div class="tip">💛 След това ХЪСЪЛ ще се отваря като истинско приложение, без адресна лента.</div>`)};
 renderToday();renderFood();renderWorkout();renderShop();
 finishLaunch();
