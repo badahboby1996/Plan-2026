@@ -9,7 +9,31 @@ const dayNames={sun:'Неделя',mon:'Понеделник',tue:'Вторни�
 const shortDays={sun:'Нд',mon:'Пн',tue:'Вт',wed:'Ср',thu:'Чт',fri:'Пт',sat:'Сб'};
 const people={boby:'Боби',shirin:'Ширин'};
 /* Снимки на ястията: попълни ръчно по код, напр. parmezan:'meal-parmezan.webp'. Празно = показва се иконата. */
-const mealPhotos={};
+const mealPhotos={
+ H1:'meal-H1.webp',
+ H3:'meal-H3.webp',
+ H4:'meal-H4.webp',
+ H5:'meal-H5.webp',
+ H6:'meal-H6.webp',
+ H7:'meal-H7.webp',
+ S1:'meal-S1.webp',
+ S2:'meal-S2.webp',
+ S3:'meal-S3.webp',
+ S4:'meal-S4.webp',
+ S5:'meal-S5.webp',
+ S6:'meal-S6.webp',
+ S7:'meal-S7.webp',
+ izvara:'meal-izvara.webp',
+ kefir:'meal-kefir.webp',
+ kinoa:'meal-kinoa.webp',
+ kyufteta:'meal-kyufteta.webp',
+ nahut:'meal-nahut.webp',
+ parmezan:'meal-parmezan.webp',
+ pileOriz:'meal-pileOriz.webp',
+ syomgaBrokoli:'meal-syomgaBrokoli.webp',
+ syomgaPyure:'meal-syomgaPyure.webp',
+ yahnia:'meal-yahnia.webp'
+};
 const FAMILY=5.2,BOBY_ONLY=3.2,BOBY_DINNER=1.6;
 const r1=n=>+(+n).toFixed(1);
 const qty=(n,unit)=>`${+(+n).toFixed(2)} ${unit}`;
