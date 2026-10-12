@@ -356,7 +356,7 @@
     </section>
 
     <section class="view" id="foodView">
-      <div class="page-head"><div class="eyebrow">ХРАНИТЕЛЕН ПЛАН</div><h1>Яж по план.<br>Живей леко.</h1><p>Грамажите са сурови/сухи, освен ако пише „сварено“, „изпечено“ или „отцедено“. Натисни хранене за пълната рецепта.</p></div>
+      <div class="page-head"><div class="eyebrow">ХРАНИТЕЛЕН ПЛАН</div><h1>Яж по план.<br>Живей леко.</h1><p>Грамажите са сурови/сухи, освен ако пише „сварено“, „отцедено“, „готово“ или „ядлива част“. Натисни хранене за пълната рецепта.</p></div>
       <div class="subtabs food-profile"><button class="subtab active" data-profile="boby"><span class="dot">Б</span>Боби</button><button class="subtab" data-profile="shirin"><span class="dot">Ш</span>Ширин</button></div>
       <div class="calendar-nav"><button class="cal-arrow" data-week="-1" aria-label="Предишна седмица">‹</button><button class="cal-month" data-calendar></button><button class="cal-arrow" data-week="1" aria-label="Следваща седмица">›</button><input class="date-picker" id="datePicker" type="date"></div>
       <div class="date-strip" id="foodDays"></div>
@@ -561,6 +561,7 @@ function openMeal(i,sourceDay,keepScroll){
   openSheet(`<div class="sheet-head"><div><span class="tag">${m.type}${m.shared?' · семейно готвене':''}</span><h2>${m.name}</h2></div><button class="close" data-close>×</button></div>
   <p class="sheet-sub">${macros} · сурови/сухи грамажи, освен ако е уточнено друго</p>
   ${m.photo?`<div class="meal-visual">${trainPhoto(m.photo)}</div>`:''}
+  ${m.sourceNote?`<div class="source-note"><b>Бележка към оригиналното меню</b>${m.sourceNote}</div>`:''}
   ${m.fromPreviousDinner?`<span class="lunch-badge">РЕЦЕПТА САМО ЗА ТАЗИ ОБЕДНА ПОРЦИЯ</span><div class="source-note"><b>Може и без вечерята от предния ден</b>${m.sourceLabel}. По-долу са точните грамажи и пълното готвене само за този обяд, плюс съхранението и претоплянето.</div>`:''}
   <div class="info-row"><div class="info-box"><b>${kcal}</b><small>${kcalLabel}</small></div><div class="info-box"><b>${m.cook}</b><small>общо време</small></div><div class="info-box"><b>${m.device}</b><small>уред</small></div></div>
   ${canToggle?`<label class="people-toggle"><span><b>Включи порцията на ${other}</b><small>${forTwo?(m.batchLabel||'Показани са общите количества за семейството'):`Показана е само частта на ${person}`}</small></span><input class="switch" id="partnerToggle" type="checkbox" ${forTwo?'checked':''}></label>`:''}
