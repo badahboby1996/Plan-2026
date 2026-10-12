@@ -187,12 +187,11 @@ const shopParts={
 };
 const dayIndex={mon:0,tue:1,wed:2,thu:3,fri:4,sat:5,sun:6};
 const meatNames=['Пилешко филе','Сьомга','Чиста телешка кайма'];
-function meatRows(part,noShirin){const rows=[];
- for(const d of part.days){const code=weekPlan[d].d,f=FAMILY-(noShirin.includes(d)?2:0);
+function meatRows(part,noShirin){const tot=new Map();
+ for(const d of part.days){const code=weekPlan[d].d,f=FAMILY-(noShirin.includes(d)?2:0),late=dayIndex[d]-part.buyDay>2;
   dinnerRecipes[code].ing.filter(([n])=>meatNames.includes(n)).forEach(([n,st,q,unit])=>{
-   const keep=dayIndex[d]-part.buyDay>2?' · замрази':'';
-   rows.push([`${n} · ${st} · за ${dayNames[d].toLowerCase()}`,`${qty(r1(q*f),unit)}${keep}`])})}
- return rows}
+   const k=`${n} · ${st}`,o=tot.get(k)||{q:0,frozen:0,unit};o.q+=q*f;if(late)o.frozen+=q*f;tot.set(k,o)})}
+ return [...tot].map(([k,o])=>[k,qty(r1(o.q),o.unit)+(o.frozen>0?(o.frozen>=o.q-0.001?' · замрази':` · от тях ${qty(r1(o.frozen),o.unit)} замрази`):'')])}
 function weeklyNeeds(noShirinDays=[],part=null){const t=new Map(),add=(ing,f)=>ing.forEach(([name,,q,unit])=>{const o=t.get(name)||{q:0,unit};o.q+=q*f;t.set(name,o)});
  for(const d of part?part.days:Object.keys(weekPlan)){const p=weekPlan[d],b=breakfastRecipes[p.b];add(b.ing,b.mult+1);add(snacks[p.s].ing,1);add(shirinSnacks[p.h].ing,1);
   add(dinnerRecipes[p.d].ing,FAMILY-(noShirinDays.includes(d)?2:0))}
