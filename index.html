@@ -544,7 +544,7 @@ function openMeal(i,sourceDay,keepScroll,dateISO){
   let blocks,steps;
   if(!r){blocks=ingBlock(`${person} · 1 порция`,m.ingredients);steps=m.steps}
   else if(family){
-    blocks=(!isLunch||cookNow?ingBlock(`Общо · ${each*2} порции`,recipeRows(r,each,each)):'')+ingBlock('Боби · 1 порция',recipeRows(r,1,0))+ingBlock('Ширин · 1 порция',recipeRows(r,0,1));
+    blocks=ingBlock(`Общо · ${each*2} порции`,recipeRows(r,each,each));
     steps=isLunch?(cookNow?r.steps:readySteps(r,who)):[...r.steps,splitStep];
   }else{
     blocks=ingBlock(`${person} · 1 порция`,recipeRows(r,isBoby?1:0,isBoby?0:1));
