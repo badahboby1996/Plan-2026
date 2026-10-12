@@ -550,8 +550,8 @@ function openMeal(i,sourceDay,keepScroll,dateISO){
   let blocks,steps=null;
   if(!r){blocks=ingBlock(`${person} · 1 порция`,m.ingredients);steps=m.steps}
   else if(missing){blocks=`<div class="detail-block"><h3>Няма порция за Ширин</h3><span class="block-sub">${isDinner?'Тази вечеря':'Вчерашната вечеря'} е отбелязана „Без Ширин“ — от съда няма кутия за нея.</span></div>`}
-  else if(isDinner&&!state.solo){const f=noSh?BOBY_ONLY:FAMILY;blocks=ingBlock(noSh?'Общо · 2 порции · само Боби':'Общо · 4 порции',rowsScaled(r.ing,f));steps=[...dinnerSteps(r,f),...(noSh?[...smallBatch(r),bobyOnlySplit]:[familySplit]),...storageSteps(r)]}
-  else{blocks=ingBlock(`${person} · 1 порция`,rowsScaled(r.ing,own));steps=isLunch&&!cookNow?storageSteps(r):[...dinnerSteps(r,own),...smallBatch(r)]}
+  else if(isDinner&&!state.solo){const f=noSh?BOBY_ONLY:FAMILY;blocks=ingBlock(noSh?'Общо · 2 порции · само Боби':'Общо · 4 порции',rowsScaled(r.ing,f));steps=dinnerSteps(r,f)}
+  else{blocks=ingBlock(`${person} · 1 порция`,rowsScaled(r.ing,own));steps=isLunch&&!cookNow?storageSteps(r):dinnerSteps(r,own)}
   const reheat=isLunch&&!cookNow;
   const ck=(k,label)=>`<label class="check-row"><input type="checkbox" data-mealcheck="${k}" ${mealChecked(k)?'checked':''}><span class="item-name">${label}</span><span class="qty"></span></label>`;
   const checks=missing?'':isDinner?ck(mealKey(date,'family',m,'prepared'),'Приготвено')+ck(mealKey(date,'boby',m,'eaten'),'Изядено · Боби')+(noSh?'':ck(mealKey(date,'shirin',m,'eaten'),'Изядено · Ширин')):ck(mealKey(date,who,m,'eaten'),`Изядено · ${person}`);
