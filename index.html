@@ -364,7 +364,7 @@
 
     <section class="view" id="shopView">
       <div class="page-head"><div class="eyebrow">ЗА ДВАМАТА</div><h1>Купи точно.<br>Не разхищавай.</h1><p>Количествата са общи за Боби и Ширин. Отметките се синхронизират между двата телефона.</p></div>
-      <div class="subtabs" id="shopTabs"><button class="subtab active" data-shop="week"><span class="dot">7</span>Седмица</button><button class="subtab" data-shop="start"><span class="dot">С</span>Старт</button></div>
+      <div class="subtabs" id="shopTabs"><button class="subtab active" data-shop="part1"><span class="dot">1</span>Пн–Ср</button><button class="subtab" data-shop="part2"><span class="dot">2</span>Чт–Нд</button><button class="subtab" data-shop="start"><span class="dot">С</span>Старт</button></div>
       <div class="shop-progress"><div class="shop-row"><div><small style="font-size:9px;font-weight:950;letter-spacing:.13em;opacity:.55">ГОТОВО</small><br><b id="shopCount">0 / 0</b><span class="sync-status" id="syncStatus">Проверка на синхронизацията…</span></div><button class="ghost" id="resetShop">Нова седмица</button></div><div class="progress"><i id="shopProgressBar"></i></div></div>
       <div class="shop-groups" id="shopGroups"></div>
     </section>
@@ -394,7 +394,7 @@ try{importLegacyHistory()}catch(err){console.error('Внос на старата
 const browserDay=sofiaDayKey();
 let selectedDate=isoToLocalDate(sofiaToday());
 let weekSunday=new Date(selectedDate);weekSunday.setDate(weekSunday.getDate()-weekSunday.getDay());
-const state={day:browserDay,workoutDay:browserDay,shop:'week',solo:false,lunchMode:'ready',profile:localStorage.getItem('hustle-last-profile')||'boby'};
+const state={day:browserDay,workoutDay:browserDay,shop:'part1',solo:false,lunchMode:'ready',profile:localStorage.getItem('hustle-last-profile')||'boby'};
 const monthNames=['ЯНУАРИ','ФЕВРУАРИ','МАРТ','АПРИЛ','МАЙ','ЮНИ','ЮЛИ','АВГУСТ','СЕПТЕМВРИ','ОКТОМВРИ','НОЕМВРИ','ДЕКЕМВРИ'];
 const weeklyQuotes=[
  ['„Първо си кажи какъв искаш да бъдеш; после направи необходимото.“','Епиктет'],
@@ -538,7 +538,7 @@ function handleTrainLog(el){
   if(field==='done'){const box=el.closest('.log-set');if(box)box.classList.toggle('done',el.checked);if(el.checked)startTimer(Number(el.dataset.rest||60))}
 }
 
-function weekNoShirin(){const mon=mondayOf(selectedDate),out=[];for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(d.getDate()+i);const code=weekPlan[dayKeys[d.getDay()]].d;if(noShirinOn(localISO(d),code))out.push(code)}return out}
+function weekNoShirin(){const mon=mondayOf(selectedDate),out=[];for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(d.getDate()+i);const k=dayKeys[d.getDay()];if(noShirinOn(localISO(d),weekPlan[k].d))out.push(k)}return out}
 function renderShop(){const data=shoppingFor(state.shop,weekNoShirin()),groups=document.querySelector('#shopGroups');if(!data){groups.innerHTML='<div class="empty">Списъкът се подготвя.</div>';document.querySelector('#shopCount').textContent='0 / 0';return}let total=0,done=0;const scope=`<div class="shop-note"><small>${data.label}</small>${data.note?`<p>${data.note}</p>`:''}</div>`;groups.innerHTML=scope+Object.entries(data.groups).map(([name,items])=>{total+=items.length;return `<section class="shop-group"><h3>${name}<span>${items.length} продукта</span></h3>${items.map(([n,q],i)=>{const id=`${state.shop}-${name}-${i}`,remote=window.hustleShoppingReady,checked=remote?window.hustleShoppingState?.[id]===true:localStorage.getItem('hustle-'+id)==='1';if(checked)done++;return `<label class="check-row"><input type="checkbox" data-check="${id}" ${checked?'checked':''}><span class="item-name">${n}</span><span class="qty">${q}</span></label>`}).join('')}</section>`}).join('');document.querySelector('#shopCount').textContent=`${done} / ${total}`;document.querySelector('#shopProgressBar').style.width=`${total?done/total*100:0}%`}
 
 function ingBlock(title,rows){return `<div class="detail-block"><h3>${title}</h3><div class="ingredient-list">${rows.map(x=>`<div class="ingredient"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('')}</div></div>`}

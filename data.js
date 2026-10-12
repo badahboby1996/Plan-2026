@@ -152,13 +152,35 @@ const shopLayout={
  '🥬 Плодове и зеленчуци':[['Авокадо','ядлива част'],['Банан','ядлива част'],['Боровинки','ядлива част'],['Броколи','сурови'],['Горски плодове','ядлива част'],['Домат','суров'],['Зелен фасул','суров или замразен'],['Картоф','суров обелен'],['Копър','пресен'],['Краставица','сурова'],['Круша','ядлива част'],['Лимонов сок','готов продукт'],['Лук','суров'],['Морков','суров'],['Тиквички','сурови'],['Червена чушка','сурова'],['Ябълка','ядлива част']],
  '🫙 Мазнини, ядки и други':[['Бадеми','готов продукт'],['Бадемов тахан','готов продукт'],['Балсамов оцет','готов продукт'],['Ванилия','готов продукт'],['Дафинов лист','готов продукт'],['Зехтин','готов продукт'],['Кимион','готов продукт'],['Ленено семе','сухо тегло'],['Маслини','отцедени'],['Мед','готов продукт'],['Морска сол','готов продукт'],['Сушен босилек','готов продукт'],['Сушен кориандър','готов продукт'],['Фъстъчено масло','готов продукт'],['Червен пипер','готов продукт'],['Черен пипер','готов продукт'],['Черен шоколад','готов продукт'],['Чиа','сухо тегло']]
 };
-function weeklyNeeds(noShirin=[]){const t=new Map(),add=(ing,f)=>ing.forEach(([name,,q,unit])=>{const o=t.get(name)||{q:0,unit};o.q+=q*f;t.set(name,o)});
- for(const p of Object.values(weekPlan)){const b=breakfastRecipes[p.b];add(b.ing,b.mult+1);add(snacks[p.s].ing,1);add(shirinSnacks[p.h].ing,1);add(dinnerRecipes[p.d].ing,FAMILY)}
- noShirin.forEach(code=>add(dinnerRecipes[code].ing,-2));
+/* Два пазара в седмицата; всеки покрива изцяло своите дни (закуски, следобедни закуски и вечери).
+   Вечерята дава и обяда на следващия ден.
+   Пазар 1 (понеделник сутрин): понеделник, вторник, сряда.
+   Пазар 2 (сряда вечер): четвъртък, петък, събота, неделя — кефирът за четвъртък се накисва още в сряда вечер.
+   Месо и риба: до 2 дни в хладилник; ако се готвят по-късно, се замразяват веднага след покупката. */
+const shopParts={
+ part1:{label:'ПАЗАР 1 · ПОНЕДЕЛНИК СУТРИН · ЗА ПОНЕДЕЛНИК–СРЯДА',buyDay:0,days:['mon','tue','wed'],
+  note:'Покрива изцяло понеделник, вторник и сряда: закуските, следобедните закуски и вечерите. Вечерите дават и обядите от вторник до четвъртък. Обядът в понеделник идва от неделната вечеря (Пазар 2).'},
+ part2:{label:'ПАЗАР 2 · СРЯДА ВЕЧЕР · ЗА ЧЕТВЪРТЪК–НЕДЕЛЯ',buyDay:2,days:['thu','fri','sat','sun'],
+  note:'Покрива изцяло четвъртък, петък, събота и неделя. Купува се в сряда вечер, за да накиснеш кефира за четвъртък от вечерта. Неделната вечеря дава и обяда в понеделник. Сьомгата за събота и каймата за неделя замрази веднага след пазара и ги размрази в хладилника вечерта преди готвене.'}
+};
+const dayIndex={mon:0,tue:1,wed:2,thu:3,fri:4,sat:5,sun:6};
+const meatNames=['Пилешко филе','Пуешко филе','Сьомга','Чиста телешка кайма'];
+function meatRows(part,noShirin){const rows=[];
+ for(const d of part.days){const code=weekPlan[d].d,f=FAMILY-(noShirin.includes(d)?2:0);
+  dinnerRecipes[code].ing.filter(([n])=>meatNames.includes(n)).forEach(([n,st,q,unit])=>{
+   const keep=dayIndex[d]-part.buyDay>2?' · замрази':'';
+   rows.push([`${n} · ${st} · за ${dayNames[d].toLowerCase()}`,`${qty(r1(q*f),unit)}${keep}`])})}
+ return rows}
+function weeklyNeeds(noShirinDays=[],part=null){const t=new Map(),add=(ing,f)=>ing.forEach(([name,,q,unit])=>{const o=t.get(name)||{q:0,unit};o.q+=q*f;t.set(name,o)});
+ for(const d of part?part.days:Object.keys(weekPlan)){const p=weekPlan[d],b=breakfastRecipes[p.b];add(b.ing,b.mult+1);add(snacks[p.s].ing,1);add(shirinSnacks[p.h].ing,1);
+  add(dinnerRecipes[p.d].ing,FAMILY-(noShirinDays.includes(d)?2:0))}
  return t}
 const starterRows=[['Чиста телешка кайма','сурова',309.4],['Картоф','суров обелен',421.2],['Царевица','сварена и отцедена',93.6],['Морков','суров',111.8],['Зехтин','готов продукт',7.8],['Черен пипер','готов продукт',2.6],['Червен пипер','готов продукт',5.2],['Морска сол','готов продукт',2.6]];
 function shoppingFor(key,noShirin=[]){
  if(key==='start')return {label:'СТАРТ · САМО ЗА ПЪРВИЯ ПОНЕДЕЛНИК',note:'Ако в неделя няма кутии за понеделнишкия обяд: приготви ×2.6 телешки кюфтенца — обяд на Боби ×1.6 и обяд на Ширин ×1.0. Раздели готовото 61.54% за Боби и 38.46% за Ширин.',groups:{'🧆 Допълнително за 2 обяда':starterRows.map(([n,s,q])=>[`${n} · ${s}`,qty(q,'г')])}};
- const t=weeklyNeeds(noShirin),groups={};
- for(const [g,rows] of Object.entries(shopLayout))groups[g]=rows.map(([n,s])=>{const o=t.get(n);return [`${n} · ${s}`,o&&o.q>0.001?qty(r1(o.q),o.unit):'не е нужно тази седмица']});
- return {label:'СЕДМИЧЕН СПИСЪК'+(noShirin.length?` · ${noShirin.length} ${noShirin.length===1?'вечер':'вечери'} без Ширин`:''),groups}}
+ const part=shopParts[key]||null,t=weeklyNeeds(noShirin,part),groups={};
+ for(const [g,rows] of Object.entries(shopLayout)){
+  if(part&&g.startsWith('🥩')){const meat=meatRows(part,noShirin),eggs=t.get('Яйца');groups[g]=[...meat,...(eggs&&eggs.q>0?[['Яйца · сурови',qty(eggs.q,'бр.')]]:[])];continue}
+  const items=rows.map(([n,st])=>{const o=t.get(n);return o&&o.q>0.001?[`${n} · ${st}`,qty(r1(o.q),o.unit)]:null}).filter(Boolean);if(items.length)groups[g]=items}
+ const miss=noShirin.filter(d=>!part||part.days.includes(d)).length;
+ return {label:(part?part.label:'СЕДМИЧЕН СПИСЪК')+(miss?` · ${miss} ${miss===1?'вечер':'вечери'} без Ширин`:''),note:part?part.note:'',groups}}
