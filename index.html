@@ -252,6 +252,8 @@
     .check-row input:checked{background:var(--sun);border-color:var(--sun-deep);transform:scale(1.05)}
     .check-row input:checked:after{content:"✓";font-size:14px;font-weight:950}
     .check-row:has(input:checked) .item-name{text-decoration:line-through;color:#b3ab95}
+    .meal-checks .check-row:has(input:checked) .item-name{text-decoration:none;color:var(--ink)}
+    .sheet .subtab{line-height:1.25;text-align:center}
     .qty{font-size:11px;font-weight:850;color:#7d7560}
 
     /* ── Sheet ─────────────────────────────────────── */
@@ -392,7 +394,7 @@ try{importLegacyHistory()}catch(err){console.error('Внос на старата
 const browserDay=sofiaDayKey();
 let selectedDate=isoToLocalDate(sofiaToday());
 let weekSunday=new Date(selectedDate);weekSunday.setDate(weekSunday.getDate()-weekSunday.getDay());
-const state={day:browserDay,workoutDay:browserDay,shop:'market1',partner:true,profile:localStorage.getItem('hustle-last-profile')||'boby'};
+const state={day:browserDay,workoutDay:browserDay,shop:'market1',solo:false,lunchMode:'ready',profile:localStorage.getItem('hustle-last-profile')||'boby'};
 const monthNames=['ЯНУАРИ','ФЕВРУАРИ','МАРТ','АПРИЛ','МАЙ','ЮНИ','ЮЛИ','АВГУСТ','СЕПТЕМВРИ','ОКТОМВРИ','НОЕМВРИ','ДЕКЕМВРИ'];
 const weeklyQuotes=[
  ['„Първо си кажи какъв искаш да бъдеш; после направи необходимото.“','Епиктет'],
@@ -420,11 +422,11 @@ const weeklyQuotes=[
  ['„Мотивацията те кара да започнеш. Навикът те кара да продължиш.“','Джим Раян'],
  ['„Заедно сме по-силни от всяка трудност.“','Семейство Бадах']
 ];
-function recipeSteps(m,forTwo){return forTwo&&m.coupleSteps?m.coupleSteps:m.steps}
 
-function mealKcal(m,forBoby){return !forBoby&&m.shirinKcal?m.shirinKcal:m.kcal}
-function mealMacros(m,forBoby){return !forBoby&&m.shirinMacros?m.shirinMacros:m.macros}
-function mealCard(m,i){const forBoby=state.profile==='boby';return `<button class="meal-card" data-meal="${i}"><div class="meal-art${m.photo?' has-photo':''}" style="--meal:${m.color}${m.photo?`;--photo:url('${m.photo}')`:''}">${m.icon}</div><div><div class="meal-type">${m.time} · ${m.type}${m.fromPreviousDinner?' · от предната вечер':''}</div><div class="meal-name">${m.name}</div><div class="meal-meta"><span>${mealKcal(m,forBoby)} ккал</span><span>${mealMacros(m,forBoby).split(' · ')[0]}</span></div></div><div class="arrow">›</div>${m.shared?'<span class="shared-pill">4 ПОРЦИИ</span>':''}</button>`}
+function foodDateISO(day){const d=new Date(weekSunday);d.setDate(d.getDate()+dayKeys.indexOf(day));return localISO(d)}
+function mealKey(date,who,m,what){return `hustle-meal:${date}:${who}:${m.slot}:${m.code}:${what}`}
+function mealChecked(k){try{return localStorage.getItem(k)==='1'}catch(e){return false}}
+function mealCard(m,i){const eaten=mealChecked(mealKey(foodDateISO(state.day),state.profile,m,'eaten'));return `<button class="meal-card" data-meal="${i}"><div class="meal-art${m.photo?' has-photo':''}" style="--meal:${m.color}${m.photo?`;--photo:url('${m.photo}')`:''}">${m.icon}</div><div><div class="meal-type">${m.time} · ${m.type}${m.fromPreviousDinner?' · от предната вечер':''}</div><div class="meal-name">${m.name}</div><div class="meal-meta"><span>${m.kcal} ккал</span><span>${m.macros.split(' · ')[0]}</span></div></div><div class="arrow">›</div>${eaten?'<span class="shared-pill">✓ ИЗЯДЕНО</span>':m.family?'<span class="shared-pill">ОБЩО</span>':''}</button>`}
 function syncCalendarLabels(){document.querySelectorAll('[data-calendar]').forEach(x=>x.textContent=`${monthNames[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`);document.querySelectorAll('.date-picker').forEach(p=>p.value=localISO(selectedDate))}
 const mondayFirst=['mon','tue','wed','thu','fri','sat','sun'];
 function mondayOf(date){const d=new Date(date);d.setDate(d.getDate()-((d.getDay()+6)%7));return d}
@@ -534,27 +536,34 @@ function handleTrainLog(el){
 
 function renderShop(){const data=shopping[state.shop],groups=document.querySelector('#shopGroups');if(!data){groups.innerHTML='<div class="empty">Списъкът се подготвя.</div>';document.querySelector('#shopCount').textContent='0 / 0';return}let total=0,done=0;const scope=`<div class="shop-note"><small>${data.label}</small>${data.note?`<p>${data.note}</p>`:''}</div>`;groups.innerHTML=scope+Object.entries(data.groups).map(([name,items])=>{total+=items.length;return `<section class="shop-group"><h3>${name}<span>${items.length} продукта</span></h3>${items.map(([n,q],i)=>{const id=`${state.shop}-${name}-${i}`,remote=window.hustleShoppingReady,checked=remote?window.hustleShoppingState?.[id]===true:localStorage.getItem('hustle-'+id)==='1';if(checked)done++;return `<label class="check-row"><input type="checkbox" data-check="${id}" ${checked?'checked':''}><span class="item-name">${n}</span><span class="qty">${q}</span></label>`}).join('')}</section>`}).join('');document.querySelector('#shopCount').textContent=`${done} / ${total}`;document.querySelector('#shopProgressBar').style.width=`${total?done/total*100:0}%`}
 
-function openMeal(i,sourceDay,keepScroll){
-  const day=sourceDay||state.day,data=state.profile==='boby'?meals:shirinMeals,m=data[day].items[i];
-  const isBoby=state.profile==='boby',person=isBoby?'Боби':'Ширин',other=isBoby?'Ширин':'Боби';
-  const canToggle=!!(m.shared&&m.partnerIngredients),forTwo=state.partner&&canToggle;
-  let ingredients,portionTitle;
-  if(forTwo){ingredients=combinedIngredients(m);portionTitle=portionLabels.total.title}
-  else if(canToggle&&!isBoby){ingredients=m.partnerIngredients;portionTitle=portionLabels.shirin.title}
-  else if(canToggle){ingredients=m.ingredients;portionTitle=portionLabels.boby.title}
-  else{ingredients=m.ingredients;portionTitle=m.portionTitle||`Точна порция за ${person}`}
-  const steps=recipeSteps(m,forTwo);
-  const kcal=mealKcal(m,isBoby),macros=mealMacros(m,isBoby);
-  const kcalLabel=m.shared?`ккал · една порция на ${person}`:`ккал · ориентир за ${person}`;
-  openSheet(`<div class="sheet-head"><div><span class="tag">${m.type}${m.shared?' · семейно готвене':''}</span><h2>${m.name}</h2></div><button class="close" data-close>×</button></div>
-  <p class="sheet-sub">${macros}</p>
+function ingBlock(title,rows){return `<div class="detail-block"><h3>${title}</h3><div class="ingredient-list">${rows.map(x=>`<div class="ingredient"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('')}</div></div>`}
+function openMeal(i,sourceDay,keepScroll,dateISO){
+  const day=sourceDay||state.day,who=state.profile,isBoby=who==='boby',m=(isBoby?meals:shirinMeals)[day].items[i],person=people[who];
+  if(!keepScroll){state.solo=false;state.lunchMode='ready'}
+  const date=dateISO||foodDateISO(day),r=m.recipe,isLunch=m.slot==='lunch',cookNow=isLunch&&state.lunchMode==='cook',family=m.family&&!state.solo,each=m.slot==='dinner'?2:1;
+  let blocks,steps;
+  if(!r){blocks=ingBlock(`${person} · 1 порция`,m.ingredients);steps=m.steps}
+  else if(family){
+    blocks=(!isLunch||cookNow?ingBlock(`Общо · ${each*2} порции`,recipeRows(r,each,each)):'')+ingBlock('Боби · 1 порция',recipeRows(r,1,0))+ingBlock('Ширин · 1 порция',recipeRows(r,0,1));
+    steps=isLunch?(cookNow?r.steps:readySteps(r,who)):[...r.steps,splitStep];
+  }else{
+    blocks=ingBlock(`${person} · 1 порция`,recipeRows(r,isBoby?1:0,isBoby?0:1));
+    steps=isLunch&&!cookNow?readySteps(r,who):r.solo[who];
+  }
+  const reheat=isLunch&&!cookNow;
+  const ck=(k,label)=>`<label class="check-row"><input type="checkbox" data-mealcheck="${k}" ${mealChecked(k)?'checked':''}><span class="item-name">${label}</span><span class="qty"></span></label>`;
+  const checks=m.family?ck(mealKey(date,'family',m,'prepared'),'Приготвено')+ck(mealKey(date,'boby',m,'eaten'),'Изядено · Боби')+ck(mealKey(date,'shirin',m,'eaten'),'Изядено · Ширин'):ck(mealKey(date,who,m,'eaten'),`Изядено · ${person}`);
+  openSheet(`<div class="sheet-head"><div><span class="tag">${m.type}${m.family?' · общо':''}</span><h2>${m.name}</h2></div><button class="close" data-close>×</button></div>
+  <p class="sheet-sub">${m.macros}</p>
   ${m.photo?`<div class="meal-visual">${trainPhoto(m.photo)}</div>`:''}
-  <div class="info-row"><div class="info-box"><b>${kcal}</b><small>${kcalLabel}</small></div><div class="info-box"><b>${m.cook}</b><small>общо време</small></div><div class="info-box"><b>${m.device}</b><small>уред</small></div></div>
-  ${canToggle?`<label class="people-toggle"><span><b>Включи порцията на ${other}</b><small>${forTwo?(m.batchLabel||'Показани са общите количества за семейството'):`Показана е само частта на ${person}`}</small></span><input class="switch" id="partnerToggle" type="checkbox" ${forTwo?'checked':''}></label>`:''}
-  <div class="detail-block"><h3>${portionTitle}</h3><div class="ingredient-list">${ingredients.map(x=>`<div class="ingredient"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('')}</div></div>
-  <div class="detail-block"><h3>${m.fromPreviousDinner?'Затопляне':'Приготвяне'}</h3><ol class="steps">${steps.map(s=>`<li><span>${s}</span></li>`).join('')}</ol></div>
-  <div class="tip">💡 ${m.tip}</div>`,keepScroll);
-  const t=document.querySelector('#partnerToggle');if(t)t.onchange=e=>{state.partner=e.target.checked;openMeal(i,sourceDay,true)}
+  <div class="info-row"><div class="info-box"><b>${m.kcal}</b><small>ккал · оценка · 1 порция ${person}</small></div><div class="info-box"><b>${reheat?'4–6 мин':m.cook}</b><small>общо време</small></div><div class="info-box"><b>${reheat?'Микровълнова':m.device}</b><small>уред</small></div></div>
+  ${isLunch?`<div class="subtabs"><button class="subtab ${cookNow?'':'active'}" data-lunchmode="ready">Имам готова порция от вчера</button><button class="subtab ${cookNow?'active':''}" data-lunchmode="cook">Готвя обяда сега</button></div>`:''}
+  ${m.family?`<label class="people-toggle"><span><b>Индивидуално</b><small>${state.solo?`Само ${person} · 1 порция`:`Общо за двамата · ${each*2} порции`}</small></span><input class="switch" id="soloToggle" type="checkbox" ${state.solo?'checked':''}></label>`:''}
+  ${blocks}
+  <div class="detail-block"><h3>${reheat?'Съхранение и затопляне':'Приготвяне'}</h3><ol class="steps">${steps.map(s=>`<li><span>${s}</span></li>`).join('')}</ol></div>
+  <div class="detail-block meal-checks"><h3>Отметки</h3>${checks}</div>`,keepScroll);
+  const t=document.querySelector('#soloToggle');if(t)t.onchange=e=>{state.solo=e.target.checked;openMeal(i,sourceDay,true,date)};
+  document.querySelectorAll('[data-lunchmode]').forEach(b=>b.onclick=()=>{state.lunchMode=b.dataset.lunchmode;openMeal(i,sourceDay,true,date)});
 }
 let timerInterval=null;
 
@@ -566,7 +575,7 @@ document.addEventListener('click',e=>{
   const nav=e.target.closest('[data-view]');if(nav)go(nav.dataset.view);
   const profileGo=e.target.closest('[data-profile-go]');if(profileGo){setProfile(profileGo.dataset.profileGo);go('food')}
   const profile=e.target.closest('[data-profile]');if(profile){setProfile(profile.dataset.profile);renderFood()}
-  const tonight=e.target.closest('[data-tonight]');if(tonight){setProfile('boby');state.partner=true;openMeal(3,browserDay)}
+  const tonight=e.target.closest('[data-tonight]');if(tonight){setProfile('boby');openMeal(3,browserDay,false,sofiaToday())}
   const quick=e.target.closest('[data-go]');if(quick)go(quick.dataset.go);
   const shift=e.target.closest('[data-week]');if(shift){selectedDate.setDate(selectedDate.getDate()+(+shift.dataset.week*7));weekSunday.setDate(weekSunday.getDate()+(+shift.dataset.week*7));state.day=dayKeys[selectedDate.getDay()];state.workoutDay=state.day;renderFood();renderWorkout()}
   const cal=e.target.closest('[data-calendar]');if(cal){const p=cal.parentElement.querySelector('.date-picker');if(!p)return;try{if(p.showPicker)p.showPicker();else p.click()}catch(err){p.click()}}
@@ -589,6 +598,7 @@ renderToday();renderFood();renderWorkout();renderShop();
 finishLaunch();
 setTimeout(()=>{const st=document.querySelector('#syncStatus');if(st&&st.textContent.trim()==='Проверка на синхронизацията…')st.textContent='Локален режим · отметките се пазят на това устройство'},6000);
 window.addEventListener('hustle-shopping-sync',renderShop);
+document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.mealcheck;if(!k)return;try{localStorage.setItem(k,e.target.checked?'1':'0')}catch(err){}if(document.querySelector('#foodView.active'))renderFood()});
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'));
 </script>
 <script type="module" src="firebase-sync.js"></script>
